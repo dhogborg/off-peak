@@ -1,0 +1,39 @@
+.info-box {
+  width: 380px;
+}
+.info-box dl {
+  margin: 0px auto 35px auto;
+  width: 340px;
+}
+.info-box dt {
+  line-height: 3rem;
+}
+.info-box dd {
+  float: right;
+  margin-top: -2.5rem;
+}
+.fine-print {
+  font-size: 0.7rem;
+  font-style: italic;
+}
+.how-did-i-do {
+  font-size: 0.8rem;
+  line-height: 1.1rem;
+}
+label.currency,
+label.consumption {
+  background: #444;
+  box-shadow: 4px 4px 0px #ccc;
+  color: white;
+  display: inline-block;
+  font-weight: 700;
+  min-width: 100px;
+  padding: 4px;
+  text-align: center;
+}
+label.nice {
+  background: #6ad568;
+}
+label.ouch {
+  background: #d55c52;
+}
