@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import * as Unstated from 'unstated'
 
 import * as tibber from '../lib/tibber'
 import * as svk from '../lib/svk'
@@ -8,6 +9,8 @@ import InfoBox from '../components/InfoBox'
 import ConsumptionChart from '../components/ConsmptionChart'
 import HistogramChart from '../components/Histogram'
 import Screen from '../components/Screen'
+import { AuthContainer } from '../App'
+import { Redirect } from 'react-router'
 
 // import { priceNodes as price, consumptionNodes as consumption } from '../mock/tibber'
 // import { profile as profileCsv } from '../mock/svk'
