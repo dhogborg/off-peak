@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 .vscode
-src/secrets/token.ts
+src/secrets/oauth2.ts

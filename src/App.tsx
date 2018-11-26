@@ -1,46 +1,70 @@
 import React, { Component } from 'react'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import * as auth from './lib/auth'
 
-import * as tibber from './lib/tibber'
+import About from './Routes/About'
+import Main from './Routes/Main'
+import Callback from './Routes/Callback'
 
-import InfoBox from './components/InfoBox'
-import Chart from './components/Chart'
-import { Screen } from './components/Screen'
+import './App.css'
 
-type State = {
-  consumption: tibber.ConsumptionNode[]
-  price: tibber.PriceNode[]
+const defaultUserCtx = {
+  isLoggedIn: false,
 }
+const UserContext = React.createContext(defaultUserCtx)
 
-class App extends Component<object, State> {
-  readonly state: State = {
-    consumption: [],
-    price: [],
+export default class App extends Component {
+  constructor(readonly props: any) {
+    super(props)
   }
 
-  async componentDidMount() {
-    let consumption = await tibber.getConsumption(tibber.Interval.Daily, 30)
-    let price = await tibber.getPrice(tibber.Interval.Daily, 30)
-
-    this.setState({
-      ...this.state,
-      consumption,
-      price,
-    })
+  public login = () => {
+    auth.login()
   }
 
-  render() {
+  public logout = () => {
+    auth.logout()
+  }
+
+  public render() {
     return (
-      <div className="App">
-        <header className="App-header" />
-        <Screen>
-          <InfoBox consumption={this.state.consumption} price={this.state.price} currency="SEK" />
-        </Screen>
-        <Screen>
-          <Chart consumption={this.state.consumption} price={this.state.price} />
-        </Screen>
-      </div>
+      <Router>
+        <div className="App">
+          <header className="App-header">
+            <nav>
+              <ul>
+                <li>
+                  <Link to="/">About</Link>
+                </li>
+                {auth.isLoggedIn() ? (
+                  <li>
+                    <Link to="/consumption">Consumption</Link>
+                  </li>
+                ) : null}
+                {auth.isLoggedIn() ? (
+                  <li className="logout">
+                    <a href="#" onClick={this.logout}>
+                      Logout
+                    </a>
+                  </li>
+                ) : (
+                  <li className="login">
+                    <a href="#" onClick={this.login}>
+                      Login
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </nav>
+          </header>
+
+          <UserContext.Provider value={{ isLoggedIn: auth.isLoggedIn() }}>
+            <Route path="/" exact component={About} />
+            <Route path="/consumption" exact component={Main} />
+            <Route path="/auth/callback" exact component={Callback} />
+          </UserContext.Provider>
+        </div>
+      </Router>
     )
   }
 }
-
-export default App

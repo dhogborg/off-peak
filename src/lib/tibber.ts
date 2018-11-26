@@ -1,4 +1,4 @@
-import { TOKEN } from '../secrets/token'
+import * as auth from './auth'
 
 interface GQLResponse<T = any> {
   data: T
@@ -7,11 +7,11 @@ interface GQLResponse<T = any> {
 export interface ConsumptionNode {
   from: string
   to: string
-  totalCost: number
-  unitCost: number
+  totalCost: number | null
+  unitCost: number | null
   unitPrice: number
   unitPriceVAT: number
-  consumption: number
+  consumption: number | null
   consumptionUnit: string
 }
 
@@ -48,7 +48,7 @@ export async function getConsumption(interval: Interval, last: number = 100) {
   const init: RequestInit = {
     method: 'POST',
     headers: {
-      Authorization: 'Bearer ' + TOKEN,
+      Authorization: 'Bearer ' + auth.getToken(),
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -67,9 +67,8 @@ export async function getConsumption(interval: Interval, last: number = 100) {
 }
 
 export interface PriceNode {
+  startsAt: string
   total: number
-  energy: number
-  tax: number
 }
 interface PriceResult {
   viewer: {
@@ -94,7 +93,8 @@ export async function getPrice(interval: Interval, last: number = 100) {
           priceInfo{
             range(resolution: ${interval}, last: ${last}){
               nodes{
-                total
+                startsAt,
+                total,
               }
             }
           }
@@ -107,7 +107,7 @@ export async function getPrice(interval: Interval, last: number = 100) {
   const init: RequestInit = {
     method: 'POST',
     headers: {
-      Authorization: 'Bearer ' + TOKEN,
+      Authorization: 'Bearer ' + auth.getToken(),
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

@@ -1,0 +1,31 @@
+header.App-header {
+  display: block;
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+header.App-header ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+header.App-header li {
+  float: left;
+  padding: 0px 10px;
+  line-height: 40px;
+}
+
+header.App-header a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 1px 1px #0000002e;
+}
+
+header.App-header li.login,
+header.App-header li.logout {
+  float: right;
+}
