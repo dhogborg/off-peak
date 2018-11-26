@@ -52,7 +52,6 @@ class App extends Component<object, State> {
   }
 
   render() {
-    console.log(this.state)
     if (this.state.error) {
       return (
         <Screen height="100vh">
