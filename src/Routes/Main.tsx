@@ -2,28 +2,26 @@ import React, { Component } from 'react'
 
 import * as tibber from '../lib/tibber'
 import * as svk from '../lib/svk'
+import * as dataprep from '../lib/dataprep'
 
 import InfoBox from '../components/InfoBox'
 import ConsumptionChart from '../components/ConsmptionChart'
 import HistogramChart from '../components/Histogram'
-import { Screen } from '../components/Screen'
+import Screen from '../components/Screen'
 
 // import { priceNodes as price, consumptionNodes as consumption } from '../mock/tibber'
 // import { profile as profileCsv } from '../mock/svk'
 
 type State = {
-  consumption: tibber.ConsumptionNode[]
-  price: tibber.PriceNode[]
-  profile: svk.ProfileNode[]
+  days?: dataprep.Day[]
+  consumption?: tibber.ConsumptionNode[]
+  price?: tibber.PriceNode[]
+  profile?: svk.ProfileNode[]
   error?: Error
 }
 
 class App extends Component<object, State> {
-  readonly state: State = {
-    consumption: [],
-    price: [],
-    profile: [],
-  }
+  readonly state: State = {}
 
   async componentDidMount() {
     const period = 32 * 24
@@ -36,8 +34,11 @@ class App extends Component<object, State> {
       let profileCsv = await svk.getProfile(period)
       let profile = svk.parseCSV(profileCsv)
 
+      const days = dataprep.aggregateDays(consumption, price, profile)
+
       this.setState({
         ...this.state,
+        days,
         consumption,
         price,
         profile,
@@ -61,15 +62,18 @@ class App extends Component<object, State> {
       )
     }
 
+    if (!this.state.consumption || !this.state.profile || !this.state.days) {
+      return (
+        <Screen height="100vh">
+          <h1>Loading...</h1>
+        </Screen>
+      )
+    }
+
     return (
       <div className="main">
         <Screen>
-          <InfoBox
-            consumption={this.state.consumption}
-            price={this.state.price}
-            profile={this.state.profile}
-            currency="SEK"
-          />
+          <InfoBox days={this.state.days} currency="SEK" />
         </Screen>
         <Screen height="20vh">
           <h3>Hourly rate vs. average rate</h3>
@@ -80,18 +84,43 @@ class App extends Component<object, State> {
           </p>
         </Screen>
         <Screen>
-          <ConsumptionChart
-            consumption={this.state.consumption}
-            price={this.state.price}
-            profile={this.state.profile}
-          />
+          <ConsumptionChart days={this.state.days} />
+        </Screen>
+        <Screen height="20vh">
+          <h3>How to read that graph</h3>
+          <p>
+            The difference between the lines is the difference in rate (SEK per kWh) paid by you,
+            and the rate paid by the average household with a zero-overhead tariff (ie. the utility
+            adds 0 SEK on top of the spot price). The bars represent your consumption on that
+            particular day, use it to draw conclusions as to why the price differs (or not). For
+            instance, a day when you weren't home, there might not be a big difference, your
+            consumption would be linear over the day. A day when you charged your car during the
+            night, the difference is higher, and a day when you forgot to turn off the oven between
+            5 and 7 PM, you might see the price paid go above the average.
+          </p>
         </Screen>
         <Screen height="20vh">
           <h3>Histogram</h3>
-          <p>The chart shows you when you consume energy during a day, on average.</p>
+          <p>
+            The chart shows you when you consume energy during a day, on average.
+            <br />
+            Overlaid (blue line) represents the average household.
+          </p>
         </Screen>
         <Screen>
           <HistogramChart consumption={this.state.consumption} profile={this.state.profile} />
+        </Screen>
+        <Screen height="20vh">
+          <h3>How to read that graph</h3>
+          <p>
+            Since energy is cheaper when no one else is wants it, using energy off-peak is a way to
+            buy cheap(er) energy. The blue line is the average household's consumption pattern, and
+            it's generally higher during the daytime, highest around the evening. The bars
+            represents your consumption pattern. Whenever your bars are below the line, you consume
+            less, and vise-versa. If you consume less than average during daytime, and more than
+            average during night time, you have a reasonable chance to save money by going with hour
+            based metering.
+          </p>
         </Screen>
       </div>
     )

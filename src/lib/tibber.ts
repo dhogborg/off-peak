@@ -61,6 +61,7 @@ export async function getConsumption(interval: Interval, last: number = 100) {
     return result.data.viewer.homes[0].consumption.nodes
   } catch (err) {
     console.log(err)
+    throw new Error('Unable to load consumption: ' + err)
   }
 
   return []
@@ -120,6 +121,7 @@ export async function getPrice(interval: Interval, last: number = 100) {
     return result.data.viewer.homes[0].currentSubscription.priceInfo.range.nodes
   } catch (err) {
     console.log(err)
+    throw new Error('Unable to load price data: ' + err)
   }
 
   return []

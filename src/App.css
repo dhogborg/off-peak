@@ -4,7 +4,7 @@ header.App-header {
   top: 0px;
   width: 100%;
   height: 40px;
-  background: rgba(0, 0, 0, 0.2);
+  background: #444;
 }
 
 header.App-header ul {

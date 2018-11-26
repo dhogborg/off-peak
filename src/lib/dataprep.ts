@@ -13,7 +13,8 @@ export interface Day {
 }
 
 /**
- * Aggregates days into a day-object which can be used for further calculations
+ * Aggregates and sorts the 3 datasets into into a day-object
+ * which can be used for further calculations.
  * @param consumption
  * @param price
  * @param profile

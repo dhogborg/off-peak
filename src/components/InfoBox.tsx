@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
 
-import * as tibber from '../lib/tibber'
-import * as svk from '../lib/svk'
 import * as dataprep from '../lib/dataprep'
 
 import './InfoBox.css'
 
 type Props = {
-  consumption: tibber.ConsumptionNode[]
-  price: tibber.PriceNode[]
-  profile: svk.ProfileNode[]
+  days: dataprep.Day[]
   currency: string
 }
 
@@ -24,39 +20,12 @@ export default class InfoBox extends Component<Props, State> {
   }
 
   render() {
-    // Bail early before we get our data
-    if (
-      this.props.consumption.length == 0 ||
-      this.props.price.length == 0 ||
-      this.props.profile.length == 0
-    ) {
-      return (
-        <div className="info-box loading">
-          <h2>Loading...</h2>
-        </div>
-      )
-    }
-
-    const days = dataprep.aggregateDays(
-      this.props.consumption,
-      this.props.price,
-      this.props.profile
-    )
-
-    if (!days || days.length == 0) {
-      return (
-        <div className="info-box loading">
-          <h2>Processing...</h2>
-        </div>
-      )
-    }
-
     // Total consumption
-    const consumption = days.map((day) => day.consumption).reduce((p, v) => p + v)
+    const consumption = this.props.days.map((day) => day.consumption).reduce((p, v) => p + v)
     // The cost when charged hourly rate
-    const totalCost = days.map((day) => day.totalCost).reduce((p, v) => p + v)
+    const totalCost = this.props.days.map((day) => day.totalCost).reduce((p, v) => p + v)
     // The cost as it would have been if charged by daily average
-    const potentialCost = days.map((day) => day.potentialCost).reduce((p, v) => p + v)
+    const potentialCost = this.props.days.map((day) => day.potentialCost).reduce((p, v) => p + v)
 
     const hourLabelCl = classnames('currency', {
       nice: totalCost < potentialCost,

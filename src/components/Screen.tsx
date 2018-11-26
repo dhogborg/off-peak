@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react'
+
 import './Screen.css'
 
-export const Screen = (props: { children: ReactNode; height?: string }) => {
+const Screen = (props: { children: ReactNode; height?: string }) => {
   const style = {
     minHeight: props.height,
   }

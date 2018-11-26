@@ -9,5 +9,6 @@
 }
 
 .screen p {
-  max-width: 50%;
+  max-width: 55%;
+  text-align: center;
 }
