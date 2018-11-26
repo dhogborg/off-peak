@@ -41,7 +41,7 @@ export default class Callback extends Component<Props, State> {
       <Unstated.Subscribe to={[AuthContainer]}>
         {(auth: AuthContainer) => {
           auth.update()
-          return <Redirect to="/consumption" />
+          return <Redirect to="/homes" />
         }}
       </Unstated.Subscribe>
     )

@@ -1,19 +1,26 @@
 import React, { Component } from 'react'
-import * as Unstated from 'unstated'
+import { match } from 'react-router'
 
 import * as tibber from '../lib/tibber'
 import * as svk from '../lib/svk'
 import * as dataprep from '../lib/dataprep'
 
+import Alert from '../components/Alert'
 import InfoBox from '../components/InfoBox'
 import ConsumptionChart from '../components/ConsmptionChart'
 import HistogramChart from '../components/Histogram'
 import Screen from '../components/Screen'
-import { AuthContainer } from '../App'
-import { Redirect } from 'react-router'
 
 // import { priceNodes as price, consumptionNodes as consumption } from '../mock/tibber'
 // import { profile as profileCsv } from '../mock/svk'
+
+type Params = {
+  id: string
+}
+
+type Props = {
+  match: match<Params>
+}
 
 type State = {
   days?: dataprep.Day[]
@@ -23,18 +30,25 @@ type State = {
   error?: Error
 }
 
-class App extends Component<object, State> {
+class Main extends Component<Props, State> {
   readonly state: State = {}
 
   async componentDidMount() {
     const period = 33 * 24
-
     try {
-      let consumption = await tibber.getConsumption(tibber.Interval.Hourly, period)
+      let consumption = await tibber.getConsumption(
+        this.props.match.params.id,
+        tibber.Interval.Hourly,
+        period
+      )
       // price is sometimes ahead by 24 hours, so we always add another period on it
-      let price = await tibber.getPrice(tibber.Interval.Hourly, period + 24)
+      let price = await tibber.getPrice(
+        this.props.match.params.id,
+        tibber.Interval.Hourly,
+        period + 24
+      )
 
-      let profileCsv = await svk.getProfile(period)
+      let profileCsv = await svk.getProfile(svk.Area.SN0, period)
       let profile = svk.parseCSV(profileCsv)
 
       const days = dataprep.aggregateDays(consumption, price, profile)
@@ -56,20 +70,11 @@ class App extends Component<object, State> {
 
   render() {
     if (this.state.error) {
-      return (
-        <Screen height="100vh">
-          <h1>Error</h1>
-          <p>{this.state.error.message}</p>
-        </Screen>
-      )
+      return <Alert type="oh-no">{this.state.error.message}</Alert>
     }
 
     if (!this.state.consumption || !this.state.profile || !this.state.days) {
-      return (
-        <Screen height="100vh">
-          <h1>Loading...</h1>
-        </Screen>
-      )
+      return <Alert>Loading...</Alert>
     }
 
     return (
@@ -134,4 +139,4 @@ class App extends Component<object, State> {
   }
 }
 
-export default App
+export default Main

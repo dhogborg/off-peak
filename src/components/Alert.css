@@ -1,0 +1,20 @@
+.alert {
+  background: #444;
+  box-shadow: 4px 4px 0px #ccc;
+  color: white;
+  display: block;
+  font-weight: 400;
+  margin: 75px auto;
+  width: 350px;
+  line-height: 50px;
+  padding: 10px;
+  text-align: center;
+}
+
+.alert.oh-no {
+  background: #d55c52;
+}
+
+.alert.yeah {
+  background: #6ad568;
+}

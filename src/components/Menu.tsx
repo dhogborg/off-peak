@@ -16,7 +16,7 @@ const Menu = () => {
               </li>
               {auth.state.isLoggedIn ? (
                 <li>
-                  <Link to="/consumption">Consumption</Link>
+                  <Link to="/homes">Homes</Link>
                 </li>
               ) : null}
               {auth.state.isLoggedIn ? (

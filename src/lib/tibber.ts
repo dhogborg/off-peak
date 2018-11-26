@@ -1,34 +1,58 @@
 import * as auth from './auth'
 
-interface GQLResponse<T = any> {
-  data: T
-}
-
-export interface ConsumptionNode {
-  from: string
-  to: string
-  totalCost: number | null
-  unitCost: number | null
-  unitPrice: number
-  unitPriceVAT: number
-  consumption: number | null
-  consumptionUnit: string
-}
-
-interface ConsumptionResult {
-  viewer: {
-    homes: {
-      consumption: {
-        nodes: ConsumptionNode[]
+export async function getHomes() {
+  const query = `{
+    viewer {
+      homes {
+        id
+        meteringPointData {
+          gridCompany
+        }
+        address {
+          address1
+          address2
+          address3
+          postalCode
+          city
+          country
+          latitude
+          longitude
+        }
       }
-    }[]
+    }
+  }`
+  const result = await doRequest<HomeResult>(query)
+  return result.viewer.homes
+}
+
+export interface Home {
+  id: string
+  meteringPointData: {
+    gridCompany: string
+  }
+  address: Address
+}
+
+export interface Address {
+  address1: string
+  address2: string
+  address3: string
+  postalCode: string
+  city: string
+  country: string
+}
+
+interface HomeResult {
+  viewer: {
+    homes: Home[]
   }
 }
-export async function getConsumption(interval: Interval, last: number = 100) {
+
+export async function getConsumption(homeId: string, interval: Interval, last: number = 100) {
   let query = `
     {
         viewer {
-          homes {
+          home(id: "${homeId}") {
             consumption(resolution: ${interval}, last: ${last}) {
               nodes {
                 from
@@ -45,51 +69,36 @@ export async function getConsumption(interval: Interval, last: number = 100) {
         }
       }`
 
-  const init: RequestInit = {
-    method: 'POST',
-    headers: {
-      Authorization: 'Bearer ' + auth.getToken(),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: query,
-    }),
-  }
-  try {
-    let response = await fetch('https://api.tibber.com/v1-beta/gql', init)
-    let result: GQLResponse<ConsumptionResult> = await response.json()
-    return result.data.viewer.homes[0].consumption.nodes
-  } catch (err) {
-    console.log(err)
-    throw new Error('Unable to load consumption: ' + err)
-  }
-
-  return []
+  const result = await doRequest<ConsumptionResult>(query)
+  return result.viewer.home.consumption.nodes
 }
 
-export interface PriceNode {
-  startsAt: string
-  total: number
+export interface ConsumptionNode {
+  from: string
+  to: string
+  totalCost: number | null
+  unitCost: number | null
+  unitPrice: number
+  unitPriceVAT: number
+  consumption: number | null
+  consumptionUnit: string
 }
-interface PriceResult {
+
+interface ConsumptionResult {
   viewer: {
-    homes: {
-      currentSubscription: {
-        priceInfo: {
-          range: {
-            nodes: PriceNode[]
-          }
-        }
+    home: {
+      consumption: {
+        nodes: ConsumptionNode[]
       }
-    }[]
+    }
   }
 }
 
-export async function getPrice(interval: Interval, last: number = 100) {
+export async function getPrice(homeId: string, interval: Interval, last: number = 100) {
   let query = `
   {
     viewer {
-      homes {
+      home(id: "${homeId}") {
         currentSubscription{
           priceInfo{
             range(resolution: ${interval}, last: ${last}){
@@ -104,7 +113,30 @@ export async function getPrice(interval: Interval, last: number = 100) {
     }
   }
   `
+  const result = await doRequest<PriceResult>(query)
+  return result.viewer.home.currentSubscription.priceInfo.range.nodes
+}
 
+export interface PriceNode {
+  startsAt: string
+  total: number
+}
+
+interface PriceResult {
+  viewer: {
+    home: {
+      currentSubscription: {
+        priceInfo: {
+          range: {
+            nodes: PriceNode[]
+          }
+        }
+      }
+    }
+  }
+}
+
+async function doRequest<T>(query: string) {
   const init: RequestInit = {
     method: 'POST',
     headers: {
@@ -117,18 +149,20 @@ export async function getPrice(interval: Interval, last: number = 100) {
   }
   try {
     let response = await fetch('https://api.tibber.com/v1-beta/gql', init)
-    let result: GQLResponse<PriceResult> = await response.json()
-    return result.data.viewer.homes[0].currentSubscription.priceInfo.range.nodes
+    let result: GQLResponse<T> = await response.json()
+    return result.data
   } catch (err) {
     console.log(err)
-    throw new Error('Unable to load price data: ' + err)
+    throw new Error('Query error: ' + err)
   }
-
-  return []
 }
 
 export enum Interval {
   Hourly = 'HOURLY',
   Daily = 'DAILY',
   Monthly = 'MONTLY',
+}
+
+interface GQLResponse<T = any> {
+  data: T
 }

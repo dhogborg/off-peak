@@ -1,0 +1,15 @@
+.homes {
+  margin: 75px auto;
+  text-align: center;
+}
+
+.homes .home {
+  display: inline-block;
+  width: 180px;
+  height: 180px;
+  background-color: #444;
+  color: white;
+  box-shadow: 5px 6px #d2d2d2;
+  line-height: 40px;
+  cursor: pointer;
+}

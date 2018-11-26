@@ -4,7 +4,7 @@ import moment from 'moment'
  * Currently, only SE0 region is supported
  * @param last the number of hours to retrive
  */
-export async function getProfile(last: number = 100) {
+export async function getProfile(area: Area, last: number = 100) {
   const from = moment()
     .subtract(last, 'hours')
     .format('YYYY-MM-DD')
@@ -53,4 +53,17 @@ export function parseCSV(csv: string) {
 export interface ProfileNode {
   time: string
   value: number
+}
+
+export enum Area {
+  // All of sweden combined
+  SN0 = 'SN0',
+  // North of the north
+  SN1 = 'SN1',
+  // Not so northerly north
+  SN2 = 'SN2',
+  // Stockholm and Gbg
+  SN3 = 'SN3',
+  // The south
+  SN4 = 'SN4',
 }

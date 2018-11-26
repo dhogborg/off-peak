@@ -6,6 +6,7 @@ import * as auth from './lib/auth'
 import Menu from './components/Menu'
 import About from './Routes/About'
 import Main from './Routes/Main'
+import Homes from './Routes/Homes'
 import Callback from './Routes/Callback'
 
 import './App.css'
@@ -22,7 +23,8 @@ export default class App extends Component {
           <div className="App">
             <Menu />
             <Route path="/" exact component={About} />
-            <Route path="/consumption" exact component={Main} />
+            <Route path="/homes" exact component={Homes} />
+            <Route path="/homes/:id/graphs" component={Main} />
             <Route path="/auth/callback" exact component={Callback} />
           </div>
         </Router>
