@@ -2,12 +2,15 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 
 import * as tibber from '../lib/tibber'
+import * as svk from '../lib/svk'
+import * as dataprep from '../lib/dataprep'
 
 import './InfoBox.css'
 
 type Props = {
   consumption: tibber.ConsumptionNode[]
   price: tibber.PriceNode[]
+  profile: svk.ProfileNode[]
   currency: string
 }
 
@@ -20,36 +23,13 @@ export default class InfoBox extends Component<Props, State> {
     super(props)
   }
 
-  // Total consumption
-  consumption(): number {
-    let consumption = 0
-    for (let i = this.props.consumption.length - 1; i >= 0; i--) {
-      consumption += this.props.consumption[i].consumption
-    }
-    return consumption
-  }
-
-  // The cost when charged hourly rate
-  totalCost(): number {
-    let cost = 0
-    for (let i = this.props.consumption.length - 1; i >= 0; i--) {
-      cost += this.props.consumption[i].unitCost
-    }
-    return cost
-  }
-
-  // The cost as it would have been if charged by daily average
-  potentialCost(): number {
-    let cost = 0
-    for (let i = this.props.consumption.length - 1; i >= 0; i--) {
-      cost += this.props.consumption[i].consumption * this.props.price[i].total
-    }
-    return cost
-  }
-
   render() {
     // Bail early before we get our data
-    if (!this.props.consumption || !this.props.price || this.props.price.length == 0) {
+    if (
+      this.props.consumption.length == 0 ||
+      this.props.price.length == 0 ||
+      this.props.profile.length == 0
+    ) {
       return (
         <div className="info-box loading">
           <h2>Loading...</h2>
@@ -57,25 +37,35 @@ export default class InfoBox extends Component<Props, State> {
       )
     }
 
-    if (this.props.consumption.length > this.props.price.length) {
-      return <div className="info-error">The price and consumption data can't be matched</div>
+    const days = dataprep.aggregateDays(
+      this.props.consumption,
+      this.props.price,
+      this.props.profile
+    )
+
+    if (!days || days.length == 0) {
+      return (
+        <div className="info-box loading">
+          <h2>Processing...</h2>
+        </div>
+      )
     }
 
     // Total consumption
-    const consumption = this.consumption()
+    const consumption = days.map((day) => day.consumption).reduce((p, v) => p + v)
     // The cost when charged hourly rate
-    const costHourRate = this.totalCost()
+    const totalCost = days.map((day) => day.totalCost).reduce((p, v) => p + v)
     // The cost as it would have been if charged by daily average
-    const costDayAvrgRate = this.potentialCost()
+    const potentialCost = days.map((day) => day.potentialCost).reduce((p, v) => p + v)
 
     const hourLabelCl = classnames('currency', {
-      nice: costHourRate < costDayAvrgRate,
-      ouch: costHourRate > costDayAvrgRate,
+      nice: totalCost < potentialCost,
+      ouch: totalCost > potentialCost,
     })
 
     const dayAvrgLabelCl = classnames('currency', {
-      nice: costHourRate > costDayAvrgRate,
-      ouch: costHourRate < costDayAvrgRate,
+      nice: totalCost > potentialCost,
+      ouch: totalCost < potentialCost,
     })
 
     return (
@@ -88,18 +78,18 @@ export default class InfoBox extends Component<Props, State> {
           <dt>Cost on hourly rate</dt>
           <dd>
             <label className={hourLabelCl}>
-              {costHourRate.toFixed(0)} {this.props.currency}
+              {totalCost.toFixed(0)} {this.props.currency}
             </label>
           </dd>
           <dt>Cost on average rate **</dt>
           <dd>
             <label className={dayAvrgLabelCl}>
-              {costDayAvrgRate.toFixed(0)} {this.props.currency}
+              {potentialCost.toFixed(0)} {this.props.currency}
             </label>
           </dd>
         </dl>
         <div className="how-did-i-do">
-          {costHourRate < costDayAvrgRate ? (
+          {totalCost < potentialCost ? (
             <span>It seems you save money by using off-peak electricity, nice.</span>
           ) : (
             <span>
@@ -112,7 +102,7 @@ export default class InfoBox extends Component<Props, State> {
         <span className="fine-print">
           * Last 30 days
           <br />
-          ** In theory, including VAT and taxes
+          ** Based on national average, will differ sligtly depending on location
         </span>
       </div>
     )
