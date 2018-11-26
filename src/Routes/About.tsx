@@ -21,8 +21,8 @@ const About = () => {
         tell you how much you did save.
       </p>
       <p>
-        This tool is possible thanks to the wonderful API (and people) at Tibber. Not affiliated in
-        any way.
+        This tool is possible thanks to the wonderful API (and people) at Tibber. <br />
+        Not affiliated in any way.
       </p>
       <Unstated.Subscribe to={[AuthContainer]}>
         {(auth: AuthContainer) => {

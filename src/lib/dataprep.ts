@@ -140,11 +140,11 @@ export function totalProfiledCost(
   const totalProfile = profile.reduce((prev, curr) => prev + curr)
   // Percentage of the total consumption consumed this paticular hour
   const p = profile.map((value) => value / totalProfile)
-  const paied = prices.reduce((prev, hourPrice, i) => {
+  const paid = prices.reduce((prev, hourPrice, i) => {
     return prev + totalConsumed * p[i] * hourPrice
   })
 
-  return paied
+  return paid
 }
 
 interface Hour {

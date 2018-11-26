@@ -27,7 +27,7 @@ class App extends Component<object, State> {
   readonly state: State = {}
 
   async componentDidMount() {
-    const period = 32 * 24
+    const period = 33 * 24
 
     try {
       let consumption = await tibber.getConsumption(tibber.Interval.Hourly, period)
@@ -78,11 +78,14 @@ class App extends Component<object, State> {
           <InfoBox days={this.state.days} currency="SEK" />
         </Screen>
         <Screen height="20vh">
-          <h3>Hourly rate vs. average rate</h3>
-          <p>If you meter by hour you pay the price that hour times your consumption.</p>
+          <h3>Hourly metering vs. Daily metering</h3>
           <p>
-            If you don't meter per hour, you still pay the hourly price, but your price is derived
-            from the consumption of all the households in your area.
+            If you meter by hour you pay the spot price that hour, times your consumption that hour.
+          </p>
+          <p>
+            If your consumption is metered by day, you still pay the hourly spot price, but your
+            consumption that hour is derived from the consumption of all the households in your
+            area.
           </p>
         </Screen>
         <Screen>
@@ -94,8 +97,10 @@ class App extends Component<object, State> {
             The difference between the lines is the difference in rate (SEK per kWh) paid by you,
             and the rate paid by the average household with a zero-overhead tariff (ie. the utility
             adds 0 SEK on top of the spot price). The bars represent your consumption on that
-            particular day, use it to draw conclusions as to why the price differs (or not). For
-            instance, a day when you weren't home, there might not be a big difference, your
+            particular day, use it to draw conclusions as to why the price differs (or not).
+          </p>
+          <p>
+            For instance, a day when you weren't home, there might not be a big difference, your
             consumption would be linear over the day. A day when you charged your car during the
             night, the difference is higher, and a day when you forgot to turn off the oven between
             5 and 7 PM, you might see the price paid go above the average.
@@ -104,7 +109,7 @@ class App extends Component<object, State> {
         <Screen height="20vh">
           <h3>Histogram</h3>
           <p>
-            The chart shows you when you consume energy during a day, on average.
+            The chart shows you <b>when</b> you consume energy during a day, on average.
             <br />
             Overlaid (blue line) represents the average household.
           </p>
