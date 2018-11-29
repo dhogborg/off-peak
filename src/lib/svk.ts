@@ -1,5 +1,8 @@
 import moment from 'moment'
 
+import SN_ZIP from '../data/sn_zip.json'
+import SN_CITY from '../data/sn_city.json'
+
 /**
  * Currently, only SE0 region is supported
  * @param last the number of hours to retrive
@@ -17,7 +20,7 @@ export async function getProfile(area: Area, last: number = 100) {
     `?groupByType=0` +
     `&periodFrom=${from}` +
     `&periodTo=${to}` +
-    `&networkAreaIdString=SN0`
+    `&networkAreaIdString=${area}`
 
   const init: RequestInit = {
     method: 'GET',
@@ -53,6 +56,18 @@ export function parseCSV(csv: string) {
 export interface ProfileNode {
   time: string
   value: number
+}
+
+export function searchSN(zipcode: string, city: string): Area | undefined {
+  if ((<any>SN_ZIP)[zipcode] && (<any>SN_ZIP)[zipcode] !== '') {
+    return (<any>SN_ZIP)[zipcode] as Area
+  }
+
+  if ((<any>SN_CITY)[city] && (<any>SN_CITY)[city] !== '') {
+    return (<any>SN_CITY)[city] as Area
+  }
+
+  return undefined
 }
 
 export enum Area {
