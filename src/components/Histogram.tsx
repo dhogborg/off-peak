@@ -20,6 +20,13 @@ type State = {
 export default class HistogramChart extends Component<Props, State> {
   readonly state: State = {
     options: {
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
+            return Number(tooltipItem.yLabel).toFixed(2) + '%'
+          },
+        },
+      },
       maintainAspectRatio: false,
       scales: {
         xAxes: [

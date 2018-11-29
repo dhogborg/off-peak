@@ -16,6 +16,17 @@ type State = {
 export default class ConsumptionChart extends Component<Props, State> {
   readonly state: State = {
     options: {
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
+            const n = Number(tooltipItem.yLabel).toFixed(2)
+            if (data.datasets === undefined || tooltipItem.datasetIndex === undefined) {
+              return n
+            }
+            return n + ' ' + data.datasets[tooltipItem.datasetIndex].yAxisID
+          },
+        },
+      },
       maintainAspectRatio: false,
       scales: {
         xAxes: [
@@ -33,7 +44,7 @@ export default class ConsumptionChart extends Component<Props, State> {
             },
           },
           {
-            id: 'Currency',
+            id: 'SEK',
             type: 'linear',
             position: 'right',
             ticks: {
@@ -61,15 +72,15 @@ export default class ConsumptionChart extends Component<Props, State> {
       borderWidth: 0,
     })
 
-    let unitPrice = newDataset('Paid [per kWh]', RGB(34, 89, 220), {
+    let unitPrice = newDataset('Paid [SEK/kWh]', RGB(34, 89, 220), {
       type: 'line',
-      yAxisID: 'Currency',
+      yAxisID: 'SEK',
       data: this.props.days.map((day) => day.actualKwhPrice),
     })
 
-    let profiled = newDataset('Spot price [per kWh]', RGB(206, 44, 30), {
+    let profiled = newDataset('Spot price [SEK/kWh]', RGB(206, 44, 30), {
       type: 'line',
-      yAxisID: 'Currency',
+      yAxisID: 'SEK',
       data: this.props.days.map((day) => day.potentialCost / day.consumption),
     })
 
