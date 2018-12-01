@@ -14,11 +14,8 @@ export async function getProfile(area: Area, last: number = 100) {
   const to = moment().format('YYYY-MM-DD')
 
   let url =
-    `http://localhost:3001/` + // CORS wrapper. yeah, development only.
-    `https://mimer.svk.se/` +
-    `ConsumptionProfile/DownloadText` +
-    `?groupByType=0` +
-    `&periodFrom=${from}` +
+    `/api/v1/svkprofile` +
+    `?periodFrom=${from}` +
     `&periodTo=${to}` +
     `&networkAreaIdString=${area}`
 

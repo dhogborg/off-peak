@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  offpeak:
+    image: dhogborg/off-peak
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - ./client.env

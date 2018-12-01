@@ -4,10 +4,11 @@ import * as Unstated from 'unstated'
 
 import * as auth from '../lib/auth'
 import { AuthContainer } from '../App'
+import Alert from '../components/Alert'
 
 type Props = { location: Location }
 type State = {
-  token?: string
+  hasToken?: boolean
   error?: string
 }
 
@@ -20,21 +21,20 @@ export default class Callback extends Component<Props, State> {
 
   async componentDidMount() {
     try {
-      let token = await auth.setToken(window.location.href)
-
-      this.setState({ token: token.accessToken })
+      await auth.setToken(window.location.href)
+      this.setState({ hasToken: true })
     } catch (err) {
-      this.setState({ token: undefined, error: err })
+      this.setState({ hasToken: false, error: err.message })
     }
   }
 
   render() {
     if (this.state.error) {
-      return <span>{this.state.error}</span>
+      return <Alert type="oh-no">{this.state.error}</Alert>
     }
 
-    if (!this.state.token) {
-      return <span>Loading...</span>
+    if (this.state.hasToken === undefined) {
+      return <Alert>Loading...</Alert>
     }
 
     return (

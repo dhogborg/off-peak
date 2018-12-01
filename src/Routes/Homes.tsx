@@ -46,7 +46,7 @@ export default class Homes extends Component<Props, State> {
     } catch (err) {
       this.setState({
         ...this.state,
-        error: err,
+        error: err.message,
       })
     }
   }

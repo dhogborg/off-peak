@@ -73,6 +73,10 @@ class Main extends Component<Props, State> {
       return <Alert>Loading...</Alert>
     }
 
+    if (this.state.days.length == 0) {
+      return <Alert type="oh-no">Data retreival error</Alert>
+    }
+
     return (
       <div className="main">
         <Screen>
