@@ -17,7 +17,7 @@ export async function getProfile(area: Area, last: number = 100) {
     `/api/v1/svkprofile` +
     `?periodFrom=${from}` +
     `&periodTo=${to}` +
-    `&networkAreaIdString=${area}`
+    `&networkAreaId=${area}`
 
   const init: RequestInit = {
     method: 'GET',

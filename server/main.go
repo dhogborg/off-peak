@@ -109,17 +109,15 @@ func svkProfile(c *gin.Context) {
 
 	if c.Query("periodFrom") == "" ||
 		c.Query("periodTo") == "" ||
-		c.Query("networkAreaIdString") == "" {
+		c.Query("networkAreaId") == "" {
 		c.JSON(http.StatusBadRequest, errResponse{"query error"})
 		return
 	}
 
-	url := `https://mimer.svk.se/` +
-		`ConsumptionProfile/DownloadText` +
-		`?groupByType=0` +
+	url := `https://mimer.svk.se/ReducedConsumptionProfile/DownloadText?groupByType=0` +
 		`&periodFrom=` + c.Query("periodFrom") +
 		`&periodTo=` + c.Query("periodTo") +
-		`&networkAreaIdString=` + c.Query("networkAreaIdString")
+		`&networkAreaId=` + c.Query("networkAreaId")
 
 	resp, err := http.Get(url)
 	if err != nil {

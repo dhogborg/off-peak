@@ -38,7 +38,7 @@ class Main extends Component<Props, State> {
     const homeId = this.props.match.params.id
     const area = this.props.match.params.sn as svk.Area
 
-    const period = 33 * 24
+    const period = 32 * 24
     try {
       let consumption = await tibber.getConsumption(homeId, tibber.Interval.Hourly, period)
       // price is sometimes ahead by 24 hours, so we always add another period on it

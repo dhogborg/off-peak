@@ -69,7 +69,7 @@ export default class InfoBox extends Component<Props, State> {
           )}
         </div>
         <span className="fine-print">
-          * Last 30 days
+          * Last {this.props.days.length} days
           <br />
           ** Based on national average, will differ sligtly depending on location
         </span>
