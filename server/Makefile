@@ -1,5 +1,5 @@
 
-include ../client.env
+include client.env
 
 .PHONY: build
 build:

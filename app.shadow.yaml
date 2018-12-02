@@ -1,0 +1,10 @@
+# This file defines our app for GCP App Engine
+# Copy the content of this file to app.yaml, then deploy
+
+runtime: custom
+env: flex
+
+env_variables:
+  OAUTH_CLIENT_ID: af..
+  OAUTH_CLIENT_SECRET: ba..
+  OAUTH_CALLBACK: http://...
