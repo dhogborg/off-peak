@@ -1,0 +1,11 @@
+.welcome {
+  background: #fff;
+  max-width: 55%;
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 5px;
+}
+
+.welcome p {
+  max-width: 100%;
+}

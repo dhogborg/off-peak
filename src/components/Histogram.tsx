@@ -32,6 +32,9 @@ export default class HistogramChart extends Component<Props, State> {
         xAxes: [
           {
             barPercentage: 1.15,
+            gridLines: {
+              display: false,
+            },
           },
         ],
         yAxes: [

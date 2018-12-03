@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import * as Unstated from 'unstated'
 import * as auth from './lib/auth'
 
+import Cover from './Routes/Cover'
 import Menu from './components/Menu'
 import About from './Routes/About'
-import Main from './Routes/Main'
+import Graphs from './Routes/Graphs'
 import Homes from './Routes/Homes'
 import Callback from './Routes/Callback'
 
@@ -22,9 +23,10 @@ export default class App extends Component {
         <Router>
           <div className="App">
             <Menu />
-            <Route path="/" exact component={About} />
+            <Route path="/" exact component={Cover} />
+            <Route path="/about" exact component={About} />
             <Route path="/homes" exact component={Homes} />
-            <Route path="/homes/:sn/:id/graphs" component={Main} />
+            <Route path="/homes/:sn/:id/graphs" component={Graphs} />
             <Route path="/auth/callback" exact component={Callback} />
           </div>
         </Router>

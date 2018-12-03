@@ -1,0 +1,30 @@
+.cover {
+  background-image: url('../assets/graph.png');
+
+  background-size: cover;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: -10;
+  margin: 0px 0;
+}
+
+.logo {
+  display: inline-block;
+  width: 250px;
+  height: 210px;
+  padding: 10px;
+  font-size: 70px;
+  background: #444;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+  box-shadow: 4px 4px 0px #ccc;
+}
+
+.onwards {
+  margin-top: 20px;
+}

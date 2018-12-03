@@ -12,11 +12,11 @@ const Menu = () => {
           <nav>
             <ul>
               <li>
-                <Link to="/">About</Link>
+                <Link to="/about">About</Link>
               </li>
               {auth.state.isLoggedIn ? (
                 <li>
-                  <Link to="/homes">Homes</Link>
+                  <Link to="/homes">Graphs</Link>
                 </li>
               ) : null}
               {auth.state.isLoggedIn ? (

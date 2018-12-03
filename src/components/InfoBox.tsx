@@ -44,13 +44,13 @@ export default class InfoBox extends Component<Props, State> {
           <dd>
             <label className="consumption">{consumption.toFixed(0)} kWh</label>
           </dd>
-          <dt>Cost on hourly rate</dt>
+          <dt>Cost on hourly spot price</dt>
           <dd>
             <label className={hourLabelCl}>
               {totalCost.toFixed(0)} {this.props.currency}
             </label>
           </dd>
-          <dt>Cost on average rate **</dt>
+          <dt>Cost on profiled average **</dt>
           <dd>
             <label className={dayAvrgLabelCl}>
               {potentialCost.toFixed(0)} {this.props.currency}
@@ -62,17 +62,18 @@ export default class InfoBox extends Component<Props, State> {
             <span>It seems you save money by using off-peak electricity, nice.</span>
           ) : (
             <span>
-              You paid more during the last 30 days than you would have if you paid the average cost
-              of a kWh during the day. This can be due to using consuming appliances during peak
-              hours, and not using a significant amount of energy during off-peak hours.
+              You paid more during the last {this.props.days.length} days than you would have if you
+              had a contract with daily spot-price. This can be due to using energy consuming
+              appliances during peak hours, and not using a significant amount of energy during
+              off-peak hours.
             </span>
           )}
         </div>
-        <span className="fine-print">
-          * Last {this.props.days.length} days
-          <br />
-          ** Based on national average, will differ sligtly depending on location
-        </span>
+        <div className="fine-print">* Last {this.props.days.length} days</div>
+        <div className="fine-print">
+          ** The hourly spot price weighted by the average household over the course of a day. Ie,
+          what you pay if you don't meter per hour.
+        </div>
       </div>
     )
   }

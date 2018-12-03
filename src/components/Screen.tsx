@@ -1,14 +1,21 @@
 import React, { ReactNode } from 'react'
+import classnames from 'classnames'
 
 import './Screen.css'
 
-const Screen = (props: { children: ReactNode; height?: string }) => {
+type PropTypes = {
+  className?: string
+  height?: string
+  children: ReactNode
+}
+const Screen = (props: PropTypes) => {
   const style = {
     minHeight: props.height,
   }
 
+  const cl = classnames('screen', props.className)
   return (
-    <div className="screen" style={style}>
+    <div className={cl} style={style}>
       {props.children}
     </div>
   )

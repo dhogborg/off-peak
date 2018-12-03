@@ -31,7 +31,7 @@ type State = {
   error?: Error
 }
 
-class Main extends Component<Props, State> {
+class Graphs extends Component<Props, State> {
   readonly state: State = {}
 
   async componentDidMount() {
@@ -129,9 +129,9 @@ class Main extends Component<Props, State> {
             buy cheap(er) energy. The blue line is the average household's consumption pattern, and
             it's generally higher during the daytime, highest around the evening. The bars
             represents your consumption pattern. Whenever your bars are below the line, you consume
-            less, and vise-versa. If you consume less than average during daytime, and more than
-            average during night time, you have a reasonable chance to save money by going with hour
-            based metering.
+            less than the avergae, and vise-versa. If you consume less than average during daytime,
+            and more than average during night time, you have a reasonable chance to save money by
+            going with hour based metering.
           </p>
         </Screen>
       </div>
@@ -139,4 +139,4 @@ class Main extends Component<Props, State> {
   }
 }
 
-export default Main
+export default Graphs

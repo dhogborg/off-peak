@@ -2,8 +2,8 @@
   width: 380px;
 }
 .info-box dl {
-  margin: 0px auto 35px auto;
-  width: 340px;
+  margin: 0px auto 25px auto;
+  width: 370px;
 }
 .info-box dt {
   line-height: 3rem;
@@ -15,9 +15,11 @@
 .fine-print {
   font-size: 0.7rem;
   font-style: italic;
+  line-height: 15px;
+  margin-top: 6px;
 }
 .how-did-i-do {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   line-height: 1.1rem;
 }
 label.currency,

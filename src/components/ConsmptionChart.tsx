@@ -32,6 +32,9 @@ export default class ConsumptionChart extends Component<Props, State> {
         xAxes: [
           {
             barPercentage: 1.15,
+            gridLines: {
+              display: false,
+            },
           },
         ],
         yAxes: [
@@ -41,6 +44,9 @@ export default class ConsumptionChart extends Component<Props, State> {
             position: 'left',
             ticks: {
               min: 0,
+            },
+            gridLines: {
+              display: false,
             },
           },
           {
@@ -62,7 +68,7 @@ export default class ConsumptionChart extends Component<Props, State> {
 
   chartData(): chartjs.ChartData | undefined {
     let labels: string[] = this.props.days.map((day) => {
-      return day.startTime.format('MM/DD')
+      return day.startTime.format('DD/MM')
     })
 
     let consumption = newDataset('Consumption [kWh]', RGB(0, 0, 0), {
