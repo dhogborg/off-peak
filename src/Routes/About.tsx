@@ -26,21 +26,29 @@ const About = () => {
           This tool is possible thanks to the wonderful API (and people) at Tibber. <br />
           Not affiliated in any way.
         </p>
+
         <Unstated.Subscribe to={[AuthContainer]}>
           {(auth: AuthContainer) => {
             if (auth.state.isLoggedIn) {
-              return <Link to={'/homes'}>Click here to proceed</Link>
+              return <Link to={'/homes'}>Click here to view your data</Link>
             } else {
               return (
-                <p>
-                  <a href="#" onClick={auth.login}>
-                    Click here to log in.
-                  </a>
-                </p>
+                <a href="#" onClick={auth.login}>
+                  Click here to log in with your Tibber account
+                </a>
               )
             }
           }}
         </Unstated.Subscribe>
+
+        <p>
+          The tool is open source and available at{' '}
+          <a href="https://github.com/dhogborg/off-peak" target="_blank">
+            github.com
+          </a>
+          . <br />
+          Pull requests welcome 🤗.
+        </p>
       </div>
     </Screen>
   )

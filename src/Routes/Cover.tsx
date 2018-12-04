@@ -18,21 +18,19 @@ const Cover = () => {
         <Unstated.Subscribe to={[AuthContainer]}>
           {(auth: AuthContainer) => {
             if (auth.state.isLoggedIn) {
-              return <Link to={'/homes'}>Click here to proceed</Link>
+              return <Link to={'/homes'}>Click here to proceed 👉🏻</Link>
             } else {
               return (
-                <p>
-                  <a href="#" onClick={auth.login}>
-                    Click here to log in.
-                  </a>
-                </p>
+                <a href="#" onClick={auth.login}>
+                  Click here to log in ⚡️
+                </a>
               )
             }
           }}
         </Unstated.Subscribe>
       </div>
       <div>
-        <Link to={'/about'}>About this app</Link>
+        <Link to={'/about'}>About this app 🤔</Link>
       </div>
     </Screen>
   )

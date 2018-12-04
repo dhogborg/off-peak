@@ -28,3 +28,18 @@
 .onwards {
   margin-top: 20px;
 }
+
+.cover a {
+  text-decoration: none;
+  color: black;
+  margin: 4px;
+  display: inline-block;
+  background: #444;
+  color: #ddd;
+  padding: 4px;
+  border-radius: 2px;
+}
+
+.cover a:hover {
+  color: #fff;
+}

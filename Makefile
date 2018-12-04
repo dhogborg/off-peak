@@ -20,5 +20,5 @@ clean:
 	rm -rf build
 
 .PHONY: deploy
-deploy:
+deploy: build
 	gcloud app deploy --project off-peak-224318 -v $(VERSION)

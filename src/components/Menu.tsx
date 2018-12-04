@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import * as Unstated from 'unstated'
 
 import { AuthContainer } from '../App'
+import './Menu.css'
 
 const Menu = () => {
   return (
@@ -12,23 +13,28 @@ const Menu = () => {
           <nav>
             <ul>
               <li>
-                <Link to="/about">About</Link>
+                <Link to="/about">
+                  <img className="icon" src="/favicon.ico" />
+                </Link>
+              </li>
+              <li>
+                <Link to="/about">About 🤔</Link>
               </li>
               {auth.state.isLoggedIn ? (
                 <li>
-                  <Link to="/homes">Graphs</Link>
+                  <Link to="/homes">Graphs 📈</Link>
                 </li>
               ) : null}
               {auth.state.isLoggedIn ? (
                 <li className="logout">
                   <a href="#" onClick={auth.logout}>
-                    Logout
+                    Logout 👋🏻
                   </a>
                 </li>
               ) : (
                 <li className="login">
                   <a href="#" onClick={auth.login}>
-                    Login
+                    Login ⚡️
                   </a>
                 </li>
               )}
