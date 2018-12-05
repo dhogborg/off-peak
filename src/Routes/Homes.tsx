@@ -28,7 +28,6 @@ export default class Homes extends Component<Props, State> {
     try {
       const homes = await tibber.getHomes()
       const redict = homes.length == 1 ? homes[0] : undefined
-
       const svkAreas: { [key: string]: svk.Area } = {}
       for (let home of homes) {
         const sn = svk.searchSN(home.address.postalCode, home.address.city)

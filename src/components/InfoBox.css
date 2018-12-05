@@ -1,17 +1,26 @@
 .info-box {
-  width: 380px;
+  margin: 0px 10px;
+}
+.info-box dd {
+  margin-inline-start: 0px;
+  font-size: 1.8rem;
 }
 .info-box dl {
   margin: 0px auto 25px auto;
-  width: 370px;
 }
 .info-box dt {
   line-height: 3rem;
 }
-.info-box dd {
-  float: right;
-  margin-top: -2.5rem;
+
+@media screen and (min-width: 600px) {
+  .info-box {
+    width: 380px;
+  }
+  .info-box dl {
+    width: 370px;
+  }
 }
+
 .fine-print {
   font-size: 0.7rem;
   font-style: italic;
@@ -27,9 +36,11 @@ label.consumption {
   background: #444;
   box-shadow: 4px 4px 0px #ccc;
   color: white;
-  display: inline-block;
+  display: block;
   font-weight: 700;
-  min-width: 100px;
+  width: 95%;
+  margin: 0px auto;
+  line-height: 50px;
   padding: 4px;
   text-align: center;
 }

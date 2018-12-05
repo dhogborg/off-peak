@@ -13,28 +13,32 @@ const Menu = () => {
           <nav>
             <ul>
               <li>
-                <Link to="/about">
+                <Link to="/">
                   <img className="icon" src="/favicon.ico" />
                 </Link>
               </li>
               <li>
-                <Link to="/about">About 🤔</Link>
+                <Link to="/about">
+                  <span className="title">About</span> 🤔
+                </Link>
               </li>
               {auth.state.isLoggedIn ? (
                 <li>
-                  <Link to="/homes">Graphs 📈</Link>
+                  <Link to="/homes">
+                    <span className="title">Graphs</span> 📈
+                  </Link>
                 </li>
               ) : null}
               {auth.state.isLoggedIn ? (
                 <li className="logout">
                   <a href="#" onClick={auth.logout}>
-                    Logout 👋🏻
+                    <span className="title">Logout</span> 👋🏻
                   </a>
                 </li>
               ) : (
                 <li className="login">
                   <a href="#" onClick={auth.login}>
-                    Login ⚡️
+                    <span className="title">Login</span> ⚡️
                   </a>
                 </li>
               )}

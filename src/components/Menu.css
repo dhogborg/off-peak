@@ -3,3 +3,9 @@
   height: 30px;
   margin: 7px 0px;
 }
+
+@media screen and (max-width: 600px) {
+  nav ul span.title {
+    display: none;
+  }
+}

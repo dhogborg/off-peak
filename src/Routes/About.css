@@ -1,11 +1,15 @@
 .welcome {
   background: #fff;
-  max-width: 55%;
-  border: 1px solid #ddd;
-  text-align: center;
   padding: 5px;
 }
 
 .welcome p {
   max-width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .welcome {
+    border: 1px solid #ddd;
+    max-width: 55%;
+  }
 }
