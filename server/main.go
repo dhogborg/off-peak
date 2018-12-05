@@ -19,14 +19,18 @@ var staticFlag = flag.String("static", "", "Location of static files to serve")
 
 func main() {
 	logrus.Info("--- Starting server ---")
-	if os.Getenv(oAuthClientID) == "" ||
-		os.Getenv(oAuthClientSecret) == "" ||
-		os.Getenv(oAuthCallback) == "" {
+	if os.Getenv(envOAuthClientID) == "" ||
+		os.Getenv(envOAuthClientSecret) == "" ||
+		os.Getenv(envOAuthCallback) == "" {
 		logrus.Error("missing OAuth credentials")
 		os.Exit(0)
 	}
 
 	router := gin.Default()
+
+	if os.Getenv(envGinMode) == "release" {
+		router.Use(HSTSMiddleware())
+	}
 
 	router.GET("/env", env)
 	router.GET("/api/v1/authorize", authorize)
@@ -52,8 +56,8 @@ func main() {
 
 func env(c *gin.Context) {
 	vars := map[string]string{
-		"OAUTH_CLIENT_ID": os.Getenv(oAuthClientID),
-		"OAUTH_CALLBACK":  os.Getenv(oAuthCallback),
+		"OAUTH_CLIENT_ID": os.Getenv(envOAuthClientID),
+		"OAUTH_CALLBACK":  os.Getenv(envOAuthCallback),
 	}
 	pairs := []string{}
 	for k, v := range vars {
@@ -69,18 +73,17 @@ type authResponse struct {
 }
 
 var oAuthClient = oauth2.Config{
-	ClientID:     os.Getenv(oAuthClientID),
-	ClientSecret: os.Getenv(oAuthClientSecret),
+	ClientID:     os.Getenv(envOAuthClientID),
+	ClientSecret: os.Getenv(envOAuthClientSecret),
 	Endpoint: oauth2.Endpoint{
 		AuthURL:  "https://thewall.tibber.com/connect/authorize",
 		TokenURL: "https://thewall.tibber.com/connect/token",
 	},
-	RedirectURL: os.Getenv(oAuthCallback),
+	RedirectURL: os.Getenv(envOAuthCallback),
 	Scopes:      []string{"tibber_graph", "price", "consumption"},
 }
 
 func authorize(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
 	if c.Query("code") == "" {
 		c.JSON(http.StatusBadRequest, errResponse{"query error"})
 		return
@@ -105,8 +108,6 @@ func authorize(c *gin.Context) {
 }
 
 func svkProfile(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
-
 	if c.Query("periodFrom") == "" ||
 		c.Query("periodTo") == "" ||
 		c.Query("networkAreaId") == "" {
@@ -130,13 +131,21 @@ func svkProfile(c *gin.Context) {
 	c.String(200, string(bytes))
 }
 
+// HSTSMiddleware adds a HSTS header on every request
+func HSTSMiddleware() gin.HandlerFunc {
+	return gin.HandlerFunc(func(c *gin.Context) {
+		c.Header("Strict-Transport-Security", "max-age=3600; includeSubDomains")
+	})
+}
+
 type errResponse struct {
 	Error string `json:"error"`
 }
 
 // OS Env keys
 const (
-	oAuthClientID     = "OAUTH_CLIENT_ID"
-	oAuthClientSecret = "OAUTH_CLIENT_SECRET"
-	oAuthCallback     = "OAUTH_CALLBACK"
+	envOAuthClientID     = "OAUTH_CLIENT_ID"
+	envOAuthClientSecret = "OAUTH_CLIENT_SECRET"
+	envOAuthCallback     = "OAUTH_CALLBACK"
+	envGinMode           = "GIN_MODE"
 )

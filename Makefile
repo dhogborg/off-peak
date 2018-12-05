@@ -1,4 +1,4 @@
-VERSION = $(shell git describe --always --dirty)
+VERSION = $(shell git describe --always)
 
 .PHONY: run
 run: 
@@ -21,4 +21,4 @@ clean:
 
 .PHONY: deploy
 deploy: build
-	gcloud app deploy --project off-peak-224318 -v $(VERSION)
+	gcloud app deploy --project off-peak-224318 -v g-$(VERSION)
