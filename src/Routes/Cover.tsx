@@ -18,7 +18,7 @@ const Cover = () => {
         <Unstated.Subscribe to={[AuthContainer]}>
           {(auth: AuthContainer) => {
             if (auth.state.isLoggedIn) {
-              return <Link to={'/homes'}>Click here to proceed 👉🏻</Link>
+              return <Link to={'/homes'}>Click to proceed 👉🏻</Link>
             } else {
               return (
                 <a href="#" onClick={auth.login}>

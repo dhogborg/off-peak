@@ -13,7 +13,9 @@ type State = {
 }
 
 export default class Callback extends Component<Props, State> {
-  state: State = {}
+  state: State = {
+    hasToken: false,
+  }
 
   constructor(readonly props: Props) {
     super(props)
@@ -33,7 +35,7 @@ export default class Callback extends Component<Props, State> {
       return <Alert type="oh-no">{this.state.error}</Alert>
     }
 
-    if (this.state.hasToken === undefined) {
+    if (!this.state.hasToken) {
       return <Alert>Loading...</Alert>
     }
 

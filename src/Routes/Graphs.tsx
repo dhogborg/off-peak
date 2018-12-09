@@ -36,7 +36,7 @@ class Graphs extends Component<Props, State> {
 
   async componentDidMount() {
     const homeId = this.props.match.params.id
-    const area = this.props.match.params.sn as svk.Area
+    const networkArea = this.props.match.params.sn as svk.Area
 
     const period = 32 * 24
     try {
@@ -44,7 +44,7 @@ class Graphs extends Component<Props, State> {
       // price is sometimes ahead by 24 hours, so we always add another period on it
       let price = await tibber.getPrice(homeId, tibber.Interval.Hourly, period + 24)
 
-      let profileCsv = await svk.getProfile(area, period)
+      let profileCsv = await svk.getProfile(networkArea, period)
       let profile = svk.parseCSV(profileCsv)
 
       const days = dataprep.aggregateDays(consumption, price, profile)
