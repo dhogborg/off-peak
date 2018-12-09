@@ -134,7 +134,18 @@ func svkProfile(c *gin.Context) {
 // HSTSMiddleware adds a HSTS header on every request
 func HSTSMiddleware() gin.HandlerFunc {
 	return gin.HandlerFunc(func(c *gin.Context) {
-		c.Header("Strict-Transport-Security", "max-age=3600; includeSubDomains")
+		// Redirect plain HTTP requets to HTTPS. Behind the loadbalancer
+		// we look at the X-header insted of request proto.
+		proto := c.Request.Header.Get("X-Forwarded-Proto")
+		if strings.ToLower(proto) == "http" {
+			target := "https://" + c.Request.Host + c.Request.URL.Path
+			c.Redirect(http.StatusTemporaryRedirect, target)
+			c.Abort()
+			return
+		}
+
+		// HSTS requsets are ignored by browser when served over HTTP
+		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 	})
 }
 
