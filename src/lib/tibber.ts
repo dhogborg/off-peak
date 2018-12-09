@@ -15,8 +15,6 @@ export async function getHomes() {
           postalCode
           city
           country
-          latitude
-          longitude
         }
       }
     }
@@ -57,12 +55,8 @@ export async function getConsumption(homeId: string, interval: Interval, last: n
               nodes {
                 from
                 to
-                totalCost
                 unitCost
-                unitPrice
-                unitPriceVAT
                 consumption
-                consumptionUnit
               }
             }
           }
@@ -76,12 +70,8 @@ export async function getConsumption(homeId: string, interval: Interval, last: n
 export interface ConsumptionNode {
   from: string
   to: string
-  totalCost: number | null
   unitCost: number | null
-  unitPrice: number
-  unitPriceVAT: number
   consumption: number | null
-  consumptionUnit: string
 }
 
 interface ConsumptionResult {
@@ -149,6 +139,10 @@ async function doRequest<T>(query: string) {
   }
   try {
     let response = await fetch('https://api.tibber.com/v1-beta/gql', init)
+    if (response.status != 200) {
+      throw new Error(`${response.status} ${response.statusText}`)
+    }
+
     let result: GQLResponse<T> = await response.json()
     return result.data
   } catch (err) {

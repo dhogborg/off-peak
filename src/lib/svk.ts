@@ -13,17 +13,18 @@ export async function getProfile(area: Area, last: number = 100) {
     .format('YYYY-MM-DD')
   const to = moment().format('YYYY-MM-DD')
 
-  let url =
-    `/api/v1/svkprofile` +
-    `?periodFrom=${from}` +
-    `&periodTo=${to}` +
-    `&networkAreaId=${area}`
+  let args = [`periodFrom=${from}`, `periodTo=${to}`, `networkAreaId=${area}`]
+  let url = `/api/v1/svkprofile?` + args.join('&')
 
   const init: RequestInit = {
     method: 'GET',
   }
   try {
     let response = await fetch(url, init)
+    if (response.status != 200) {
+      throw new Error(`${response.status} ${response.statusText}`)
+    }
+
     let result = await response.text()
     return result
   } catch (err) {
