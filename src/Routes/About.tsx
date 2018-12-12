@@ -24,7 +24,7 @@ const About = () => {
           it can tell you how much you did save during the last 30 days.
         </p>
         <p>
-          This tool is possible thanks to the wonderful API (and people) at{' '}
+          This tool is possible thanks to the wonderful API (and people) at
           <a href="https://sverige.tibber.com" target="_blank">
             Tibber.
           </a>

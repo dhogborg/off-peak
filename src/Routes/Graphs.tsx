@@ -89,8 +89,8 @@ class Graphs extends Component<Props, State> {
           </p>
           <p>
             If your consumption is metered by day, you still pay the hourly spot price, but your
-            consumption that hour is derived from the consumption of all the households in your
-            area.
+            consumption that hour is derived from the consumption of all the households in your area
+            (see blue line in histogram further down below).
           </p>
         </Screen>
         <Screen>
@@ -99,10 +99,14 @@ class Graphs extends Component<Props, State> {
         <Screen height="20vh">
           <h3>How to read that graph</h3>
           <p>
-            The difference between the lines is the difference in rate (SEK per kWh) paid by you,
-            and the rate paid by the average household with a zero-overhead tariff (ie. the utility
-            adds 0 SEK on top of the spot price). The bars represent your consumption on that
-            particular day, use it to draw conclusions as to why the price differs (or not).
+            THe lines show the difference in rate (SEK per kWh) paid by you, and the rate paid by an
+            average household with a zero overhead tariff (ie. the utility adds 0 SEK on top of the
+            spot price). The bars represent your consumption on a particular day, use it to draw
+            conclusions as to why the price differs (or not).
+          </p>
+          <p>
+            The size of the blue area is the difference between highest and lowest spot price. The
+            bigger the difference, the more you stand to gain from using off-peak energy.
           </p>
           <p>
             For instance, a day when you weren't home, there might not be a big difference, your
@@ -125,13 +129,12 @@ class Graphs extends Component<Props, State> {
         <Screen height="20vh">
           <h3>How to read that graph</h3>
           <p>
-            Since energy is cheaper when no one else is wants it, using energy off-peak is a way to
-            buy cheap(er) energy. The blue line is the average household's consumption pattern, and
-            it's generally higher during the daytime, highest around the evening. The bars
-            represents your consumption pattern. Whenever your bars are below the line, you consume
-            less than the avergae, and vise-versa. If you consume less than average during daytime,
-            and more than average during night time, you have a reasonable chance to save money by
-            going with hour based metering.
+            The bars represents your consumption pattern. The blue line is the average household's
+            consumption pattern, and it's generally higher during the daytime, highest around the
+            evening. Whenever your bars are below the line, you consume less than the average, and
+            vise-versa. If you consume less than average during daytime, and more than average
+            during night time, you have a reasonable chance to save money by going with hour based
+            metering.
           </p>
         </Screen>
       </div>
