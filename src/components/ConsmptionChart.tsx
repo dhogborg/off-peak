@@ -23,7 +23,8 @@ export default class ConsumptionChart extends Component<Props, State> {
             if (data.datasets === undefined || tooltipItem.datasetIndex === undefined) {
               return n
             }
-            return n + ' ' + data.datasets[tooltipItem.datasetIndex].yAxisID
+            const dataset = data.datasets[tooltipItem.datasetIndex]
+            return dataset.label + ': ' + n + ' ' + dataset.yAxisID
           },
         },
       },
@@ -50,7 +51,7 @@ export default class ConsumptionChart extends Component<Props, State> {
             },
           },
           {
-            id: 'SEK',
+            id: 'SEK/kWh',
             type: 'linear',
             position: 'right',
             ticks: {
@@ -71,28 +72,47 @@ export default class ConsumptionChart extends Component<Props, State> {
       return day.startTime.format('DD/MM')
     })
 
-    let consumption = newDataset('Consumption [kWh]', RGB(0, 0, 0), {
+    let consumption = newDataset('Consumption', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'kWh',
       data: this.props.days.map((day) => day.consumption),
       borderWidth: 0,
     })
 
-    let unitPrice = newDataset('Paid [SEK/kWh]', RGB(34, 89, 220), {
+    let unitPrice = newDataset('You paid', RGB(47, 184, 202), {
       type: 'line',
-      yAxisID: 'SEK',
+      yAxisID: 'SEK/kWh',
+      backgroundColor: 'rgba(0,0,0,0)',
+      borderWidth: 2,
       data: this.props.days.map((day) => day.actualKwhPrice),
     })
 
-    let profiled = newDataset('Spot price [SEK/kWh]', RGB(206, 44, 30), {
+    let profiled = newDataset('Spot price', RGB(34, 89, 220), {
       type: 'line',
-      yAxisID: 'SEK',
+      yAxisID: 'SEK/kWh',
+      backgroundColor: 'rgba(0,0,0,0)',
+      borderWidth: 2,
       data: this.props.days.map((day) => day.potentialCost / day.consumption),
+    })
+
+    let peakPrice = newDataset('Peak', RGB(129, 169, 253), {
+      type: 'line',
+      yAxisID: 'SEK/kWh',
+      borderColor: 'rgba(0,0,0,0)',
+      data: this.props.days.map((day) => day.pricePeak),
+    })
+
+    let troughPrice = newDataset('Low', RGB(106, 213, 104), {
+      type: 'line',
+      yAxisID: 'SEK/kWh',
+      backgroundColor: 'rgba(255,255,255,1)',
+      borderColor: 'rgba(0,0,0,0)',
+      data: this.props.days.map((day) => day.priceTrough),
     })
 
     return {
       labels,
-      datasets: [consumption, unitPrice, profiled],
+      datasets: [consumption, troughPrice, unitPrice, profiled, peakPrice],
     }
   }
 

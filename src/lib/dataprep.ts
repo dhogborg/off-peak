@@ -4,12 +4,21 @@ import * as tibber from './tibber'
 import * as svk from './svk'
 
 export interface Day {
+  // The time fram for this day object
   startTime: moment.Moment
   endTime: moment.Moment
+  // Total consumption in kWh
   consumption: number
+  // SEK / kWH paid
   actualKwhPrice: number
-  potentialCost: number
+  // Paid by customer
   totalCost: number
+  // Would be cost if not metered by hour
+  potentialCost: number
+  // The highest price of the day
+  pricePeak: number
+  // The lowest price of the day
+  priceTrough: number
 }
 
 /**
@@ -108,6 +117,13 @@ export function aggregateDays(
     // Potential cost based on the profile of our utility area (SN1,2,3 or national average: SN0).
     const potentialCost = totalProfiledCost(consumption, price, profile)
 
+    let pricePeak = 0
+    let priceTrough = 999
+    for (let p of price) {
+      if (p > pricePeak) pricePeak = p
+      if (p < priceTrough) priceTrough = p
+    }
+
     days.push({
       startTime: hours[0].time,
       endTime: hours[hours.length - 1].time,
@@ -115,6 +131,8 @@ export function aggregateDays(
       actualKwhPrice: totalCost / totalConsumption,
       potentialCost,
       totalCost,
+      pricePeak,
+      priceTrough,
     })
   }
 

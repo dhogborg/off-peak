@@ -16,6 +16,7 @@ export const newDataset = (
     borderWidth: 1,
     hoverBackgroundColor: color(0.4),
     hoverBorderColor: color(1),
+    spanGaps: true,
 
     pointHoverRadius: 5,
     pointHitRadius: 10,
