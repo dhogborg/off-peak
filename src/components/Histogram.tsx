@@ -79,7 +79,7 @@ export default class HistogramChart extends Component<Props, State> {
     })
   }
 
-  profileLine(profile: svk.ProfileNode[]): chartjs.ChartDataSets {
+  profileLine(profile: svk.ProfileNode[]): number[] {
     let absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
       absolutes[i] = 0
@@ -94,12 +94,7 @@ export default class HistogramChart extends Component<Props, State> {
       total += c.value
     }
 
-    let percentages = absolutes.map((v) => (v / total) * 100)
-    return newDataset('Average household [%]', RGB(34, 89, 220), {
-      type: 'line',
-      yAxisID: 'Percentage',
-      data: percentages,
-    })
+    return absolutes.map((v) => (v / total) * 100)
   }
 
   chartData(): chartjs.ChartData | undefined {
@@ -115,7 +110,33 @@ export default class HistogramChart extends Component<Props, State> {
       datasets.push(this.consumptionHistogram(this.props.consumption))
     }
     if (this.props.profile.length > 0) {
-      datasets.push(this.profileLine(this.props.profile))
+      const days: { [key: string]: svk.ProfileNode[] } = {}
+      for (let p of this.props.profile) {
+        const d = moment(p.time).format('E')
+        if (!days[d]) days[d] = []
+        days[d].push(p)
+      }
+      const weekends = days['1'].concat(days['2'])
+      const workdays = days['3'].concat(days['4'], days['5'], days['6'], days['7'])
+
+      datasets.push(
+        newDataset('Average (weekends)', RGB(34, 89, 220), {
+          type: 'line',
+          yAxisID: 'Percentage',
+          backgroundColor: 'rgba(0,0,0,0)',
+          data: this.profileLine(weekends),
+        })
+      )
+
+      datasets.push(
+        newDataset('Average (workdays)', RGB(34, 89, 220), {
+          type: 'line',
+          yAxisID: 'Percentage',
+          backgroundColor: 'rgba(0,0,0,0)',
+          borderWidth: 2,
+          data: this.profileLine(workdays),
+        })
+      )
     }
 
     return {
