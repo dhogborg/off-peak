@@ -1,0 +1,21 @@
+.graph-view {
+  padding-top: 40px;
+}
+
+.graph-view .header-info {
+  top: 40px;
+  right: 0px;
+  background-color: #8c8c8c;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  padding: 3px 0px;
+  position: fixed;
+  width: 125px;
+  border-radius: 0px 0px 0px 4px;
+}
+
+.header-info a {
+  color: white;
+  text-decoration: none;
+}

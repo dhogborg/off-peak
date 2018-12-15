@@ -1,0 +1,14 @@
+.snap-view {
+  padding-top: 40px;
+}
+
+.snap-view .header-info {
+  top: 40px;
+  background-color: #188ddc;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  padding: 3px 0px;
+  position: fixed;
+  width: 100%;
+}
