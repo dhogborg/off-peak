@@ -10,9 +10,6 @@ import Alert from '../components/Alert'
 import Graphs from '../components/Graphs'
 import { storeSnapshot } from '../lib/store'
 
-// import { priceNodes as price, consumptionNodes as consumption } from '../mock/tibber'
-// import { profile as profileCsv } from '../mock/svk'
-
 import './GraphLoader.css'
 
 type Params = {
