@@ -31,15 +31,18 @@
 
 .cover a {
   text-decoration: none;
-  color: black;
   margin: 4px;
   display: inline-block;
   background: #444;
   color: #ddd;
   padding: 4px;
   border-radius: 2px;
+  min-width: 200px;
+  text-align: center;
+  box-shadow: 4px 4px 0px #ccc;
 }
 
 .cover a:hover {
   color: #fff;
+  box-shadow: 5px 5px 0px #ccc;
 }
