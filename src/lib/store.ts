@@ -4,7 +4,9 @@ import * as svk from './svk'
 export interface Snapshot {
   home: {
     id: string
-    area: string
+    area?: string // DEPRECATED, use priceAreaCode
+    priceAreaCode: string
+    gridAreaCode: string
   }
   consumptionNodes: tibber.ConsumptionNode[]
   priceNodes: tibber.PriceNode[]

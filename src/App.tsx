@@ -27,7 +27,7 @@ export default class App extends Component {
             <Route path="/" exact component={Cover} />
             <Route path="/about" exact component={About} />
             <Route path="/homes" exact component={Homes} />
-            <Route path="/homes/:sn/:id/graphs" component={GraphLoader} />
+            <Route path="/homes/:priceAreaCode/:gridAreaCode/:id/graphs" component={GraphLoader} />
             <Route path="/snaps/:id/graphs" component={SnapLoader} />
             <Route path="/auth/callback" exact component={Callback} />
           </div>

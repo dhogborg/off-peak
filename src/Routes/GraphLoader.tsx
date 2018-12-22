@@ -14,7 +14,8 @@ import './GraphLoader.css'
 
 type Params = {
   id: string
-  sn: string
+  priceAreaCode: string
+  gridAreaCode: string
 }
 
 type Props = {
@@ -24,7 +25,8 @@ type Props = {
 type State = {
   home: {
     id: string
-    area: string
+    priceAreaCode: string
+    gridAreaCode: string
   }
   days?: dataprep.Day[]
   consumption?: tibber.ConsumptionNode[]
@@ -39,13 +41,14 @@ class GraphLoader extends Component<Props, State> {
   readonly state: State = {
     home: {
       id: '',
-      area: '',
+      priceAreaCode: '',
+      gridAreaCode: '',
     },
   }
 
   async componentDidMount() {
     const homeId = this.props.match.params.id
-    const networkArea = this.props.match.params.sn as svk.Area
+    const { gridAreaCode, priceAreaCode } = this.props.match.params
 
     const period = 32 * 24
     try {
@@ -53,7 +56,7 @@ class GraphLoader extends Component<Props, State> {
       // price is sometimes ahead by 24 hours, so we always add another period on it
       let price = await tibber.getPrice(homeId, tibber.Interval.Hourly, period + 24)
 
-      let profileCsv = await svk.getProfile(networkArea, period)
+      let profileCsv = await svk.getProfile(gridAreaCode, period)
       let profile = svk.parseCSV(profileCsv)
 
       const days = dataprep.aggregateDays(consumption, price, profile)
@@ -62,7 +65,8 @@ class GraphLoader extends Component<Props, State> {
         ...this.state,
         home: {
           id: homeId,
-          area: networkArea,
+          priceAreaCode,
+          gridAreaCode,
         },
         days,
         consumption,

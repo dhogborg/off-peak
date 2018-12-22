@@ -50,16 +50,23 @@ class SnapLoader extends Component<Props, State> {
   }
 
   homeArea(): string {
-    switch (this.state.snapshot!.home.area) {
+    const { area, priceAreaCode } = this.state.snapshot!.home
+    const a = !priceAreaCode ? area : priceAreaCode
+    switch (a) {
       case 'SN0':
+      case 'SE0':
         return 'Hela sverige'
       case 'SN1':
+      case 'SE1':
         return 'Norra norrland'
       case 'SN2':
+      case 'SE2':
         return 'Södra norrland'
       case 'SN3':
+      case 'SE3':
         return 'Mellansverige'
       case 'SN4':
+      case 'SE4':
         return 'Södra sverige'
       default:
         return 'Okänd landsände'

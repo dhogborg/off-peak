@@ -1,19 +1,20 @@
 import moment from 'moment'
 
-import SN_ZIP from '../data/sn_zip.json'
-import SN_CITY from '../data/sn_city.json'
-
 /**
  * Currently, only SE0 region is supported
  * @param last the number of hours to retrive
  */
 export async function getProfile(area: Area, last: number = 100) {
+  if (!area || area === '') {
+    throw new Error('missing area code')
+  }
+
   const from = moment()
     .subtract(last, 'hours')
     .format('YYYY-MM-DD')
   const to = moment().format('YYYY-MM-DD')
 
-  let args = [`periodFrom=${from}`, `periodTo=${to}`, `networkAreaId=${area}`]
+  let args = [`periodFrom=${from}`, `periodTo=${to}`, `networkAreaIdString=${area}`]
   let url = `/api/v1/svkprofile?` + args.join('&')
 
   const init: RequestInit = {
@@ -56,27 +57,4 @@ export interface ProfileNode {
   value: number
 }
 
-export function searchSN(zipcode: string, city: string): Area | undefined {
-  if ((<any>SN_ZIP)[zipcode] && (<any>SN_ZIP)[zipcode] !== '') {
-    return (<any>SN_ZIP)[zipcode] as Area
-  }
-
-  if ((<any>SN_CITY)[city] && (<any>SN_CITY)[city] !== '') {
-    return (<any>SN_CITY)[city] as Area
-  }
-
-  return undefined
-}
-
-export enum Area {
-  // All of sweden combined
-  SN0 = 'SN0',
-  // North of the north
-  SN1 = 'SN1',
-  // Not so northerly north
-  SN2 = 'SN2',
-  // Stockholm and Gbg
-  SN3 = 'SN3',
-  // The south
-  SN4 = 'SN4',
-}
+export type Area = string

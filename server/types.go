@@ -38,8 +38,11 @@ func (s *Snapshot) IsValid() bool {
 // TibberHome contains an id referece that allows a
 // user to find thier previous snapshots
 type TibberHome struct {
-	ID   string `json:"id"   firestore:"id"`
-	Area string `json:"area" firestore:"area"`
+	ID            string `json:"id"             firestore:"id"`
+	PriceAreaCode string `json:"priceAreaCode"  firestore:"priceAreaCode"`
+	GridAreaCode  string `json:"gridAreaCode"   firestore:"gridAreaCode"`
+	// Deprecated, use PriceAreaCode
+	Area string `json:"area,omitempty" firestore:"area,omitempty"`
 }
 
 // IsValid returns false if the data in the structure is invalid
@@ -47,8 +50,12 @@ func (t *TibberHome) IsValid() bool {
 	if len(t.ID) != 36 {
 		return false
 	}
-	switch t.Area {
-	case "SN0", "SN1", "SN2", "SN3", "SN4":
+	if len(t.GridAreaCode) != 3 {
+		return false
+	}
+
+	switch t.PriceAreaCode {
+	case "SE0", "SE1", "SE2", "SE3", "SE4":
 	default:
 		return false
 	}

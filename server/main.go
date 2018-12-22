@@ -140,15 +140,15 @@ func authorize(c *gin.Context) {
 func svkProfile(c *gin.Context) {
 	if c.Query("periodFrom") == "" ||
 		c.Query("periodTo") == "" ||
-		c.Query("networkAreaId") == "" {
+		c.Query("networkAreaIdString") == "" {
 		c.JSON(http.StatusBadRequest, errResponse{"query error"})
 		return
 	}
-
-	url := `https://mimer.svk.se/ReducedConsumptionProfile/DownloadText?groupByType=0` +
+	
+	url := `https://mimer.svk.se/ConsumptionProfile/DownloadText?groupByType=0` +
 		`&periodFrom=` + c.Query("periodFrom") +
 		`&periodTo=` + c.Query("periodTo") +
-		`&networkAreaId=` + c.Query("networkAreaId")
+		`&networkAreaIdString=` + c.Query("networkAreaIdString")
 
 	resp, err := http.Get(url)
 	if err != nil {

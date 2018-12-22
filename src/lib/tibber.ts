@@ -7,6 +7,8 @@ export async function getHomes() {
         id
         meteringPointData {
           gridCompany
+          gridAreaCode
+          priceAreaCode
         }
         address {
           address1
@@ -27,6 +29,8 @@ export interface Home {
   id: string
   meteringPointData: {
     gridCompany: string
+    gridAreaCode: string
+    priceAreaCode: string
   }
   address: Address
 }
