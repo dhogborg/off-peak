@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
 
-import * as dataprep from '../lib/dataprep'
+import * as dataprep from '../../lib/dataprep'
 
 import './InfoBox.css'
 

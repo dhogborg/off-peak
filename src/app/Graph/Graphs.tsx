@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 
-import * as tibber from '../lib/tibber'
-import * as svk from '../lib/svk'
-import * as dataprep from '../lib/dataprep'
+import * as tibber from '../../lib/tibber'
+import * as svk from '../../lib/svk'
+import * as dataprep from '../../lib/dataprep'
 
 import Screen from '../components/Screen'
-import InfoBox from '../components/InfoBox'
-import ConsumptionChart from '../components/ConsmptionChart'
-import HistogramChart from '../components/Histogram'
+import InfoBox from './InfoBox'
+import ConsumptionChart from './Charts/Consmption'
+import HistogramChart from './Charts/Histogram'
 
 type Props = {
   days: dataprep.Day[]

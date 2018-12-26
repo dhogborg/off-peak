@@ -2,8 +2,8 @@ import { Bar } from 'react-chartjs-2'
 import * as chartjs from 'chart.js'
 import React, { Component } from 'react'
 
-import { newDataset, RGB } from '../lib/chart'
-import * as dataprep from '../lib/dataprep'
+import { newDataset, RGB } from '../../../lib/chart'
+import * as dataprep from '../../../lib/dataprep'
 
 type Props = {
   days: dataprep.Day[]

@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react'
 import { Redirect } from 'react-router'
 
 import * as tibber from '../lib/tibber'
-import Alert from '../components/Alert'
+import Alert from '../app/components/Alert'
 
 import './Homes.css'
 

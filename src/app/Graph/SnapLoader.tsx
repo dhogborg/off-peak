@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { match } from 'react-router'
 import moment from 'moment'
 
-import * as dataprep from '../lib/dataprep'
-import * as store from '../lib/store'
+import * as dataprep from '../../lib/dataprep'
+import * as store from '../../lib/store'
 
 import Alert from '../components/Alert'
-import Graphs from '../components/Graphs'
+import Graphs from './Graphs'
 
 import './SnapLoader.css'
 

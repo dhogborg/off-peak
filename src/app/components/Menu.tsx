@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import * as Unstated from 'unstated'
 
-import { AuthContainer } from '../App'
+import { AuthContainer } from '../../App'
 import './Menu.css'
 
 const Menu = () => {

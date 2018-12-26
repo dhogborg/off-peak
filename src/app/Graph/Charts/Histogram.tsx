@@ -4,9 +4,9 @@ import moment from 'moment'
 import { Bar } from 'react-chartjs-2'
 import * as chartjs from 'chart.js'
 
-import { newDataset, RGB } from '../lib/chart'
-import * as svk from '../lib/svk'
-import * as tibber from '../lib/tibber'
+import { newDataset, RGB } from '../../../lib/chart'
+import * as svk from '../../../lib/svk'
+import * as tibber from '../../../lib/tibber'
 
 type Props = {
   consumption: tibber.ConsumptionNode[]

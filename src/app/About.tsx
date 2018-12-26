@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Unstated from 'unstated'
 
-import Screen from '../components/Screen'
+import Screen from '../app/components/Screen'
 import { AuthContainer } from '../App'
 import { Link } from 'react-router-dom'
 

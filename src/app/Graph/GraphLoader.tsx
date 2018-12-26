@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { match } from 'react-router'
 import { Redirect } from 'react-router'
 
-import * as tibber from '../lib/tibber'
-import * as svk from '../lib/svk'
-import * as dataprep from '../lib/dataprep'
+import * as tibber from '../../lib/tibber'
+import * as svk from '../../lib/svk'
+import * as dataprep from '../../lib/dataprep'
 
 import Alert from '../components/Alert'
-import Graphs from '../components/Graphs'
-import { storeSnapshot } from '../lib/store'
+import Graphs from './Graphs'
+import { storeSnapshot } from '../../lib/store'
 
 import './GraphLoader.css'
 

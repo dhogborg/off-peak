@@ -4,7 +4,7 @@ import * as Unstated from 'unstated'
 
 import * as auth from '../lib/auth'
 import { AuthContainer } from '../App'
-import Alert from '../components/Alert'
+import Alert from '../app/components/Alert'
 
 type Props = { location: Location }
 type State = {
