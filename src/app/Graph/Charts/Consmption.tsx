@@ -57,6 +57,9 @@ export default class ConsumptionChart extends Component<Props, State> {
             ticks: {
               min: 0,
             },
+            gridLines: {
+              display: false,
+            },
           },
         ],
       },

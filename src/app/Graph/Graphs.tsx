@@ -5,7 +5,7 @@ import * as svk from '../../lib/svk'
 import * as dataprep from '../../lib/dataprep'
 
 import Screen from '../components/Screen'
-import InfoBox from './InfoBox'
+import DataBoxes from './DataBoxes'
 import ConsumptionChart from './Charts/Consmption'
 import HistogramChart from './Charts/Histogram'
 
@@ -19,7 +19,7 @@ const Graphs = (props: Props) => {
   return (
     <div className="main">
       <Screen>
-        <InfoBox days={props.days} currency="SEK" />
+        <DataBoxes days={props.days} />
       </Screen>
       <Screen height="20vh">
         <h3>Hourly metering vs. Daily metering</h3>

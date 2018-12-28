@@ -45,6 +45,9 @@ export default class HistogramChart extends Component<Props, State> {
             ticks: {
               min: 0,
             },
+            gridLines: {
+              display: false,
+            },
           },
         ],
       },

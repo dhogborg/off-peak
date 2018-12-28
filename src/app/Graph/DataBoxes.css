@@ -12,12 +12,17 @@
   line-height: 3rem;
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 700px) {
   .info-box {
-    width: 380px;
+    width: 700px;
   }
   .info-box dl {
-    width: 370px;
+    width: 100%;
+  }
+
+  .info-box .col {
+    width: 50%;
+    float: left;
   }
 }
 
@@ -43,6 +48,12 @@ label.consumption {
   line-height: 50px;
   padding: 4px;
   text-align: center;
+}
+label.hour-cost {
+  background: #2fb8ca;
+}
+label.spot-cost {
+  background: #2358dd;
 }
 label.nice {
   background: #6ad568;
