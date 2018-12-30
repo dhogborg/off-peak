@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"io/ioutil"
 	"net/http"
@@ -61,10 +62,11 @@ func main() {
 	}
 
 	router.GET("/env", env)
-	router.GET("/api/v1/authorize", authorize)
-	router.GET("/api/v1/svkprofile", svkProfile)
-	router.GET("/api/v1/snapshots/:id", getSnapshot)
-	router.POST("/api/v1/snapshots/", postSnapshot)
+	router.GET("/api/v1/authorize", HandledHTTPResponse(authorize))
+	router.GET("/api/v1/svkprofile", HandledHTTPResponse(svkProfile))
+	router.GET("/api/v1/snapshots/", HandledHTTPResponse(getSnapshots))
+	router.GET("/api/v1/snapshots/:id", HandledHTTPResponse(getSnapshot))
+	router.POST("/api/v1/snapshots/", HandledHTTPResponse(postSnapshot))
 
 	// Liveliness probe
 	router.GET("/healthz", func(c *gin.Context) {
@@ -113,38 +115,34 @@ var oAuthClient = oauth2.Config{
 	Scopes:      []string{"tibber_graph", "price", "consumption"},
 }
 
-func authorize(c *gin.Context) {
+func authorize(c *gin.Context) (int, interface{}, error) {
 	if c.Query("code") == "" {
-		c.JSON(http.StatusBadRequest, errResponse{"query error"})
-		return
+		return http.StatusBadRequest, nil, errors.New("query error")
 	}
 
 	oauthToken, err := oAuthClient.Exchange(oauth2.NoContext, c.Query("code"))
 	if err != nil {
 		logrus.Warn("auth error: ", err.Error())
-		c.JSON(http.StatusUnauthorized, errResponse{"unauthorized"})
-		return
+		return http.StatusUnauthorized, nil, errors.New("unauthorized")
 	}
 
 	if !oauthToken.Valid() {
-		c.JSON(http.StatusUnauthorized, errResponse{"unauthorized"})
-		return
+		return http.StatusUnauthorized, nil, errors.New("unauthorized")
 	}
 
-	c.JSON(200, authResponse{
+	return http.StatusOK, authResponse{
 		Token:   oauthToken.AccessToken,
 		Expires: oauthToken.Expiry,
-	})
+	}, nil
 }
 
-func svkProfile(c *gin.Context) {
+func svkProfile(c *gin.Context) (int, interface{}, error) {
 	if c.Query("periodFrom") == "" ||
 		c.Query("periodTo") == "" ||
 		c.Query("networkAreaIdString") == "" {
-		c.JSON(http.StatusBadRequest, errResponse{"query error"})
-		return
+		return http.StatusBadRequest, nil, errors.New("query error")
 	}
-	
+
 	url := `https://mimer.svk.se/ConsumptionProfile/DownloadText?groupByType=0` +
 		`&periodFrom=` + c.Query("periodFrom") +
 		`&periodTo=` + c.Query("periodTo") +
@@ -152,54 +150,67 @@ func svkProfile(c *gin.Context) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errResponse{"response error: " + err.Error()})
+		return http.StatusInternalServerError, nil, errors.New("response error: " + err.Error())
 	}
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errResponse{"body error: " + err.Error()})
+		return http.StatusInternalServerError, nil, errors.New("body error: " + err.Error())
 	}
+
 	c.String(200, string(bytes))
+	return 0, nil, nil
 }
 
-func getSnapshot(c *gin.Context) {
+func getSnapshot(c *gin.Context) (int, interface{}, error) {
 	if c.Param("id") == "" {
-		c.JSON(http.StatusBadRequest, errResponse{"query error"})
-		return
+		return http.StatusBadRequest, nil, errors.New("query error")
 	}
 
 	ctx := context.Background()
 	client, err := firebaseApp.Firestore(ctx)
 	if err != nil {
 		logrus.WithError(err).Warn("error initializing firebase client")
-		c.JSON(http.StatusInternalServerError, errResponse{"database client error"})
-		return
+		return http.StatusInternalServerError, nil, errors.New("database client error")
 	}
 
 	defer client.Close()
 
 	ref := client.Collection("snaps").Doc(c.Param("id"))
-	
+
 	doc, err := ref.Get(ctx)
 	if err != nil && strings.Contains(err.Error(), "not found") {
-		c.JSON(http.StatusNotFound, errResponse{"not found"})
-		return
+		return http.StatusNotFound, nil, errors.New("not found")
 	}
 	if err != nil {
 		logrus.WithError(err).Warn("firebase error")
-		c.JSON(http.StatusInternalServerError, errResponse{"db request error"})
-		return
+		return http.StatusInternalServerError, nil, errors.New("db request error")
 	}
 
-	c.JSON(http.StatusOK, doc.Data())
+	var snap *Snapshot
+	err = doc.DataTo(&snap)
+	if err != nil || snap == nil {
+		logrus.WithError(err).Warn("snapshot type error")
+		return http.StatusInternalServerError, nil, errors.New("data format error")
+	}
+
+	// Don't leak data about a home on the snapshot, this is used by
+	// visitors to a shared snapshot.
+	snap.Home = snap.Home.Anonymized()
+
+	return http.StatusOK, snap, nil
 }
 
-func postSnapshot(c *gin.Context) {
+func getSnapshots(c *gin.Context) (int, interface{}, error) {
+	return 0, nil, nil
+}
+
+func postSnapshot(c *gin.Context) (int, interface{}, error) {
 	ctx := context.Background()
 	client, err := firebaseApp.Firestore(ctx)
 	if err != nil {
 		logrus.WithError(err).Warn("error initializing firebase client")
-		c.JSON(http.StatusInternalServerError, errResponse{"database client error"})
-		return
+		return http.StatusInternalServerError, nil, errors.New("database client error")
+
 	}
 
 	defer client.Close()
@@ -207,45 +218,26 @@ func postSnapshot(c *gin.Context) {
 	body, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		logrus.WithError(err).Warn("data reading error")
-		c.JSON(http.StatusBadRequest, errResponse{"data error"})
-		return
+		return http.StatusBadRequest, nil, errors.New("data error")
+
 	}
 
 	var data *Snapshot
 	err = json.Unmarshal(body, &data)
 	if err != nil || data == nil || !data.IsValid() {
 		logrus.WithError(err).Warn("data marshalling error")
-		c.JSON(http.StatusBadRequest, errResponse{"data error"})
-		return
+		return http.StatusBadRequest, nil, errors.New("data error")
+
 	}
 
 	data.CreatedAt = time.Now()
 	doc, _, err := client.Collection("snaps").Add(ctx, data)
 	if err != nil {
 		logrus.WithError(err).Warn("data marshalling error")
-		c.JSON(http.StatusInternalServerError, errResponse{"database client error"})
-		return
+		return http.StatusInternalServerError, nil, errors.New("database client error")
 	}
 
-	c.JSON(http.StatusOK, map[string]string{
+	return http.StatusOK, map[string]string{
 		"id": doc.ID,
-	})
-}
-
-// HSTSMiddleware adds a HSTS header on every request
-func HSTSMiddleware() gin.HandlerFunc {
-	return gin.HandlerFunc(func(c *gin.Context) {
-		// Redirect plain HTTP requets to HTTPS. Behind the loadbalancer
-		// we look at the X-header insted of request proto.
-		proto := c.Request.Header.Get("X-Forwarded-Proto")
-		if strings.ToLower(proto) == "http" {
-			target := "https://" + c.Request.Host + c.Request.URL.Path
-			c.Redirect(http.StatusTemporaryRedirect, target)
-			c.Abort()
-			return
-		}
-
-		// HSTS requsets are ignored by browser when served over HTTP
-		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-	})
+	}, nil
 }

@@ -45,6 +45,13 @@ type TibberHome struct {
 	Area string `json:"area,omitempty" firestore:"area,omitempty"`
 }
 
+// Anonymized returns an anonymized copy of the home
+func (t *TibberHome) Anonymized() *TibberHome {
+	h := *t
+	h.ID = ""
+	return &h
+}
+
 // IsValid returns false if the data in the structure is invalid
 func (t *TibberHome) IsValid() bool {
 	if len(t.ID) != 36 {
@@ -94,10 +101,4 @@ type TibberPrice struct {
 // IsValid returns false if the data in the structure is invalid
 func (t *TibberPrice) IsValid() bool {
 	return !t.StartsAt.IsZero()
-}
-
-// HTTP Interface
-
-type errResponse struct {
-	Error string `json:"error" firestore:"error"`
 }
