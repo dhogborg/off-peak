@@ -4,11 +4,12 @@ import "time"
 
 // Snapshot represents a dataset for a home
 type Snapshot struct {
-	Home             *TibberHome          `json:"home"             firestore:"home"`
-	ConsumptionNodes []*TibberConsumption `json:"consumptionNodes" firestore:"consumptionNodes"`
-	PriceNodes       []*TibberPrice       `json:"priceNodes"       firestore:"priceNodes"`
-	ProfileNodes     []*SVKProfile        `json:"profileNodes"     firestore:"profileNodes"`
-	CreatedAt        time.Time            `json:"created_at"       firestore:"created_at"`
+	ID               string               `json:"id,omitempty"`
+	Home             *TibberHome          `json:"home"                       firestore:"home"`
+	ConsumptionNodes []*TibberConsumption `json:"consumptionNodes,omitempty" firestore:"consumptionNodes"`
+	PriceNodes       []*TibberPrice       `json:"priceNodes,omitempty"       firestore:"priceNodes"`
+	ProfileNodes     []*SVKProfile        `json:"profileNodes,omitempty"     firestore:"profileNodes"`
+	CreatedAt        time.Time            `json:"created_at"                 firestore:"created_at"`
 }
 
 // IsValid returns false if the data in the structure is invalid
@@ -35,10 +36,16 @@ func (s *Snapshot) IsValid() bool {
 	return true
 }
 
+// SnapshotPage contains a page of snapshots
+type SnapshotPage struct {
+	Snapshots []*Snapshot `json:"snapshots"`
+	Count     int         `json:"count"`
+}
+
 // TibberHome contains an id referece that allows a
 // user to find thier previous snapshots
 type TibberHome struct {
-	ID            string `json:"id"             firestore:"id"`
+	ID            string `json:"id,omitempty"   firestore:"id"`
 	PriceAreaCode string `json:"priceAreaCode"  firestore:"priceAreaCode"`
 	GridAreaCode  string `json:"gridAreaCode"   firestore:"gridAreaCode"`
 	// Deprecated, use PriceAreaCode
@@ -82,23 +89,23 @@ func (s *SVKProfile) IsValid() bool {
 }
 
 type TibberConsumption struct {
-	From        time.Time `json:"from"        firestore:"from"`
-	To          time.Time `json:"to"          firestore:"to"`
-	UnitCost    float64   `json:"unitCost"    firestore:"unitCost"`
-	Consumption float64   `json:"consumption" firestore:"consumption"`
+	From        string  `json:"from"        firestore:"from"`
+	To          string  `json:"to"          firestore:"to"`
+	UnitCost    float64 `json:"unitCost"    firestore:"unitCost"`
+	Consumption float64 `json:"consumption" firestore:"consumption"`
 }
 
 // IsValid returns false if the data in the structure is invalid
 func (t *TibberConsumption) IsValid() bool {
-	return !t.From.IsZero() || !t.To.IsZero()
+	return t.From != "" && t.To != ""
 }
 
 type TibberPrice struct {
-	StartsAt time.Time `json:"startsAt" firestore:"startsAt"`
-	Total    float64   `json:"total"    firestore:"total"`
+	StartsAt string  `json:"startsAt" firestore:"startsAt"`
+	Total    float64 `json:"total"    firestore:"total"`
 }
 
 // IsValid returns false if the data in the structure is invalid
 func (t *TibberPrice) IsValid() bool {
-	return !t.StartsAt.IsZero()
+	return t.StartsAt != ""
 }

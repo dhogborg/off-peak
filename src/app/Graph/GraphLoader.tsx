@@ -34,6 +34,7 @@ type State = {
   profile?: svk.ProfileNode[]
   error?: Error
 
+  storing: boolean
   redict?: string
 }
 
@@ -44,6 +45,7 @@ class GraphLoader extends Component<Props, State> {
       priceAreaCode: '',
       gridAreaCode: '',
     },
+    storing: false,
   }
 
   async componentDidMount() {
@@ -82,6 +84,10 @@ class GraphLoader extends Component<Props, State> {
   }
 
   async store() {
+    this.setState({
+      ...this.state,
+      storing: true,
+    })
     try {
       const id = await storeSnapshot({
         home: this.state.home!,
@@ -92,11 +98,13 @@ class GraphLoader extends Component<Props, State> {
 
       this.setState({
         ...this.state,
+        storing: false,
         redict: id,
       })
     } catch (err) {
       this.setState({
         ...this.state,
+        storing: false,
         error: err,
       })
     }
@@ -109,6 +117,10 @@ class GraphLoader extends Component<Props, State> {
 
     if (this.state.error) {
       return <Alert type="oh-no">{this.state.error.message}</Alert>
+    }
+
+    if (this.state.storing) {
+      return <Alert>Storing snapshot...</Alert>
     }
 
     if (!this.state.consumption || !this.state.profile || !this.state.days) {

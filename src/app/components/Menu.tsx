@@ -30,6 +30,13 @@ const Menu = () => {
                 </li>
               ) : null}
               {auth.state.isLoggedIn ? (
+                <li>
+                  <Link to="/list">
+                    <span className="title">Snapshots</span> 📸
+                  </Link>
+                </li>
+              ) : null}
+              {auth.state.isLoggedIn ? (
                 <li className="logout">
                   <a href="#" onClick={auth.logout}>
                     <span className="title">Logout</span> 👋🏻

@@ -163,7 +163,7 @@ func svkProfile(c *gin.Context) (int, interface{}, error) {
 
 func getSnapshot(c *gin.Context) (int, interface{}, error) {
 	if c.Param("id") == "" {
-		return http.StatusBadRequest, nil, errors.New("query error")
+		return http.StatusBadRequest, nil, errors.New("param error")
 	}
 
 	ctx := context.Background()
@@ -201,7 +201,45 @@ func getSnapshot(c *gin.Context) (int, interface{}, error) {
 }
 
 func getSnapshots(c *gin.Context) (int, interface{}, error) {
-	return 0, nil, nil
+	if len(c.Query("home_id")) != 36 {
+		return http.StatusBadRequest, nil, errors.New("query error")
+	}
+
+	ctx := context.Background()
+	client, err := firebaseApp.Firestore(ctx)
+	if err != nil {
+		logrus.WithError(err).Warn("error initializing firebase client")
+		return http.StatusInternalServerError, nil, errors.New("database client error")
+	}
+
+	defer client.Close()
+
+	query := client.Collection("snaps").Where("home.id", "==", c.Query("home_id"))
+	query = query.Select("created_at", "home.id", "home.gridAreaCode", "home.priceAreaCode")
+
+	iter := query.Documents(ctx)
+	docs, err := iter.GetAll()
+	if err != nil {
+		logrus.WithError(err).Warn("firebase error")
+		return http.StatusInternalServerError, nil, errors.New("db request error")
+	}
+
+	var snaps []*Snapshot
+	for _, d := range docs {
+		var snap *Snapshot
+		err = d.DataTo(&snap)
+		if err != nil || snap == nil {
+			logrus.WithError(err).Warn("snapshot type error")
+			return http.StatusInternalServerError, nil, errors.New("data format error")
+		}
+		snap.ID = d.Ref.ID
+		snaps = append(snaps, snap)
+	}
+
+	return 0, &SnapshotPage{
+		Snapshots: snaps,
+		Count:     len(docs),
+	}, nil
 }
 
 func postSnapshot(c *gin.Context) (int, interface{}, error) {
@@ -233,7 +271,7 @@ func postSnapshot(c *gin.Context) (int, interface{}, error) {
 	data.CreatedAt = time.Now()
 	doc, _, err := client.Collection("snaps").Add(ctx, data)
 	if err != nil {
-		logrus.WithError(err).Warn("data marshalling error")
+		logrus.WithError(err).Warn("data storing error")
 		return http.StatusInternalServerError, nil, errors.New("database client error")
 	}
 
