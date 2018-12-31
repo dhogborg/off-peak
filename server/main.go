@@ -28,6 +28,7 @@ const (
 	envGinMode           = "GIN_MODE"
 	envFirebaseProject   = "FIREBASE_PROJECT"
 	envFirebaseKey       = "FIREBASE_KEY"
+	envFirebaseDB        = "FIREBASE_DB"
 )
 
 var staticFlag = flag.String("static", "", "Location of static files to serve")
@@ -55,8 +56,11 @@ func main() {
 		os.Exit(0)
 	}
 
-	router := gin.Default()
+	if os.Getenv(envFirebaseDB) == "" {
+		logrus.Error("missing firebase DB name")
+	}
 
+	router := gin.Default()
 	if os.Getenv(envGinMode) == "release" {
 		router.Use(HSTSMiddleware())
 	}
@@ -175,7 +179,7 @@ func getSnapshot(c *gin.Context) (int, interface{}, error) {
 
 	defer client.Close()
 
-	ref := client.Collection("snaps").Doc(c.Param("id"))
+	ref := client.Collection(os.Getenv(envFirebaseDB)).Doc(c.Param("id"))
 
 	doc, err := ref.Get(ctx)
 	if err != nil && strings.Contains(err.Error(), "not found") {
@@ -214,7 +218,7 @@ func getSnapshots(c *gin.Context) (int, interface{}, error) {
 
 	defer client.Close()
 
-	query := client.Collection("snaps").Where("home.id", "==", c.Query("home_id"))
+	query := client.Collection(os.Getenv(envFirebaseDB)).Where("home.id", "==", c.Query("home_id"))
 	query = query.Select("created_at", "home.id", "home.gridAreaCode", "home.priceAreaCode")
 
 	iter := query.Documents(ctx)
@@ -269,7 +273,7 @@ func postSnapshot(c *gin.Context) (int, interface{}, error) {
 	}
 
 	data.CreatedAt = time.Now()
-	doc, _, err := client.Collection("snaps").Add(ctx, data)
+	doc, _, err := client.Collection(os.Getenv(envFirebaseDB)).Add(ctx, data)
 	if err != nil {
 		logrus.WithError(err).Warn("data storing error")
 		return http.StatusInternalServerError, nil, errors.New("database client error")

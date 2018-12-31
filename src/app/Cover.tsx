@@ -30,7 +30,7 @@ const Cover = () => {
         </Unstated.Subscribe>
       </div>
       <div>
-        <a href="/snaps/6dg63JIuy7jlLJJThJ8R/graphs">View a demo 📈</a>
+        <a href="/snaps/bnfIurZT63EmLydrD9RF/graphs">View a demo 📈</a>
       </div>
       <div>
         <Link to={'/about'}>About this app 🤔</Link>
