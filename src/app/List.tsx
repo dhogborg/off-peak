@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import moment from 'moment'
 
 import * as tibber from '../lib/tibber'
@@ -29,6 +30,10 @@ export default class List extends Component<Props, State> {
 
       for (let h of homes) {
         const page = await store.getSnapshots(h.id)
+        if (!page || !page.snapshots) {
+          continue
+        }
+
         for (let s of page.snapshots) {
           snapshots.push({
             snapshot: s,
@@ -82,6 +87,7 @@ export default class List extends Component<Props, State> {
             <th>Home</th>
             <th>Grid Area</th>
             <th>&nbsp;</th>
+            <th>&nbsp;</th>
           </thead>
           <tbody>
             {this.state.snapshots.map((s) => {
@@ -98,6 +104,12 @@ export default class List extends Component<Props, State> {
                     <Link className="btn-view" to={`/snaps/${s.snapshot.id}/graphs`}>
                       View
                     </Link>
+                  </td>
+                  <td>
+                    <CopyToClipboard
+                      text={`${window.location.origin}/snaps/${s.snapshot.id}/graphs`}>
+                      <span className="copy-link">🔗</span>
+                    </CopyToClipboard>
                   </td>
                 </tr>
               )

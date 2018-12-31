@@ -12,6 +12,7 @@
 
 .list .btn-view {
   text-decoration: none;
+  cursor: pointer;
   background: #444;
   padding: 2px 9px;
   border-radius: 2px;
@@ -20,6 +21,10 @@
 
 .list .btn-view:hover {
   background-color: #676767;
+}
+
+.list .copy-link {
+  cursor: pointer;
 }
 
 @media (min-width: 600px) {

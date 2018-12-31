@@ -135,7 +135,7 @@ class GraphLoader extends Component<Props, State> {
       <div className="graph-view">
         <div className="header-info">
           <a href="javascript:;" onClick={this.store.bind(this)}>
-            Share this view
+            Store snapshot
           </a>
         </div>
         <Graphs
