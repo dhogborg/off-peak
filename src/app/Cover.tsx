@@ -18,11 +18,11 @@ const Cover = () => {
         <Unstated.Subscribe to={[AuthContainer]}>
           {(auth: AuthContainer) => {
             if (auth.state.isLoggedIn) {
-              return <Link to={'/homes'}>Click to proceed 👉🏻</Link>
+              return <Link to={'/homes'}>Visa din data 👉🏻</Link>
             } else {
               return (
                 <a href="#" onClick={auth.login}>
-                  Click here to log in ⚡️
+                  Logga in med Tibber ⚡️
                 </a>
               )
             }
@@ -30,10 +30,10 @@ const Cover = () => {
         </Unstated.Subscribe>
       </div>
       <div>
-        <a href="/snaps/bnfIurZT63EmLydrD9RF/graphs">View a demo 📈</a>
+        <a href="/snaps/bnfIurZT63EmLydrD9RF/graphs">Visa demo 📈</a>
       </div>
       <div>
-        <Link to={'/about'}>About this app 🤔</Link>
+        <Link to={'/about'}>Om denna appen 🤔</Link>
       </div>
     </Screen>
   )

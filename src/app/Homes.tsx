@@ -51,11 +51,11 @@ export default class Homes extends Component<Props, State> {
     }
 
     if (!this.state.homes) {
-      return <Alert>Loading...</Alert>
+      return <Alert>Laddar...</Alert>
     }
 
     if (this.state.homes.length == 0) {
-      return <Alert>There are no homes on your account</Alert>
+      return <Alert>Det finns inga hem kopplade till ditt konto</Alert>
     }
 
     if (this.state.redict) {

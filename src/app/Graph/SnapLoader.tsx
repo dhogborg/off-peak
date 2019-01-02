@@ -84,11 +84,11 @@ class SnapLoader extends Component<Props, State> {
     }
 
     if (!this.state.snapshot) {
-      return <Alert>Loading...</Alert>
+      return <Alert>Laddar...</Alert>
     }
 
     if (!this.state.days || this.state.days.length == 0) {
-      return <Alert type="oh-no">Data retreival error</Alert>
+      return <Alert type="oh-no">Hämtningsfel</Alert>
     }
 
     const fromDate = this.state.snapshot.priceNodes[0].startsAt
@@ -98,7 +98,7 @@ class SnapLoader extends Component<Props, State> {
     return (
       <div className="snap-view">
         <div className="header-info">
-          This is a snapshot of a home in {this.homeArea()} from {this.dateFmt(fromDate)} to{' '}
+          Detta är ett snapshot av ett hem i {this.homeArea()} från {this.dateFmt(fromDate)} till{' '}
           {this.dateFmt(toDate)}
         </div>
         <Graphs

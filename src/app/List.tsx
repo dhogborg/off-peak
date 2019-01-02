@@ -72,20 +72,20 @@ export default class List extends Component<Props, State> {
     }
 
     if (!this.state.snapshots) {
-      return <Alert>Loading...</Alert>
+      return <Alert>Laddar...</Alert>
     }
 
     if (this.state.snapshots.length == 0) {
-      return <Alert>No snapshots stored</Alert>
+      return <Alert>Inga snapshots sparade</Alert>
     }
 
     return (
       <div className="list">
         <table>
           <thead>
-            <th>Created</th>
-            <th>Home</th>
-            <th>Grid Area</th>
+            <th>Skapad</th>
+            <th>Hem</th>
+            <th>Område</th>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
           </thead>
@@ -102,13 +102,16 @@ export default class List extends Component<Props, State> {
                   </td>
                   <td>
                     <Link className="btn-view" to={`/snaps/${s.snapshot.id}/graphs`}>
-                      View
+                      Visa
                     </Link>
                   </td>
                   <td>
                     <CopyToClipboard
                       text={`${window.location.origin}/snaps/${s.snapshot.id}/graphs`}>
-                      <span className="copy-link">🔗</span>
+                      <span className="copy-link">
+                        🔗
+                        <div className="popover">Kopiera&nbsp;URL</div>
+                      </span>
                     </CopyToClipboard>
                   </td>
                 </tr>

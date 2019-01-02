@@ -75,7 +75,7 @@ export default class HistogramChart extends Component<Props, State> {
     }
 
     let percentages = absolutes.map((v) => (v / total) * 100)
-    return newDataset('Distribution of consumption [%]', RGB(0, 0, 0), {
+    return newDataset('Konsumptionsmöster [%]', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'Percentage',
       data: percentages,
@@ -119,11 +119,11 @@ export default class HistogramChart extends Component<Props, State> {
         if (!days[d]) days[d] = []
         days[d].push(p)
       }
-      const weekends = days['1'].concat(days['2'])
-      const workdays = days['3'].concat(days['4'], days['5'], days['6'], days['7'])
+      const weekends = days['6'].concat(days['7'])
+      const workdays = days['1'].concat(days['2'], days['3'], days['4'], days['5'])
 
       datasets.push(
-        newDataset('Average (weekends)', RGB(34, 89, 220), {
+        newDataset('Snitt (helger)', RGB(34, 89, 220), {
           type: 'line',
           yAxisID: 'Percentage',
           backgroundColor: 'rgba(0,0,0,0)',
@@ -132,7 +132,7 @@ export default class HistogramChart extends Component<Props, State> {
       )
 
       datasets.push(
-        newDataset('Average (workdays)', RGB(34, 89, 220), {
+        newDataset('Snitt (arbetsdagar)', RGB(34, 89, 220), {
           type: 'line',
           yAxisID: 'Percentage',
           backgroundColor: 'rgba(0,0,0,0)',

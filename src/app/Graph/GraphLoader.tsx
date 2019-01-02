@@ -120,22 +120,22 @@ class GraphLoader extends Component<Props, State> {
     }
 
     if (this.state.storing) {
-      return <Alert>Storing snapshot...</Alert>
+      return <Alert>Sparar snapshot...</Alert>
     }
 
     if (!this.state.consumption || !this.state.profile || !this.state.days) {
-      return <Alert>Loading...</Alert>
+      return <Alert>Laddar...</Alert>
     }
 
     if (this.state.days.length == 0) {
-      return <Alert type="oh-no">Data retrieval error</Alert>
+      return <Alert type="oh-no">Hämtningsfel</Alert>
     }
 
     return (
       <div className="graph-view">
         <div className="header-info">
           <a href="javascript:;" onClick={this.store.bind(this)}>
-            Store snapshot
+            Spara snapshot
           </a>
         </div>
         <Graphs

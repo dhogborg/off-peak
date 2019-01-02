@@ -12,19 +12,18 @@ const About = () => {
     <Screen className="about">
       <div className="welcome">
         <p>
-          Since energy is cheaper when no one else is wants it, using energy off-peak is a way to
-          buy cheap(er) energy. If you consume less than the average household during daytime, and
-          more than average during night time, you have a reasonable chance to save money by going
-          with hour based metering. If you consume exactly like the average, you pay exactly the
-          same.
+          Eftersom el måste användas direkt när den produceras så är den billigare när den inte
+          behövs. Att köpa el off-peak blir därför ett lätt sätt att köpa billig(are) el. Om ditt
+          hushåll konsumerar mindre än snitt-hushållet under dagen och mer under natten - då har du
+          en god chans att spara pengar genom att anävnda tim-debitering. Om ditt hushåll konsumerar
+          precis som ett snitt-hushåll, då betalar du exakt samma som med dagligt spot-pris.
         </p>
         <p>
-          This tool reads your consumption data on an hour-by-hour interval so it can be compared to
-          the average household. It can't tell you if you are going to save money in the future, but
-          it can tell you how much you did save during the last 30 days.
+          Detta verktyg läser din konsumptions-data timme-för-timme, så att det kan jämföras med ett
+          snitthushåll.
         </p>
         <p>
-          This tool is possible thanks to the wonderful API (and people) at
+          Appen är möjlig tack vare det trevliga APIet (och människorna) på{' '}
           <a href="https://sverige.tibber.com" target="_blank">
             Tibber.
           </a>
@@ -35,11 +34,11 @@ const About = () => {
           <Unstated.Subscribe to={[AuthContainer]}>
             {(auth: AuthContainer) => {
               if (auth.state.isLoggedIn) {
-                return <Link to={'/homes'}>Click here to view your data</Link>
+                return <Link to={'/homes'}>Clicka här för att visa din data</Link>
               } else {
                 return (
                   <a href="#" onClick={auth.login}>
-                    Click here to log in with your Tibber account
+                    Klicka här för att logga in med ditt Tibber-konto.
                   </a>
                 )
               }
@@ -47,12 +46,12 @@ const About = () => {
           </Unstated.Subscribe>
         </p>
         <p>
-          The tool is open source and available at
+          Appen är open source och tillgänglig på{' '}
           <a href="https://github.com/dhogborg/off-peak" target="_blank">
             github.com
           </a>
           . <br />
-          Pull requests welcome 🤗.
+          Pull requests välkomna 🤗.
         </p>
       </div>
     </Screen>

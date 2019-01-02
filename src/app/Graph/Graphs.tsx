@@ -22,57 +22,56 @@ const Graphs = (props: Props) => {
         <DataBoxes days={props.days} />
       </Screen>
       <Screen height="20vh">
-        <h3>Hourly metering vs. Daily metering</h3>
+        <h3>Timavläsning vs. dagsavläsning</h3>
         <p>
-          If you meter by hour you pay the spot price that hour, times your consumption that hour.
+          Om din användning mäts per timme så betalar du den timmens spotpris per kWh gånger din
+          användning den timmen. Spotpris 💵 ️✖️ Användning ⚡️ = Att betala 💸.
         </p>
         <p>
-          If your consumption is metered by day, you still pay the hourly spot price, but your
-          consumption that hour is derived from the consumption of all the households in your area
-          (see blue line in histogram further down below).
+          Om din användning mäts per dag så betalar du fortfarande spotpris per timme, men din
+          konsumption en viss timme räknas ut genom att lägga ihop alla hushåll i ditt område och
+          betala din andel av den totala konsumptionen. (Spotpris 💵 ️✖️ Allas användning ⚡️) ✖️
+          Din <b>%</b> andel ⚡️ = Att betala 💸.
+        </p>
+        <p>
+          Det betyder att ditt elpris beror på hur mycket el du anävnder, samt när ett snitthushåll
+          anävnder el, du kan få betala mycket för dyra timmar trots att du inte använde någon el
+          just då.
         </p>
       </Screen>
       <Screen>
         <ConsumptionChart days={props.days} />
       </Screen>
       <Screen height="20vh">
-        <h3>How to read that graph</h3>
+        <h3>Hur man läser det diagrammet</h3>
         <p>
-          THe lines show the difference in rate (SEK per kWh) paid by you, and the rate paid by an
-          average household with a zero overhead tariff (ie. the utility adds 0 SEK on top of the
-          spot price). The bars represent your consumption on a particular day, use it to draw
-          conclusions as to why the price differs (or not).
+          Linjerna visar ditt pris per kWh samt priset per kWh som du hade betalt utan timavläsning
+          med ett el-avtal med 0kr påslag. De grå staplarna är din konsumption dag-för-dag.
         </p>
         <p>
-          The size of the blue area is the difference between highest and lowest spot price. The
-          bigger the difference, the more you stand to gain from using off-peak energy.
-        </p>
-        <p>
-          For instance, a day when you weren't home, there might not be a big difference, your
-          consumption would be linear over the day. A day when you charged your car during the
-          night, the difference is higher, and a day when you forgot to turn off the oven between 5
-          and 7 PM, you might see the price paid go above the average.
+          Den ljusblå ytan är skillnaden mellan högsta och lägsta spotpris. Ju större yta, desto
+          större variation i priset och desto mer kan du potentiallt spara.
         </p>
       </Screen>
       <Screen height="20vh">
         <h3>Histogram</h3>
         <p>
-          The chart shows you <b>when</b> you consume energy during a day, on average.
+          Diagrammet visar <b>när</b> du konsumerar el under ett dygn, i snitt.
           <br />
-          Overlaid (blue line) represents the average household.
+          De blå linjerna visar ett snitthushåll.
         </p>
       </Screen>
       <Screen>
         <HistogramChart consumption={props.consumption} profile={props.profile} />
       </Screen>
       <Screen height="20vh">
-        <h3>How to read that graph</h3>
+        <h3>Hur man läser det diagrammet</h3>
         <p>
-          The bars represents your consumption pattern. The blue line is the average household's
-          consumption pattern, and it's generally higher during the daytime, highest around the
-          evening. Whenever your bars are below the line, you consume less than the average, and
-          vise-versa. If you consume less than average during daytime, and more than average during
-          night time, you have a reasonable chance to save money by going with hour based metering.
+          Staplar visar ditt genomsnittliga konsumptionsmöster över ett dygn. Den blå linjen är ett
+          snitthushålls konsumptionsmönster, och det är generellt sett högre under dagen, höst runt
+          kvällen. När dina staplar är under den blå linjen konsumerar du mindre i snitt, och
+          omvänt. Om du konsumerar mindre än snittet under dagtid, och mer under natten, då har du
+          ett konsumptionsmöster som kommer vara väl anpassat för att spara pengar på timavräkning.
         </p>
       </Screen>
     </div>

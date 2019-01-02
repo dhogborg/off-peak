@@ -25,6 +25,22 @@
 
 .list .copy-link {
   cursor: pointer;
+  position: relative;
+}
+
+.list .copy-link:hover .popover {
+  display: block;
+}
+
+.list .popover {
+  display: none;
+  position: absolute;
+  background: #444;
+  color: white;
+  padding: 4px;
+  margin: -48px -25px;
+  border-radius: 2px;
+  font-size: 0.6rem;
 }
 
 @media (min-width: 600px) {

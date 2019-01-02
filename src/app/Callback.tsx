@@ -36,7 +36,7 @@ export default class Callback extends Component<Props, State> {
     }
 
     if (!this.state.hasToken) {
-      return <Alert>Loading...</Alert>
+      return <Alert>Laddar...</Alert>
     }
 
     return (

@@ -28,20 +28,22 @@ const DataBoxes = function(props: Props) {
       {!isNaN(potentialCost) ? (
         <div className="how-did-i-do">
           {totalCost < potentialCost ? (
-            <span>You save money by using off-peak electricity, nice.</span>
+            <span>Du sparar pengar genom att använda off-peak el, nice.</span>
           ) : (
             <span>
-              You paid more during the last {props.days.length} days than you would have if you had
-              a contract with daily spot-price. This can be due to using energy consuming appliances
-              during peak hours, and not using a significant amount of energy during off-peak hours.
+              Du betalade mer de senaste {props.days.length} dagarna jämfört med vad du hade gjort
+              med ett kontrakt med dagsavläst räkning. Detta kan bero på att du använt prylar som
+              drar mycket el under dyra timmar, eller att du inte använt mycket el under dygnets
+              billiga timmar. Se histogram-grafen längre ner.
             </span>
           )}
         </div>
       ) : null}
       <div className="fine-print">
-        * The hourly spot price weighted by the average household over the course of a day. ie, what
-        you pay if you don't meter per hour.
+        * Spotpriset per timme gånger din konsumption viktat per timme för snitthusållet i ditt
+        område. Dvs vad du hade betalt utan timavräkning.
       </div>
+      <div className="fine-print">Alla kostnader ink moms</div>
     </div>
   )
 }
@@ -60,21 +62,22 @@ const CostInfo = function(props: { totalCost: number; potentialCost: number }) {
   return (
     <div className="cost-box">
       <dl>
-        <dt>Cost on hourly spot price</dt>
+        <dt>Kostnad med timavräkning</dt>
         <dd>
           <label className="currency hour-cost">
             {props.totalCost.toFixed(1)} {currency}
           </label>
         </dd>
-        <dt>Would-be cost on daily spot price *</dt>
+        <dt>Kostnad med viktat spotpris*</dt>
+
         <dd>
           <label className="currency spot-cost">
             {!isNaN(props.potentialCost)
               ? props.potentialCost.toFixed(1) + ' ' + currency
-              : 'Waiting for data'}
+              : 'Väntar på data'}
           </label>
         </dd>
-        <dt>Saved</dt>
+        <dt>Sparat</dt>
         <dd>
           <label className={deltaLabelCl}>
             {!isNaN(deltaCost) ? deltaCost.toFixed(1) + ' ' + currency : '...'}
@@ -90,11 +93,11 @@ const Consumed = function(props: { consumption: number; totalCost: number; dayCo
   return (
     <div className="consume-box">
       <dl>
-        <dt>Consumed, last {props.dayCount} days</dt>
+        <dt>Konsumerat, senaste {props.dayCount} dagar</dt>
         <dd>
           <label className="consumption">{props.consumption.toFixed(1)} kWh</label>
         </dd>
-        <dt>Average price per kWh</dt>
+        <dt>Snittpris per kWh</dt>
         <dd>
           <label className="consumption">{avrgPrice.toFixed(2)} SEK</label>
         </dd>

@@ -19,13 +19,13 @@ const Menu = () => {
               </li>
               <li>
                 <Link to="/about">
-                  <span className="title">About</span> 🤔
+                  <span className="title">Om appen</span> 🤔
                 </Link>
               </li>
               {auth.state.isLoggedIn ? (
                 <li>
                   <Link to="/homes">
-                    <span className="title">Graphs</span> 📈
+                    <span className="title">Grafer</span> 📈
                   </Link>
                 </li>
               ) : null}
@@ -39,13 +39,13 @@ const Menu = () => {
               {auth.state.isLoggedIn ? (
                 <li className="logout">
                   <a href="#" onClick={auth.logout}>
-                    <span className="title">Logout</span> 👋🏻
+                    <span className="title">Logga ut</span> 👋🏻
                   </a>
                 </li>
               ) : (
                 <li className="login">
                   <a href="#" onClick={auth.login}>
-                    <span className="title">Login</span> ⚡️
+                    <span className="title">Logga in</span> ⚡️
                   </a>
                 </li>
               )}

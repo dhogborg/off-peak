@@ -28,6 +28,9 @@ export default class ConsumptionChart extends Component<Props, State> {
           },
         },
       },
+      legend: {
+        display: false,
+      },
       maintainAspectRatio: false,
       scales: {
         xAxes: [
@@ -75,14 +78,14 @@ export default class ConsumptionChart extends Component<Props, State> {
       return day.startTime.format('DD/MM')
     })
 
-    let consumption = newDataset('Consumption', RGB(0, 0, 0), {
+    let consumption = newDataset('Konsumption', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'kWh',
       data: this.props.days.map((day) => day.consumption),
       borderWidth: 0,
     })
 
-    let unitPrice = newDataset('You paid', RGB(47, 184, 202), {
+    let unitPrice = newDataset('Du betalade', RGB(47, 184, 202), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       backgroundColor: 'rgba(0,0,0,0)',
@@ -90,7 +93,7 @@ export default class ConsumptionChart extends Component<Props, State> {
       data: this.props.days.map((day) => day.actualKwhPrice),
     })
 
-    let profiled = newDataset('Spot price', RGB(34, 89, 220), {
+    let profiled = newDataset('Viktat spotpris', RGB(34, 89, 220), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       backgroundColor: 'rgba(0,0,0,0)',
@@ -98,14 +101,14 @@ export default class ConsumptionChart extends Component<Props, State> {
       data: this.props.days.map((day) => day.potentialCost / day.consumption),
     })
 
-    let peakPrice = newDataset('Peak', RGB(129, 169, 253), {
+    let peakPrice = newDataset('Högsta', RGB(129, 169, 253), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       borderColor: 'rgba(0,0,0,0)',
       data: this.props.days.map((day) => day.pricePeak),
     })
 
-    let troughPrice = newDataset('Low', RGB(106, 213, 104), {
+    let troughPrice = newDataset('Lägsta', RGB(106, 213, 104), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       backgroundColor: 'rgba(255,255,255,1)',
@@ -122,7 +125,7 @@ export default class ConsumptionChart extends Component<Props, State> {
   render() {
     const data = this.chartData()
     if (!data) {
-      return <div>Loading...</div>
+      return <div>Laddar...</div>
     }
 
     return <Bar data={data} options={this.state.options} />
