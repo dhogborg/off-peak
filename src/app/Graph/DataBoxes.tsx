@@ -99,7 +99,7 @@ const Consumed = function(props: { consumption: number; totalCost: number; dayCo
         </dd>
         <dt>Snittpris per kWh</dt>
         <dd>
-          <label className="consumption">{avrgPrice.toFixed(2)} SEK</label>
+          <label className="consumption">{(avrgPrice * 100).toFixed(1)} öre</label>
         </dd>
       </dl>
     </div>

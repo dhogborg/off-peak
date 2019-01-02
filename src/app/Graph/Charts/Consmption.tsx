@@ -29,7 +29,17 @@ export default class ConsumptionChart extends Component<Props, State> {
         },
       },
       legend: {
-        display: false,
+        labels: {
+          filter: (legendItem: chartjs.ChartLegendLabelItem, data: chartjs.ChartData) => {
+            switch (legendItem.datasetIndex) {
+              case 1: // low price
+              case 4: // peak price
+                return null
+              default:
+                return legendItem
+            }
+          },
+        },
       },
       maintainAspectRatio: false,
       scales: {
