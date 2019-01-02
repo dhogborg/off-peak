@@ -25,17 +25,19 @@ const DataBoxes = function(props: Props) {
       <div className="col">
         <CostInfo totalCost={totalCost} potentialCost={potentialCost} />
       </div>
-      <div className="how-did-i-do">
-        {totalCost < potentialCost ? (
-          <span>You save money by using off-peak electricity, nice.</span>
-        ) : (
-          <span>
-            You paid more during the last {props.days.length} days than you would have if you had a
-            contract with daily spot-price. This can be due to using energy consuming appliances
-            during peak hours, and not using a significant amount of energy during off-peak hours.
-          </span>
-        )}
-      </div>
+      {!isNaN(potentialCost) ? (
+        <div className="how-did-i-do">
+          {totalCost < potentialCost ? (
+            <span>You save money by using off-peak electricity, nice.</span>
+          ) : (
+            <span>
+              You paid more during the last {props.days.length} days than you would have if you had
+              a contract with daily spot-price. This can be due to using energy consuming appliances
+              during peak hours, and not using a significant amount of energy during off-peak hours.
+            </span>
+          )}
+        </div>
+      ) : null}
       <div className="fine-print">
         * The hourly spot price weighted by the average household over the course of a day. ie, what
         you pay if you don't meter per hour.

@@ -128,7 +128,7 @@ class GraphLoader extends Component<Props, State> {
     }
 
     if (this.state.days.length == 0) {
-      return <Alert type="oh-no">Data retreival error</Alert>
+      return <Alert type="oh-no">Data retrieval error</Alert>
     }
 
     return (
