@@ -8,12 +8,12 @@ run:
 build: clean
 	yarn build
 	make -C server release
-	docker build -t dhogborg/off-peak:latest .
+	docker build -t eu.gcr.io/off-peak-224318/off-peak:latest .
 
 .PHONY: release
 release: build
-	docker tag dhogborg/off-peak:latest dhogborg/off-peak:$(VERSION)
-	docker push dhogborg/off-peak:$(VERSION)
+	docker tag eu.gcr.io/off-peak-224318/off-peak:latest eu.gcr.io/off-peak-224318/off-peak:$(VERSION)
+	docker push eu.gcr.io/off-peak-224318/off-peak:$(VERSION)
 
 .PHONY: clean
 clean:
@@ -21,4 +21,4 @@ clean:
 
 .PHONY: deploy
 deploy: build
-	gcloud app deploy --project off-peak-224318 -v g-$(VERSION)
+	make -C k8s upgrade TO=$(VERSION)

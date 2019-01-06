@@ -7,7 +7,6 @@ RUN apk add --update tzdata
 
 ADD server/bin/offpeak /usr/bin
 ADD build/ /var/www
-ADD secrets /secrets
 
 ENV PORT=8080
 ENV GIN_MODE=release

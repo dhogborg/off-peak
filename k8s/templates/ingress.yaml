@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/issuer: 'letsencrypt-prod'
+    certmanager.k8s.io/acme-challenge-type: http01
+
+  name: default-ingress
+spec:
+  rules:
+    - host: stage.offpeak.se
+      http:
+        paths:
+          - backend:
+              serviceName: off-peak
+              servicePort: 8080
+            path: /
+  tls:
+    - hosts:
+        - stage.offpeak.se
+      secretName: app-tls

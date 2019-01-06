@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  FIREBASE_PROJECT: off-peak-224318
+  FIREBASE_DB: snaps_prod

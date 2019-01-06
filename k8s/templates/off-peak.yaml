@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: off-peak
+  labels:
+    app: off-peak
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: off-peak
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: off-peak
+  labels:
+    app: off-peak
+spec:
+  replicas: {{ .Values.offpeak.replicas }}
+  selector:
+    matchLabels:
+      app: off-peak
+  revisionHistoryLimit: 1
+  template:
+    metadata:
+      labels:
+        app: off-peak
+    spec:
+      volumes:
+        - name: firebase-credentials
+          secret:
+            secretName: firebase-credentials
+      containers:
+        - name: off-peak
+          image: eu.gcr.io/off-peak-224318/off-peak:{{ .Values.offpeak.version }}
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 1m
+              memory: 50Mi
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: firebase-credentials
+              mountPath: /secrets
+          env:
+            - name: OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: OAUTH_CLIENT_ID
+            - name: OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: OAUTH_CLIENT_SECRET
+            - name: OAUTH_CALLBACK
+              value: https://off-peak.se/auth/callback
+            - name: FIREBASE_PROJECT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: FIREBASE_PROJECT
+            - name: FIREBASE_KEY
+              value: /secrets/key.json
+            - name: FIREBASE_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: FIREBASE_DB
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5

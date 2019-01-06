@@ -1,0 +1,5 @@
+# Default values for off-peak.
+# Dploying latest is bad practice, so we over rule it on command line via makefile
+offpeak:
+  version: latest
+  replicas: 1
