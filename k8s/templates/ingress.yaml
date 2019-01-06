@@ -9,6 +9,13 @@ metadata:
   name: default-ingress
 spec:
   rules:
+    - host: offpeak.se
+      http:
+        paths:
+          - backend:
+              serviceName: off-peak
+              servicePort: 8080
+            path: /
     - host: stage.offpeak.se
       http:
         paths:
@@ -18,5 +25,6 @@ spec:
             path: /
   tls:
     - hosts:
+        - offpeak.se
         - stage.offpeak.se
       secretName: app-tls
