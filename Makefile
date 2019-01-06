@@ -1,4 +1,4 @@
-VERSION = $(shell git describe --always)
+VERSION = "g$(shell git describe --always)"
 
 .PHONY: run
 run: 
@@ -20,5 +20,5 @@ clean:
 	rm -rf build
 
 .PHONY: deploy
-deploy: build
+deploy: release
 	make -C k8s upgrade TO=$(VERSION)

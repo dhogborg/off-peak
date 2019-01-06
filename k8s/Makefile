@@ -32,4 +32,4 @@ upgrade:
 ifeq ($(TO),)
 	$(error "Specify TO=<git tag>")
 endif
-	helm upgrade off-peak ./ --set offpeak.version=$(TO)
+	helm upgrade off-peak ./ --set-string offpeak.version=$(TO)
