@@ -58,7 +58,7 @@ spec:
                   name: app-secrets
                   key: OAUTH_CLIENT_SECRET
             - name: OAUTH_CALLBACK
-              value: https://off-peak.se/auth/callback
+              value: https://offpeak.se/auth/callback
             - name: FIREBASE_PROJECT
               valueFrom:
                 configMapKeyRef:
