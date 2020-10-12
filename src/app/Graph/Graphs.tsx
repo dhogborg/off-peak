@@ -6,7 +6,7 @@ import * as dataprep from '../../lib/dataprep'
 
 import Screen from '../components/Screen'
 import DataBoxes from './DataBoxes'
-import ConsumptionChart from './Charts/Consmption'
+import ConsumptionChart from './Charts/Consumption'
 import HistogramChart from './Charts/Histogram'
 
 type Props = {
