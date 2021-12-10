@@ -9,6 +9,7 @@ import Alert from '../components/Alert'
 import Graphs from './Graphs'
 
 import './SnapLoader.css'
+import { errorString } from '../../lib/helpers'
 
 type Params = {
   id: string
@@ -21,7 +22,7 @@ type Props = {
 type State = {
   snapshot?: store.Snapshot
   days?: dataprep.Day[]
-  error?: Error
+  error?: string
 }
 
 class SnapLoader extends Component<Props, State> {
@@ -44,7 +45,7 @@ class SnapLoader extends Component<Props, State> {
     } catch (err) {
       this.setState({
         ...this.state,
-        error: new Error(err),
+        error: errorString(err),
       })
     }
   }
@@ -80,7 +81,7 @@ class SnapLoader extends Component<Props, State> {
 
   render() {
     if (this.state.error) {
-      return <Alert type="oh-no">{this.state.error.message}</Alert>
+      return <Alert type="oh-no">{this.state.error}</Alert>
     }
 
     if (!this.state.snapshot) {

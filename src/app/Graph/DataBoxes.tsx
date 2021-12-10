@@ -9,18 +9,24 @@ type Props = {
   days: dataprep.Day[]
 }
 
+const dayIsComplete = (day: dataprep.Day) => {
+  return !!(day.potentialCost && day.totalCost && day.consumption)
+}
+
 const DataBoxes = function(props: Props) {
   // The cost when charged hourly rate
-  const totalCost = props.days.map((day) => day.totalCost).reduce((p, v) => p + v)
+  const completeDays = props.days.filter(dayIsComplete)
+
+  const totalCost = completeDays.map((day) => day.totalCost).reduce((p, v) => p + v, 0)
   // The cost as it would have been if charged by daily average
-  const potentialCost = props.days.map((day) => day.potentialCost).reduce((p, v) => p + v)
+  const potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
   // Total consumption
-  const consumption = props.days.map((day) => day.consumption).reduce((p, v) => p + v)
+  const consumption = completeDays.map((day) => day.consumption).reduce((p, v) => p + v, 0)
 
   return (
     <div className="info-box">
       <div className="col">
-        <Consumed consumption={consumption} totalCost={totalCost} dayCount={props.days.length} />
+        <Consumed consumption={consumption} totalCost={totalCost} dayCount={completeDays.length} />
       </div>
       <div className="col">
         <CostInfo totalCost={totalCost} potentialCost={potentialCost} />
@@ -34,7 +40,7 @@ const DataBoxes = function(props: Props) {
               Du betalade mer de senaste {props.days.length} dagarna jämfört med vad du hade gjort
               med ett kontrakt med dagsavläst räkning. Detta kan bero på att du använt prylar som
               drar mycket el under dyra timmar, eller att du inte använt mycket el under dygnets
-              billiga timmar. Se histogram-grafen längre ner.
+              billiga timmar. Se histogrammet längre ner.
             </span>
           )}
         </div>
@@ -93,7 +99,7 @@ const Consumed = function(props: { consumption: number; totalCost: number; dayCo
   return (
     <div className="consume-box">
       <dl>
-        <dt>Konsumerat, senaste {props.dayCount} dagar</dt>
+        <dt>Konsumption under {props.dayCount} dagar</dt>
         <dd>
           <label className="consumption">{props.consumption.toFixed(1)} kWh</label>
         </dd>

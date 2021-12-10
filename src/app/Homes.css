@@ -12,6 +12,7 @@
   box-shadow: 5px 6px #d2d2d2;
   line-height: 25px;
   cursor: pointer;
+  margin: 5px;
 }
 
 .home .address {

@@ -34,7 +34,7 @@ const About = () => {
           <Unstated.Subscribe to={[AuthContainer]}>
             {(auth: AuthContainer) => {
               if (auth.state.isLoggedIn) {
-                return <Link to={'/homes'}>Clicka här för att visa din data</Link>
+                return <Link to={'/homes'}>Klicka här för att visa din data</Link>
               } else {
                 return (
                   <a href="#" onClick={auth.login}>

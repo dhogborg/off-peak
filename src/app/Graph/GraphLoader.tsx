@@ -11,6 +11,7 @@ import Graphs from './Graphs'
 import { storeSnapshot } from '../../lib/store'
 
 import './GraphLoader.css'
+import { errorString } from '../../lib/helpers'
 
 type Params = {
   id: string
@@ -32,10 +33,10 @@ type State = {
   consumption?: tibber.ConsumptionNode[]
   price?: tibber.PriceNode[]
   profile?: svk.ProfileNode[]
-  error?: Error
+  error?: string
 
   storing: boolean
-  redict?: string
+  redirect?: string
 }
 
 class GraphLoader extends Component<Props, State> {
@@ -78,7 +79,7 @@ class GraphLoader extends Component<Props, State> {
     } catch (err) {
       this.setState({
         ...this.state,
-        error: new Error('Unable to load data: ' + err),
+        error: 'Unable to load data: ' + errorString(err),
       })
     }
   }
@@ -99,24 +100,24 @@ class GraphLoader extends Component<Props, State> {
       this.setState({
         ...this.state,
         storing: false,
-        redict: id,
+        redirect: id,
       })
     } catch (err) {
       this.setState({
         ...this.state,
         storing: false,
-        error: err,
+        error: errorString(err),
       })
     }
   }
 
   render() {
-    if (this.state.redict) {
-      return <Redirect to={`/snaps/${this.state.redict}/graphs`} />
+    if (this.state.redirect) {
+      return <Redirect to={`/snaps/${this.state.redirect}/graphs`} />
     }
 
     if (this.state.error) {
-      return <Alert type="oh-no">{this.state.error.message}</Alert>
+      return <Alert type="oh-no">{this.state.error}</Alert>
     }
 
     if (this.state.storing) {

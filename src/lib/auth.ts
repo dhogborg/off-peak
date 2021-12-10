@@ -2,7 +2,7 @@ import moment from 'moment'
 import ClientOAuth2 from 'client-oauth2'
 
 const TOKEN_KEY = 'access_token'
-const TOKEN_EXPIERY_KEY = 'expires'
+const TOKEN_EXPIRY_KEY = 'expires'
 
 export const client = new ClientOAuth2({
   clientId: window.env.OAUTH_CLIENT_ID,
@@ -19,7 +19,7 @@ export function login() {
 
 export function logout() {
   localStorage.removeItem(TOKEN_KEY)
-  localStorage.removeItem(TOKEN_EXPIERY_KEY)
+  localStorage.removeItem(TOKEN_EXPIRY_KEY)
 }
 
 interface TokenExchange {
@@ -40,10 +40,13 @@ export async function setToken(uri: string) {
 
     let result: TokenExchange = await response.json()
     localStorage.setItem(TOKEN_KEY, result.token)
-    localStorage.setItem(TOKEN_EXPIERY_KEY, result.expires)
+    localStorage.setItem(TOKEN_EXPIRY_KEY, result.expires)
   } catch (err) {
     console.log(err)
-    throw new Error('Unable to get token: ' + err.message)
+    if (err instanceof Error) {
+      throw new Error('Unable to get token: ' + err.message)
+    }
+    throw err
   }
 }
 
@@ -56,7 +59,7 @@ export function isLoggedIn() {
   if (!getToken()) return false
 
   // Check for valid expiry
-  const expStr = localStorage.getItem(TOKEN_EXPIERY_KEY)
+  const expStr = localStorage.getItem(TOKEN_EXPIRY_KEY)
   if (!expStr || expStr === '') return false
 
   // Check for expiry date after current time

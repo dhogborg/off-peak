@@ -1,5 +1,6 @@
 import * as tibber from './tibber'
 import * as svk from './svk'
+import { errorString } from './helpers'
 
 export interface Snapshot {
   id: string
@@ -24,7 +25,7 @@ export async function getSnapshot(id: string) {
     let result: Snapshot = await response.json()
     return result
   } catch (err) {
-    throw new Error('Unable to get snapshot: ' + err.message)
+    throw new Error('Unable to get snapshot: ' + errorString(err))
   }
 }
 
@@ -43,7 +44,7 @@ export async function getSnapshots(homeId: string) {
     let result: SnapshotPage = await response.json()
     return result
   } catch (err) {
-    throw new Error('Unable to get snapshots: ' + err.message)
+    throw new Error('Unable to get snapshots: ' + errorString(err))
   }
 }
 
@@ -77,6 +78,6 @@ export async function storeSnapshot(snapshot: CreateSnapshot) {
     let result: SnapshotRef = await response.json()
     return result.id
   } catch (err) {
-    throw new Error('Unable to store snapshot: ' + err.message)
+    throw new Error('Unable to store snapshot: ' + errorString(err))
   }
 }

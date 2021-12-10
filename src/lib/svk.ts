@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { errorString } from './helpers'
 
 /**
  * Currently, only SE0 region is supported
@@ -17,11 +18,10 @@ export async function getProfile(area: Area, last: number = 100) {
   let args = [`periodFrom=${from}`, `periodTo=${to}`, `networkAreaIdString=${area}`]
   let url = `/api/v1/svkprofile?` + args.join('&')
 
-  const init: RequestInit = {
-    method: 'GET',
-  }
   try {
-    let response = await fetch(url, init)
+    let response = await fetch(url, {
+      method: 'GET',
+    })
     if (response.status != 200) {
       throw new Error(`${response.status} ${response.statusText}`)
     }
@@ -30,7 +30,7 @@ export async function getProfile(area: Area, last: number = 100) {
     return result
   } catch (err) {
     console.log(err)
-    throw new Error('Unable to retrive profile: ' + err)
+    throw new Error('Unable to retrieve profile: ' + errorString(err))
   }
 }
 
