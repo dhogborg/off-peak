@@ -7,11 +7,11 @@ build:
 
 .PHONY: run
 run: build
-	./bin/offpeak
+	go run *.go
 
 .PHONY: release
 release: clean
-	GOOS=linux go build -o bin/offpeak *.go
+	GOARCH=amd64 GOOS=linux go build -o bin/offpeak *.go
 
 .PHONY: clean
 clean:
