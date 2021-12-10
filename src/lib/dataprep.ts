@@ -4,7 +4,7 @@ import * as tibber from './tibber'
 import * as svk from './svk'
 
 export interface Day {
-  // The time fram for this day object
+  // The time from for this day object
   startTime: moment.Moment
   endTime: moment.Moment
   // Total consumption in kWh
@@ -156,7 +156,7 @@ export function totalProfiledCost(
 ): number {
   const totalConsumed = consumption.reduce((prev, value) => prev + value)
   const totalProfile = profile.reduce((prev, curr) => prev + curr)
-  // Percentage of the total consumption consumed this paticular hour
+  // Percentage of the total consumption consumed this particular hour
   const percent = profile.map((value) => value / totalProfile)
 
   let paid: number = 0

@@ -5,6 +5,7 @@ import * as Unstated from 'unstated'
 import * as auth from '../lib/auth'
 import { AuthContainer } from '../App'
 import Alert from '../app/components/Alert'
+import { errorString } from '../lib/helpers'
 
 type Props = { location: Location }
 type State = {
@@ -26,7 +27,7 @@ export default class Callback extends Component<Props, State> {
       await auth.setToken(window.location.href)
       this.setState({ hasToken: true })
     } catch (err) {
-      this.setState({ hasToken: false, error: err.message })
+      this.setState({ hasToken: false, error: errorString(err) })
     }
   }
 

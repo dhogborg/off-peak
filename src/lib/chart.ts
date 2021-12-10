@@ -28,7 +28,7 @@ export const newDataset = (
 
 type ColorFn = (opacity: number) => string
 // Returns a function that returns the same (random) color each time
-// called, with specefied opacity.
+// called, with specified opacity.
 export const RGB = (R: number, G: number, B: number): ColorFn => {
   let rgb = `${R}, ${G}, ${B}`
   return (opacity: number): string => {

@@ -5,12 +5,13 @@ import * as tibber from '../lib/tibber'
 import Alert from '../app/components/Alert'
 
 import './Homes.css'
+import { errorString } from '../lib/helpers'
 
 type Props = {}
 type State = {
   homes?: tibber.Home[]
   error?: string
-  redict?: tibber.Home
+  redirect?: tibber.Home
 }
 
 export default class Homes extends Component<Props, State> {
@@ -28,12 +29,12 @@ export default class Homes extends Component<Props, State> {
       this.setState({
         ...this.state,
         homes,
-        redict,
+        redirect: redict,
       })
     } catch (err) {
       this.setState({
         ...this.state,
-        error: err.message,
+        error: errorString(err),
       })
     }
   }
@@ -41,7 +42,7 @@ export default class Homes extends Component<Props, State> {
   clickedHome(home: tibber.Home) {
     this.setState({
       ...this.state,
-      redict: home,
+      redirect: home,
     })
   }
 
@@ -58,9 +59,9 @@ export default class Homes extends Component<Props, State> {
       return <Alert>Det finns inga hem kopplade till ditt konto</Alert>
     }
 
-    if (this.state.redict) {
-      const home = this.state.redict
-      const { priceAreaCode, gridAreaCode } = this.state.redict.meteringPointData
+    if (this.state.redirect) {
+      const home = this.state.redirect
+      const { priceAreaCode, gridAreaCode } = this.state.redirect.meteringPointData
       return <Redirect to={`/homes/${priceAreaCode}/${gridAreaCode}/${home.id}/graphs`} />
     }
 

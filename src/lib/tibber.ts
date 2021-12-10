@@ -1,4 +1,5 @@
 import * as auth from './auth'
+import { errorString } from './helpers'
 
 export async function getHomes() {
   const query = `{
@@ -151,7 +152,7 @@ async function doRequest<T>(query: string) {
     return result.data
   } catch (err) {
     console.log(err)
-    throw new Error('Query error: ' + err)
+    throw new Error('Query error: ' + errorString(err))
   }
 }
 
