@@ -34,8 +34,8 @@ const Graphs = (props: Props) => {
           Din <b>%</b> andel ⚡️ = Att betala 💸.
         </p>
         <p>
-          Det betyder att ditt elpris beror på hur mycket el du anävnder, samt när ett snitthushåll
-          anävnder el, du kan få betala mycket för dyra timmar trots att du inte använde någon el
+          Det betyder att ditt elpris beror på hur mycket el du använder, samt när ett snitthushåll
+          använder el, du kan få betala mycket för dyra timmar trots att du inte använde någon el
           just då.
         </p>
       </Screen>
