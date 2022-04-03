@@ -14,4 +14,4 @@ Run `yarn install` in project root
 
 ### Running
 Run `make run` in the `server/` folder, this starts a CORS proxy.
-Run `makr run` in project root, this starts the dev server.
+Run `make run` in project root, this starts the dev server.

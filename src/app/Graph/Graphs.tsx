@@ -29,8 +29,8 @@ const Graphs = (props: Props) => {
         </p>
         <p>
           Om din användning mäts per dag så betalar du fortfarande spotpris per timme, men din
-          konsumption en viss timme räknas ut genom att lägga ihop alla hushåll i ditt område och
-          betala din andel av den totala konsumptionen. (Spotpris 💵 ️✖️ Allas användning ⚡️) ✖️
+          konsumtion en viss timme räknas ut genom att lägga ihop alla hushåll i ditt område och
+          betala din andel av den totala konsumtionen. (Spotpris 💵 ️✖️ Allas användning ⚡️) ✖️
           Din <b>%</b> andel ⚡️ = Att betala 💸.
         </p>
         <p>
@@ -46,11 +46,11 @@ const Graphs = (props: Props) => {
         <h3>Hur man läser det diagrammet</h3>
         <p>
           Linjerna visar ditt pris per kWh samt priset per kWh som du hade betalt utan timavläsning
-          med ett el-avtal med 0kr påslag. De grå staplarna är din konsumption dag-för-dag.
+          med ett elavtal med 0kr påslag. De grå staplarna är din konsumtion dag-för-dag.
         </p>
         <p>
           Den ljusblå ytan är skillnaden mellan högsta och lägsta spotpris. Ju större yta, desto
-          större variation i priset och desto mer kan du potentiallt spara.
+          större variation i priset och desto mer kan du potentiellt spara.
         </p>
       </Screen>
       <Screen height="20vh">
@@ -67,11 +67,11 @@ const Graphs = (props: Props) => {
       <Screen height="20vh">
         <h3>Hur man läser det diagrammet</h3>
         <p>
-          Staplar visar ditt genomsnittliga konsumptionsmöster över ett dygn. Den blå linjen är ett
-          snitthushålls konsumptionsmönster, och det är generellt sett högre under dagen, höst runt
+          Staplar visar ditt genomsnittliga konsumtionsmönster över ett dygn. Den blå linjen är ett
+          snitthushålls konsumtionsmönster, och det är generellt sett högre under dagen, högst runt
           kvällen. När dina staplar är under den blå linjen konsumerar du mindre i snitt, och
           omvänt. Om du konsumerar mindre än snittet under dagtid, och mer under natten, då har du
-          ett konsumptionsmöster som kommer vara väl anpassat för att spara pengar på timavräkning.
+          ett konsumtionsmönster som kommer vara väl anpassat för att spara pengar på timavräkning.
         </p>
       </Screen>
     </div>
