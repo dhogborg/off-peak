@@ -75,7 +75,7 @@ export default class HistogramChart extends Component<Props, State> {
     }
 
     let percentages = absolutes.map((v) => (v / total) * 100)
-    return newDataset('Konsumptionsmöster [%]', RGB(0, 0, 0), {
+    return newDataset('Konsumtionsmöster [%]', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'Percentage',
       data: percentages,

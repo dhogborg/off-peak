@@ -14,12 +14,12 @@ const About = () => {
         <p>
           Eftersom el måste användas direkt när den produceras så är den billigare när den inte
           behövs. Att köpa el off-peak blir därför ett lätt sätt att köpa billig(are) el. Om ditt
-          hushåll konsumerar mindre än snitt-hushållet under dagen och mer under natten - då har du
-          en god chans att spara pengar genom att anävnda tim-debitering. Om ditt hushåll konsumerar
-          precis som ett snitt-hushåll, då betalar du exakt samma som med dagligt spot-pris.
+          hushåll konsumerar mindre än snitthushållet under dagen och mer under natten - då har du
+          en god chans att spara pengar genom att använda timdebitering. Om ditt hushåll konsumerar
+          precis som ett snitthushåll, då betalar du exakt samma som med dagligt spotpris.
         </p>
         <p>
-          Detta verktyg läser din konsumptions-data timme-för-timme, så att det kan jämföras med ett
+          Detta verktyg läser din konsumtionsdata timme-för-timme, så att det kan jämföras med ett
           snitthushåll.
         </p>
         <p>

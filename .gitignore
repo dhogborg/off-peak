@@ -27,3 +27,6 @@ server/bin
 client.env
 app.yaml
 secrets
+
+#IntelliJ internal files
+.idea

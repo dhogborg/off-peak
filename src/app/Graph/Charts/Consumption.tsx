@@ -88,7 +88,7 @@ export default class ConsumptionChart extends Component<Props, State> {
       return day.startTime.format('DD/MM')
     })
 
-    let consumption = newDataset('Konsumption', RGB(0, 0, 0), {
+    let consumption = newDataset('Konsumtion', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'kWh',
       data: this.props.days.map((day) => day.consumption),

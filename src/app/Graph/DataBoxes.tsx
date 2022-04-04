@@ -38,7 +38,7 @@ const DataBoxes = function(props: Props) {
           ) : (
             <span>
               Du betalade mer de senaste {props.days.length} dagarna jämfört med vad du hade gjort
-              med ett kontrakt med dagsavläst räkning. Detta kan bero på att du använt prylar som
+              med ett kontrakt med dagavläst räkning. Detta kan bero på att du använt prylar som
               drar mycket el under dyra timmar, eller att du inte använt mycket el under dygnets
               billiga timmar. Se histogrammet längre ner.
             </span>
@@ -46,7 +46,7 @@ const DataBoxes = function(props: Props) {
         </div>
       ) : null}
       <div className="fine-print">
-        * Spotpriset per timme gånger din konsumption viktat per timme för snitthusållet i ditt
+        * Spotpriset per timme gånger din konsumtion viktat per timme för snitthushållet i ditt
         område. Dvs vad du hade betalt utan timavräkning.
       </div>
       <div className="fine-print">Alla kostnader ink moms</div>
@@ -99,7 +99,7 @@ const Consumed = function(props: { consumption: number; totalCost: number; dayCo
   return (
     <div className="consume-box">
       <dl>
-        <dt>Konsumption under {props.dayCount} dagar</dt>
+        <dt>Konsumtion under {props.dayCount} dagar</dt>
         <dd>
           <label className="consumption">{props.consumption.toFixed(1)} kWh</label>
         </dd>
