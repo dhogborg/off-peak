@@ -13,52 +13,42 @@ type Props = {
   profile: svk.ProfileNode[]
 }
 
-type State = {
-  options: chartjs.ChartOptions
-}
-
-export default class HistogramChart extends Component<Props, State> {
-  readonly state: State = {
-    options: {
-      tooltips: {
-        callbacks: {
-          label: function(tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
-            return Number(tooltipItem.yLabel).toFixed(2) + '%'
-          },
+export default function HistogramChart(props: Props) {
+  const options: chartjs.ChartOptions = {
+    tooltips: {
+      callbacks: {
+        label: function(tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
+          return Number(tooltipItem.yLabel).toFixed(2) + '%'
         },
       },
-      maintainAspectRatio: false,
-      scales: {
-        xAxes: [
-          {
-            barPercentage: 1.15,
-            gridLines: {
-              display: false,
-            },
+    },
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [
+        {
+          barPercentage: 1.15,
+          gridLines: {
+            display: false,
           },
-        ],
-        yAxes: [
-          {
-            id: 'Percentage',
-            type: 'linear',
-            position: 'left',
-            ticks: {
-              min: 0,
-            },
-            gridLines: {
-              display: false,
-            },
+        },
+      ],
+      yAxes: [
+        {
+          id: 'Percentage',
+          type: 'linear',
+          position: 'left',
+          ticks: {
+            min: 0,
           },
-        ],
-      },
+          gridLines: {
+            display: false,
+          },
+        },
+      ],
     },
   }
 
-  constructor(public readonly props: Props) {
-    super(props)
-  }
-
-  consumptionHistogram(consumption: tibber.ConsumptionNode[]): chartjs.ChartDataSets {
+  const consumptionHistogram = (consumption: tibber.ConsumptionNode[]): chartjs.ChartDataSets => {
     let absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
       absolutes[i] = 0
@@ -82,7 +72,7 @@ export default class HistogramChart extends Component<Props, State> {
     })
   }
 
-  profileLine(profile: svk.ProfileNode[]): number[] {
+  const profileLine = (profile: svk.ProfileNode[]): number[] => {
     let absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
       absolutes[i] = 0
@@ -100,7 +90,7 @@ export default class HistogramChart extends Component<Props, State> {
     return absolutes.map((v) => (v / total) * 100)
   }
 
-  chartData(): chartjs.ChartData | undefined {
+  const chartData = (): chartjs.ChartData | undefined => {
     let labels: string[] = []
     let absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
@@ -109,12 +99,12 @@ export default class HistogramChart extends Component<Props, State> {
     }
 
     let datasets: chartjs.ChartDataSets[] = []
-    if (this.props.consumption.length > 0) {
-      datasets.push(this.consumptionHistogram(this.props.consumption))
+    if (props.consumption.length > 0) {
+      datasets.push(consumptionHistogram(props.consumption))
     }
-    if (this.props.profile.length > 0) {
+    if (props.profile.length > 0) {
       const days: { [key: string]: svk.ProfileNode[] } = {}
-      for (let p of this.props.profile) {
+      for (let p of props.profile) {
         const d = moment(p.time).format('E')
         if (!days[d]) days[d] = []
         days[d].push(p)
@@ -127,7 +117,7 @@ export default class HistogramChart extends Component<Props, State> {
           type: 'line',
           yAxisID: 'Percentage',
           backgroundColor: 'rgba(0,0,0,0)',
-          data: this.profileLine(weekends),
+          data: profileLine(weekends),
         })
       )
 
@@ -137,7 +127,7 @@ export default class HistogramChart extends Component<Props, State> {
           yAxisID: 'Percentage',
           backgroundColor: 'rgba(0,0,0,0)',
           borderWidth: 2,
-          data: this.profileLine(workdays),
+          data: profileLine(workdays),
         })
       )
     }
@@ -148,12 +138,10 @@ export default class HistogramChart extends Component<Props, State> {
     }
   }
 
-  render() {
-    const data = this.chartData()
-    if (!data) {
-      return <div>Loading...</div>
-    }
-
-    return <Bar data={data} options={this.state.options} />
+  const data = chartData()
+  if (!data) {
+    return <div>Loading...</div>
   }
+
+  return <Bar data={data} options={options} />
 }

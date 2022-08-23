@@ -5,7 +5,10 @@ import { routerMiddleware, connectRouter } from 'connected-react-router'
 import { applyMiddleware, compose, combineReducers } from 'redux'
 
 import auth from './auth/reducer'
+import config from './config'
 import tibber from './tibber/reducer'
+import svk from './svk/reducer'
+import snapshots from './snapshots/reducer'
 
 export const history = createBrowserHistory()
 
@@ -13,6 +16,9 @@ const createRootReducer = (history: History) =>
   combineReducers({
     auth,
     tibber,
+    snapshots,
+    svk,
+    config,
 
     router: connectRouter(history),
   })

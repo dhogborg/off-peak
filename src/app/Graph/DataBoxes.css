@@ -11,7 +11,10 @@
 .info-box dt {
   line-height: 3rem;
 }
-
+.period-switch {
+  text-decoration: underline;
+  cursor: pointer;
+}
 @media screen and (min-width: 700px) {
   .info-box {
     width: 700px;

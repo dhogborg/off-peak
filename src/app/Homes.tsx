@@ -16,7 +16,9 @@ export default function Homes() {
 
   useEffect(
     () => {
-      dispatch(tibber.getHomes())
+      if (tibberState.homes.items.length === 0) {
+        dispatch(tibber.getHomes())
+      }
     },
     [dispatch]
   )

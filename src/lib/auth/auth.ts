@@ -1,5 +1,6 @@
 import moment from 'moment'
 import ClientOAuth2 from 'client-oauth2'
+import { handledFetch } from '../http'
 
 const TOKEN_KEY = 'access_token'
 const TOKEN_EXPIRY_KEY = 'expires'
@@ -33,10 +34,7 @@ export async function setToken(uri: string) {
   }
 
   try {
-    let response = await fetch('/api/v1/authorize?code=' + code[1])
-    if (response.status != 200) {
-      throw new Error(`${response.status} ${response.statusText}`)
-    }
+    let response = await handledFetch('/api/v1/authorize?code=' + code[1])
 
     let result: TokenExchange = await response.json()
     localStorage.setItem(TOKEN_KEY, result.token)

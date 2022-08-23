@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import * as auth from '../auth/auth'
 import { errorString } from '../helpers'
+import { handledFetch } from '../http'
 
 import { Home, ConsumptionNode, PriceNode, Interval } from './types'
 
@@ -72,6 +73,10 @@ export const getConsumption = createAsyncThunk<
         }
       }
     }`)
+
+  if (!result.viewer.home.consumption) {
+    throw new Error('missing consumption data')
+  }
   return result.viewer.home.consumption.nodes
 })
 
@@ -118,6 +123,9 @@ export const getPrice = createAsyncThunk<
       }
     }
   }`)
+  if (!result.viewer.home.currentSubscription.priceInfo.range) {
+    throw new Error('no price data found in range')
+  }
   return result.viewer.home.currentSubscription.priceInfo.range.nodes
 })
 
@@ -133,11 +141,7 @@ async function doRequest<T>(query: string) {
     }),
   }
   try {
-    let response = await fetch('https://api.tibber.com/v1-beta/gql', init)
-    if (!response.ok || response.status != 200) {
-      throw new Error(`${response.status} ${response.statusText}`)
-    }
-
+    let response = await handledFetch('https://api.tibber.com/v1-beta/gql', init)
     let result: GQLResponse<T> = await response.json()
     return result.data
   } catch (err) {

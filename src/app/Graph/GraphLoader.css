@@ -15,7 +15,9 @@
   border-radius: 0px 0px 0px 4px;
 }
 
-.header-info a {
+#BtnSaveSnapshot {
+  background: transparent;
+  border: none;
   color: white;
-  text-decoration: none;
+  cursor: pointer;
 }
