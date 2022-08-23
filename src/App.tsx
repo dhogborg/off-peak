@@ -15,39 +15,18 @@ import './App.css'
 export default function App() {
   return (
     <Switch>
-      <div className="App">
-        <Menu />
-        <Route path="/" exact component={Cover} />
-        <Route path="/about" exact component={About} />
-        <Route path="/homes" exact component={Homes} />
-        <Route path="/homes/:priceAreaCode/:gridAreaCode/:id/graphs" component={GraphLoader} />
-        <Route path="/list" exact component={List} />
-        <Route path="/snaps/:id/graphs" component={SnapLoader} />
-        <Route path="/auth/callback" exact component={Callback} />
-      </div>
+      <>
+        <div className="App">
+          <Menu />
+          <Route path="/" exact component={Cover} />
+          <Route path="/about" exact component={About} />
+          <Route path="/homes" exact component={Homes} />
+          <Route path="/homes/:priceAreaCode/:gridAreaCode/:id/graphs" component={GraphLoader} />
+          <Route path="/list" exact component={List} />
+          <Route path="/snaps/:id/graphs" component={SnapLoader} />
+          <Route path="/auth/callback" exact component={Callback} />
+        </div>
+      </>
     </Switch>
   )
 }
-
-// export type AuthState = {
-//   isLoggedIn: boolean
-// }
-
-// export class AuthContainer extends Unstated.Container<AuthState> {
-//   state: AuthState = {
-//     isLoggedIn: auth.isLoggedIn(),
-//   }
-
-//   public login() {
-//     auth.login()
-//   }
-
-//   public logout() {
-//     auth.logout()
-//     window.location.href = window.location.origin
-//   }
-
-//   public update() {
-//     this.setState({ isLoggedIn: auth.isLoggedIn() })
-//   }
-// }

@@ -2,8 +2,11 @@ import React from 'react'
 import classnames from 'classnames'
 
 import * as dataprep from '../../lib/dataprep'
+import * as config from '../../lib/config'
 
 import './DataBoxes.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 type Props = {
   days: dataprep.Day[]
@@ -95,17 +98,36 @@ const CostInfo = function(props: { totalCost: number; potentialCost: number }) {
 }
 
 const Consumed = function(props: { consumption: number; totalCost: number; dayCount: number }) {
-  const avrgPrice = props.totalCost / props.consumption
+  const dispatch = useDispatch()
+  const configState = useSelector(config.selector)
+
+  const link = (
+    <a
+      className="period-switch"
+      key={configState.periodType}
+      onClick={() => {
+        const p = configState.periodType === 'continuous' ? 'monthly' : 'continuous'
+        dispatch(config.setPeriod(p))
+      }}>
+      {configState.periodType === 'continuous' ? (
+        <span>senaste {props.dayCount} dagarna</span>
+      ) : (
+        <span>sedan den 1e i månaden</span>
+      )}
+    </a>
+  )
+
+  const avgPrice = props.totalCost / props.consumption
   return (
     <div className="consume-box">
       <dl>
-        <dt>Konsumtion under {props.dayCount} dagar</dt>
+        <dt>Konsumtion {link}</dt>
         <dd>
           <label className="consumption">{props.consumption.toFixed(1)} kWh</label>
         </dd>
         <dt>Snittpris per kWh</dt>
         <dd>
-          <label className="consumption">{(avrgPrice * 100).toFixed(1)} öre</label>
+          <label className="consumption">{(avgPrice * 100).toFixed(1)} öre</label>
         </dd>
       </dl>
     </div>

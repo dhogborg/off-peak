@@ -4,79 +4,67 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import moment from 'moment'
 
 import * as tibber from '../lib/tibber'
-import * as snapshotStore from '../lib/snapshots'
+import * as snapshots from '../lib/snapshots'
 
 import Alert from '../app/components/Alert'
 
 import './List.css'
-import { errorString } from '../lib/helpers'
+
 import { useAppDispatch } from '../lib/hooks'
 import { useSelector } from 'react-redux'
 
-type State = {
-  snapshots?: HomeSnapshot[]
-  error?: string
-}
-
 export default function List() {
   const dispatch = useAppDispatch()
-  const [state, setState] = useState<State>({})
   const tibberState = useSelector(tibber.selector)
+  const snapState = useSelector(snapshots.selector)
 
   useEffect(
     () => {
-      dispatch(tibber.getHomes())
+      if (tibberState.homes.items.length === 0) {
+        dispatch(tibber.getHomes())
+      }
     },
     [dispatch]
   )
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        let snapshots: HomeSnapshot[] = []
-        for (let h of tibberState.homes.items) {
-          const page = await snapshotStore.getAll(h.id)
-          if (!page || !page.snapshots) {
-            continue
-          }
+  useEffect(
+    () => {
+      tibberState.homes.items.forEach((home) => dispatch(snapshots.getAll({ homeId: home.id })))
+    },
+    [tibberState.homes.items]
+  )
 
-          for (let s of page.snapshots) {
-            snapshots.push({
-              snapshot: s,
-              home: h,
-            })
-          }
-        }
-
-        snapshots.sort((a, b) => {
-          if (a.snapshot.created_at == b.snapshot.created_at) return 0
-          if (a.snapshot.created_at > b.snapshot.created_at) return -1
-          return 1
-        })
-
-        setState({
-          ...state,
-          snapshots,
-        })
-      } catch (err) {
-        setState({
-          ...state,
-          snapshots: undefined,
-          error: errorString(err),
-        })
-      }
-    })()
-  }, tibberState.homes.items)
-
-  if (state.error) {
-    return <Alert type="oh-no">{state.error}</Alert>
+  const errs = [tibberState.homes.error, snapState.error].filter((err) => !!err)
+  if (errs.length > 0) {
+    return (
+      <>
+        {errs.map((err) => {
+          return <Alert type="oh-no">{err}</Alert>
+        })}
+      </>
+    )
   }
 
-  if (!state.snapshots) {
+  if (tibberState.homes.status === 'loading' || snapState.status === 'loading') {
     return <Alert>Laddar...</Alert>
   }
 
-  if (state.snapshots.length == 0) {
+  const all = Object.keys(snapState.items)
+    .map((k) => snapState.items[k])
+    .filter((item) => item.owner === true)
+    .map((item) => {
+      return {
+        snapshot: item.snapshot,
+        home: tibberState.homes.map[item.snapshot.home.id],
+      }
+    })
+    .sort((a, b) => {
+      if (a.snapshot.created_at == b.snapshot.created_at) return 0
+      if (a.snapshot.created_at > b.snapshot.created_at) return -1
+      return 1
+    })
+
+  if (all.length == 0) {
     return <Alert>Inga snapshots sparade</Alert>
   }
 
@@ -84,16 +72,18 @@ export default function List() {
     <div className="list">
       <table>
         <thead>
-          <th>Skapad</th>
-          <th>Hem</th>
-          <th>Område</th>
-          <th>&nbsp;</th>
-          <th>&nbsp;</th>
+          <tr>
+            <th>Skapad</th>
+            <th>Hem</th>
+            <th>Område</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+          </tr>
         </thead>
         <tbody>
-          {state.snapshots.map((s) => {
+          {all.map((s) => {
             return (
-              <tr>
+              <tr key={s.snapshot.id}>
                 <td>{dateFormat(s.snapshot.created_at)}</td>
                 <td>
                   {s.home.address.address1}, {s.home.address.city}
@@ -121,11 +111,6 @@ export default function List() {
       </table>
     </div>
   )
-}
-
-interface HomeSnapshot {
-  home: tibber.Home
-  snapshot: snapshotStore.Snapshot
 }
 
 const dateFormat = (d: string): string => {

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, SerializedError } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 
 import * as Types from './types'
@@ -10,6 +10,7 @@ export interface State {
     status: 'idle' | 'loading' | 'failed'
     error?: string
     items: Types.Home[]
+    map: { [key: string]: Types.Home }
   }
   consumption: {
     status: 'idle' | 'loading' | 'failed'
@@ -27,6 +28,7 @@ const initialState: State = {
   homes: {
     status: 'idle',
     items: [],
+    map: {},
   },
   consumption: {
     status: 'idle',
@@ -53,6 +55,10 @@ export const slice = createSlice({
       .addCase(thunks.getHomes.fulfilled, (state, action) => {
         state.homes.status = 'idle'
         state.homes.items = action.payload
+
+        action.payload.forEach((home) => {
+          state.homes.map[home.id] = home
+        })
       })
       .addCase(thunks.getHomes.rejected, (state, action) => {
         state.homes.status = 'failed'

@@ -32,7 +32,7 @@ const Cover = () => {
         )}
       </div>
       <div>
-        <a href="/snaps/bnfIurZT63EmLydrD9RF/graphs">Visa demo 📈</a>
+        <Link to={'/snaps/bnfIurZT63EmLydrD9RF/graphs'}>Visa demo 📈</Link>
       </div>
       <div>
         <Link to={'/about'}>Om denna appen 🤔</Link>

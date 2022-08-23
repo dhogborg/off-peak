@@ -15,7 +15,7 @@ export default function Callback(props: Props) {
 
   useEffect(() => {
     dispatch(auth.setToken({ uri: window.location.href }))
-  })
+  }, [])
 
   if (authState.error) {
     return <Alert type="oh-no">{authState.error}</Alert>
