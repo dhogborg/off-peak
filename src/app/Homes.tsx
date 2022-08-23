@@ -1,77 +1,56 @@
-import React, { Component, ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { Redirect } from 'react-router'
 
 import * as tibber from '../lib/tibber'
 import Alert from '../app/components/Alert'
 
 import './Homes.css'
-import { errorString } from '../lib/helpers'
 
-type Props = {}
-type State = {
-  homes?: tibber.Home[]
-  error?: string
-  redirect?: tibber.Home
-}
+import { useAppDispatch } from '../lib/hooks'
+import { useSelector } from 'react-redux'
+import { push } from 'connected-react-router'
 
-export default class Homes extends Component<Props, State> {
-  state: State = {}
+export default function Homes() {
+  const dispatch = useAppDispatch()
+  const tibberState = useSelector(tibber.selector)
 
-  constructor(readonly props: Props) {
-    super(props)
+  useEffect(
+    () => {
+      dispatch(tibber.getHomes())
+    },
+    [dispatch]
+  )
+
+  const clickedHome = (home: tibber.Home) => {
+    const { priceAreaCode, gridAreaCode } = home.meteringPointData
+    dispatch(push(`/homes/${priceAreaCode}/${gridAreaCode}/${home.id}/graphs`))
   }
 
-  async componentDidMount() {
-    try {
-      const homes = await tibber.getHomes()
-      const redict = homes.length == 1 ? homes[0] : undefined
-
-      this.setState({
-        ...this.state,
-        homes,
-        redirect: redict,
-      })
-    } catch (err) {
-      this.setState({
-        ...this.state,
-        error: errorString(err),
-      })
-    }
+  if (tibberState.homes.error) {
+    return <Alert type="oh-no">{tibberState.homes.error}</Alert>
   }
 
-  clickedHome(home: tibber.Home) {
-    this.setState({
-      ...this.state,
-      redirect: home,
-    })
+  if (tibberState.homes.status === 'loading') {
+    return <Alert>Laddar...</Alert>
   }
 
-  render() {
-    if (this.state.error) {
-      return <Alert type="oh-no">{this.state.error}</Alert>
-    }
-
-    if (!this.state.homes) {
-      return <Alert>Laddar...</Alert>
-    }
-
-    if (this.state.homes.length == 0) {
+  switch (tibberState.homes.items.length) {
+    case 0:
       return <Alert>Det finns inga hem kopplade till ditt konto</Alert>
-    }
 
-    if (this.state.redirect) {
-      const home = this.state.redirect
-      const { priceAreaCode, gridAreaCode } = this.state.redirect.meteringPointData
+    case 1:
+      const home = tibberState.homes.items[0]
+      const { priceAreaCode, gridAreaCode } = home.meteringPointData
       return <Redirect to={`/homes/${priceAreaCode}/${gridAreaCode}/${home.id}/graphs`} />
-    }
 
-    return (
-      <div className="homes">
-        {this.state.homes.map((home) => {
-          return <Home key={home.id} home={home} onClick={this.clickedHome.bind(this)} />
-        })}
-      </div>
-    )
+    default:
+      return (
+        <div className="homes">
+          {tibberState.homes.items.map((home) => {
+            return <Home key={home.id} home={home} onClick={clickedHome} />
+          })}
+        </div>
+      )
   }
 }
 

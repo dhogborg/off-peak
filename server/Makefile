@@ -6,7 +6,7 @@ build:
 	go build -o bin/offpeak *.go
 
 .PHONY: run
-run: build
+run:
 	go run *.go
 
 .PHONY: release

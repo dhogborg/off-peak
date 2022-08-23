@@ -1,52 +1,29 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import { Redirect } from 'react-router'
-import * as Unstated from 'unstated'
 
-import * as auth from '../lib/auth'
-import { AuthContainer } from '../App'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from '../lib/hooks'
+
+import * as auth from '../lib/auth/reducer'
 import Alert from '../app/components/Alert'
-import { errorString } from '../lib/helpers'
 
 type Props = { location: Location }
-type State = {
-  hasToken?: boolean
-  error?: string
-}
 
-export default class Callback extends Component<Props, State> {
-  state: State = {
-    hasToken: false,
+export default function Callback(props: Props) {
+  const authState = useSelector(auth.selector)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(auth.setToken({ uri: window.location.href }))
+  })
+
+  if (authState.error) {
+    return <Alert type="oh-no">{authState.error}</Alert>
   }
 
-  constructor(readonly props: Props) {
-    super(props)
-  }
-
-  async componentDidMount() {
-    try {
-      await auth.setToken(window.location.href)
-      this.setState({ hasToken: true })
-    } catch (err) {
-      this.setState({ hasToken: false, error: errorString(err) })
-    }
-  }
-
-  render() {
-    if (this.state.error) {
-      return <Alert type="oh-no">{this.state.error}</Alert>
-    }
-
-    if (!this.state.hasToken) {
-      return <Alert>Laddar...</Alert>
-    }
-
-    return (
-      <Unstated.Subscribe to={[AuthContainer]}>
-        {(auth: AuthContainer) => {
-          auth.update()
-          return <Redirect to="/homes" />
-        }}
-      </Unstated.Subscribe>
-    )
+  if (!authState.token) {
+    return <Alert>Laddar...</Alert>
+  } else {
+    return <Redirect to="/homes" />
   }
 }
