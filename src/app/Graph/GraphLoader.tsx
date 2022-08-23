@@ -8,7 +8,7 @@ import * as dataprep from '../../lib/dataprep'
 
 import Alert from '../components/Alert'
 import Graphs from './Graphs'
-import { storeSnapshot } from '../../lib/store'
+import * as snapshotStore from '../../lib/snapshots'
 
 import './GraphLoader.css'
 import { errorString } from '../../lib/helpers'
@@ -90,7 +90,7 @@ class GraphLoader extends Component<Props, State> {
       storing: true,
     })
     try {
-      const id = await storeSnapshot({
+      const id = await snapshotStore.store({
         home: this.state.home!,
         consumptionNodes: this.state.consumption!,
         priceNodes: this.state.price!,
