@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { match } from 'react-router'
 import { Redirect } from 'react-router'
 
@@ -12,6 +12,8 @@ import * as snapshotStore from '../../lib/snapshots'
 
 import './GraphLoader.css'
 import { errorString } from '../../lib/helpers'
+import { useAppDispatch } from '../../lib/hooks'
+import { useSelector } from 'react-redux'
 
 type Params = {
   id: string
@@ -24,14 +26,6 @@ type Props = {
 }
 
 type State = {
-  home: {
-    id: string
-    priceAreaCode: string
-    gridAreaCode: string
-  }
-  days?: dataprep.Day[]
-  consumption?: tibber.ConsumptionNode[]
-  price?: tibber.PriceNode[]
   profile?: svk.ProfileNode[]
   error?: string
 
@@ -39,114 +33,117 @@ type State = {
   redirect?: string
 }
 
-class GraphLoader extends Component<Props, State> {
-  readonly state: State = {
-    home: {
-      id: '',
-      priceAreaCode: '',
-      gridAreaCode: '',
-    },
+export default function GraphLoader(props: Props) {
+  const dispatch = useAppDispatch()
+  const tibberState = useSelector(tibber.selector)
+  const [state, setState] = useState<State>({
     storing: false,
-  }
+  })
 
-  async componentDidMount() {
-    const homeId = this.props.match.params.id
-    const { gridAreaCode, priceAreaCode } = this.props.match.params
+  const period = 32 * 24
+  const { gridAreaCode, priceAreaCode } = props.match.params
+  const homeId = props.match.params.id
 
-    const period = 32 * 24
-    try {
-      let consumption = await tibber.getConsumption(homeId, tibber.Interval.Hourly, period)
+  useEffect(
+    () => {
+      dispatch(tibber.getConsumption({ homeId, interval: tibber.Interval.Hourly, last: period }))
       // price is sometimes ahead by 24 hours, so we always add another period on it
-      let price = await tibber.getPrice(homeId, tibber.Interval.Hourly, period + 24)
+      dispatch(tibber.getPrice({ homeId, interval: tibber.Interval.Hourly, last: period + 24 }))
+    },
+    [dispatch, homeId, period]
+  )
 
-      let profileCsv = await svk.getProfile(gridAreaCode, period)
-      let profile = svk.parseCSV(profileCsv)
+  useEffect(
+    () => {
+      ;(async () => {
+        try {
+          const profileCsv = await svk.getProfile(gridAreaCode, period)
+          const profile = svk.parseCSV(profileCsv)
 
-      const days = dataprep.aggregateDays(consumption, price, profile)
+          setState({
+            ...state,
+            profile,
+          })
+        } catch (err) {
+          setState({
+            ...state,
+            error: 'Unable to load data: ' + errorString(err),
+          })
+        }
+      })()
+    },
+    [gridAreaCode, period]
+  )
 
-      this.setState({
-        ...this.state,
+  const store = async () => {
+    setState({
+      ...state,
+      storing: true,
+    })
+    try {
+      const id = await snapshotStore.store({
         home: {
           id: homeId,
           priceAreaCode,
           gridAreaCode,
         },
-        days,
-        consumption,
-        price,
-        profile,
-      })
-    } catch (err) {
-      this.setState({
-        ...this.state,
-        error: 'Unable to load data: ' + errorString(err),
-      })
-    }
-  }
-
-  async store() {
-    this.setState({
-      ...this.state,
-      storing: true,
-    })
-    try {
-      const id = await snapshotStore.store({
-        home: this.state.home!,
-        consumptionNodes: this.state.consumption!,
-        priceNodes: this.state.price!,
-        profileNodes: this.state.profile!,
+        consumptionNodes: tibberState.consumption.nodes,
+        priceNodes: tibberState.price.nodes,
+        profileNodes: state.profile!,
       })
 
-      this.setState({
-        ...this.state,
+      setState({
+        ...state,
         storing: false,
         redirect: id,
       })
     } catch (err) {
-      this.setState({
-        ...this.state,
+      setState({
+        ...state,
         storing: false,
         error: errorString(err),
       })
     }
   }
 
-  render() {
-    if (this.state.redirect) {
-      return <Redirect to={`/snaps/${this.state.redirect}/graphs`} />
-    }
-
-    if (this.state.error) {
-      return <Alert type="oh-no">{this.state.error}</Alert>
-    }
-
-    if (this.state.storing) {
-      return <Alert>Sparar snapshot...</Alert>
-    }
-
-    if (!this.state.consumption || !this.state.profile || !this.state.days) {
-      return <Alert>Laddar...</Alert>
-    }
-
-    if (this.state.days.length == 0) {
-      return <Alert type="oh-no">Hämtningsfel</Alert>
-    }
-
-    return (
-      <div className="graph-view">
-        <div className="header-info">
-          <a href="javascript:;" onClick={this.store.bind(this)}>
-            Spara snapshot
-          </a>
-        </div>
-        <Graphs
-          days={this.state.days}
-          consumption={this.state.consumption}
-          profile={this.state.profile}
-        />
-      </div>
-    )
+  if (state.redirect) {
+    return <Redirect to={`/snaps/${state.redirect}/graphs`} />
   }
-}
 
-export default GraphLoader
+  if (state.error) {
+    return <Alert type="oh-no">{state.error}</Alert>
+  }
+
+  if (state.storing) {
+    return <Alert>Sparar snapshot...</Alert>
+  }
+
+  if (
+    tibberState.consumption.status === 'loading' ||
+    tibberState.price.status === 'loading' ||
+    !state.profile
+  ) {
+    return <Alert>Laddar...</Alert>
+  }
+
+  const days = dataprep.aggregateDays(
+    tibberState.consumption.nodes,
+    tibberState.price.nodes,
+    state.profile
+  )
+
+  if (days.length == 0) {
+    return <Alert type="oh-no">Hämtningsfel</Alert>
+  }
+
+  return (
+    <div className="graph-view">
+      <div className="header-info">
+        <a href="javascript:;" onClick={store}>
+          Spara snapshot
+        </a>
+      </div>
+      <Graphs days={days} consumption={tibberState.consumption.nodes} profile={state.profile} />
+    </div>
+  )
+}

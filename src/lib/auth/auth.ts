@@ -51,7 +51,8 @@ export async function setToken(uri: string) {
 }
 
 export function getToken() {
-  return localStorage.getItem(TOKEN_KEY)
+  const t = localStorage.getItem(TOKEN_KEY)
+  return t ? t : undefined
 }
 
 export function isLoggedIn() {

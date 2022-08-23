@@ -1,13 +1,18 @@
 import React from 'react'
-import * as Unstated from 'unstated'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import Screen from '../app/components/Screen'
-import { AuthContainer } from '../App'
-import { Link } from 'react-router-dom'
+
+import { useAppDispatch } from '../lib/hooks'
+import * as auth from '../lib/auth/reducer'
 
 import './About.css'
 
 const About = () => {
+  const dispatch = useAppDispatch()
+  const authState = useSelector(auth.selector)
+
   return (
     <Screen className="about">
       <div className="welcome">
@@ -31,19 +36,17 @@ const About = () => {
           Not affiliated in any way.
         </p>
         <p>
-          <Unstated.Subscribe to={[AuthContainer]}>
-            {(auth: AuthContainer) => {
-              if (auth.state.isLoggedIn) {
-                return <Link to={'/homes'}>Klicka här för att visa din data</Link>
-              } else {
-                return (
-                  <a href="#" onClick={auth.login}>
-                    Klicka här för att logga in med ditt Tibber-konto.
-                  </a>
-                )
-              }
-            }}
-          </Unstated.Subscribe>
+          {authState.isLoggedIn ? (
+            <Link to={'/homes'}>Visa din data 👉🏻</Link>
+          ) : (
+            <a
+              href="#"
+              onClick={() => {
+                dispatch(auth.login())
+              }}>
+              Logga in med Tibber ⚡️
+            </a>
+          )}
         </p>
         <p>
           Appen är open source och tillgänglig på{' '}
