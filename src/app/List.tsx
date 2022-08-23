@@ -4,11 +4,12 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import moment from 'moment'
 
 import * as tibber from '../lib/tibber'
-import * as store from '../lib/store'
+import * as snapshotStore from '../lib/snapshots'
 
 import Alert from '../app/components/Alert'
 
 import './List.css'
+import { errorString } from '../lib/helpers'
 
 type Props = {}
 type State = {
@@ -29,7 +30,7 @@ export default class List extends Component<Props, State> {
       let snapshots: HomeSnapshot[] = []
 
       for (let h of homes) {
-        const page = await store.getSnapshots(h.id)
+        const page = await snapshotStore.getAll(h.id)
         if (!page || !page.snapshots) {
           continue
         }
@@ -56,7 +57,7 @@ export default class List extends Component<Props, State> {
       this.setState({
         ...this.state,
         snapshots: undefined,
-        error: err.message,
+        error: errorString(err),
       })
     }
   }
@@ -126,5 +127,5 @@ export default class List extends Component<Props, State> {
 
 interface HomeSnapshot {
   home: tibber.Home
-  snapshot: store.Snapshot
+  snapshot: snapshotStore.Snapshot
 }

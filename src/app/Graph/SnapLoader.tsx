@@ -3,7 +3,7 @@ import { match } from 'react-router'
 import moment from 'moment'
 
 import * as dataprep from '../../lib/dataprep'
-import * as store from '../../lib/store'
+import * as snapshotStore from '../../lib/snapshots'
 
 import Alert from '../components/Alert'
 import Graphs from './Graphs'
@@ -20,7 +20,7 @@ type Props = {
 }
 
 type State = {
-  snapshot?: store.Snapshot
+  snapshot?: snapshotStore.Snapshot
   days?: dataprep.Day[]
   error?: string
 }
@@ -30,7 +30,7 @@ class SnapLoader extends Component<Props, State> {
 
   async componentDidMount() {
     try {
-      const snapshot = await store.getSnapshot(this.props.match.params.id)
+      const snapshot = await snapshotStore.getOne(this.props.match.params.id)
       const days = dataprep.aggregateDays(
         snapshot.consumptionNodes,
         snapshot.priceNodes,

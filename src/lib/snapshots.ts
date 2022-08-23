@@ -1,4 +1,4 @@
-import * as tibber from './tibber'
+import * as snapshots from './tibber'
 import * as svk from './svk'
 import { errorString } from './helpers'
 
@@ -9,13 +9,13 @@ export interface Snapshot {
     priceAreaCode: string
     gridAreaCode: string
   }
-  consumptionNodes: tibber.ConsumptionNode[]
-  priceNodes: tibber.PriceNode[]
+  consumptionNodes: snapshots.ConsumptionNode[]
+  priceNodes: snapshots.PriceNode[]
   profileNodes: svk.ProfileNode[]
   created_at: string
 }
 
-export async function getSnapshot(id: string) {
+export async function getOne(id: string) {
   try {
     let response = await fetch(`/api/v1/snapshots/${id}`)
     if (response.status != 200) {
@@ -34,7 +34,7 @@ export interface SnapshotPage {
   count: number
 }
 
-export async function getSnapshots(homeId: string) {
+export async function getAll(homeId: string) {
   try {
     let response = await fetch(`/api/v1/snapshots/?home_id=${homeId}`)
     if (response.status != 200) {
@@ -58,12 +58,12 @@ export interface CreateSnapshot {
     priceAreaCode: string
     gridAreaCode: string
   }
-  consumptionNodes: tibber.ConsumptionNode[]
-  priceNodes: tibber.PriceNode[]
+  consumptionNodes: snapshots.ConsumptionNode[]
+  priceNodes: snapshots.PriceNode[]
   profileNodes: svk.ProfileNode[]
 }
 
-export async function storeSnapshot(snapshot: CreateSnapshot) {
+export async function store(snapshot: CreateSnapshot) {
   const opts: RequestInit = {
     method: 'POST',
     body: JSON.stringify(snapshot),
