@@ -46,7 +46,11 @@ export default function SnapLoader(props: Props) {
     return <Alert>Laddar...</Alert>
   }
 
-  const days = dataprep.aggregateDays(consumptionNodes, priceNodes, profileNodes)
+  const { days, weightedAverage } = dataprep.aggregateDays(
+    consumptionNodes,
+    priceNodes,
+    profileNodes
+  )
 
   if (!days || days.length == 0) {
     return <Alert type="oh-no">Hämtningsfel</Alert>
@@ -61,7 +65,12 @@ export default function SnapLoader(props: Props) {
         Detta är ett snapshot av ett hem i {homeArea(item.snapshot.home.priceAreaCode)} från{' '}
         {dateFmt(fromDate)} till {dateFmt(toDate)}
       </div>
-      <Graphs days={days} consumption={consumptionNodes} profile={profileNodes} />
+      <Graphs
+        days={days}
+        consumption={consumptionNodes}
+        profile={profileNodes}
+        weightedAverage={weightedAverage}
+      />
     </div>
   )
 }

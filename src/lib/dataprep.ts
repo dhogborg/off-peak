@@ -3,6 +3,12 @@ import moment from 'moment'
 import * as tibber from './tibber'
 import * as svk from './svk'
 
+export interface Aggregation {
+  days: Day[]
+  totalConsumption: number
+  weightedAverage: number
+}
+
 export interface Day {
   // The time from for this day object
   startTime: moment.Moment
@@ -21,6 +27,13 @@ export interface Day {
   priceTrough: number
 }
 
+interface Hour {
+  time: moment.Moment
+  consumption?: tibber.ConsumptionNode
+  price?: tibber.PriceNode
+  profile?: svk.ProfileNode
+}
+
 /**
  * Aggregates and sorts the 3 datasets into into a day-object
  * which can be used for further calculations.
@@ -32,7 +45,7 @@ export function aggregateDays(
   consumption: tibber.ConsumptionNode[],
   price: tibber.PriceNode[],
   profile: svk.ProfileNode[]
-): Day[] {
+): Aggregation {
   const dateIndex: { [key: string]: Hour } = {}
   // Sort the price, consumption and the profile into a date-indexed map
   for (let p of price) {
@@ -59,6 +72,12 @@ export function aggregateDays(
     }
     dateIndex[key].profile = p
   }
+
+  const cleanHours = Object.keys(dateIndex)
+    .map((key) => dateIndex[key])
+    .filter((hour) => {
+      return hour.price !== undefined && hour.profile !== undefined
+    })
 
   // Put them in 24-hour period bins
   const hourGroup: { [key: string]: Hour[] } = {}
@@ -136,7 +155,14 @@ export function aggregateDays(
     })
   }
 
-  return days
+  return {
+    days,
+    weightedAverage: weightedPeriodPrice(
+      cleanHours.map((hour) => hour.price!.total || 0),
+      cleanHours.map((hour) => hour.profile!.value || 0)
+    ),
+    totalConsumption: Sum(days.map((d) => d.consumption)),
+  }
 }
 
 /**
@@ -169,9 +195,28 @@ export function totalProfiledCost(
   return paid
 }
 
-interface Hour {
-  time: moment.Moment
-  consumption?: tibber.ConsumptionNode
-  price?: tibber.PriceNode
-  profile?: svk.ProfileNode
+/**
+ * Calculates and returns a weighted average for the entire
+ * @param prices series of hourly prices
+ * @param profile series of hourly weight data
+ */
+export function weightedPeriodPrice(prices: number[], profile: number[]): number {
+  const totalProfile = Sum(profile)
+  // calculate the percentage of which each price point will be weighted
+  const percent = Percent(profile, totalProfile)
+
+  // Aggregate the hourly prices and weight according to the profile
+  const weightedAverage = prices.reduce((sum, price, i) => {
+    return sum + price * percent[i]
+  }, 0)
+
+  return weightedAverage
+}
+
+function Sum(series: number[]): number {
+  return series.reduce((prev, curr) => prev + curr)
+}
+
+function Percent(series: number[], factor: number): number[] {
+  return series.map((value) => value / factor)
 }

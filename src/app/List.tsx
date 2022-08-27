@@ -86,7 +86,7 @@ export default function List() {
               <tr key={s.snapshot.id}>
                 <td>{dateFormat(s.snapshot.created_at)}</td>
                 <td>
-                  {s.home.address.address1}, {s.home.address.city}
+                  {s.home?.address.address1}, {s.home.address.city}
                 </td>
                 <td>
                   {s.home.meteringPointData.priceAreaCode}/{s.home.meteringPointData.gridAreaCode}
