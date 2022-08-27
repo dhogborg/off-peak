@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 
 type Props = {
   days: dataprep.Day[]
+  weightedAverage: number
 }
 
 const dayIsComplete = (day: dataprep.Day) => {
@@ -22,9 +23,10 @@ const DataBoxes = function(props: Props) {
 
   const totalCost = completeDays.map((day) => day.totalCost).reduce((p, v) => p + v, 0)
   // The cost as it would have been if charged by daily average
-  const potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
+  // const potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
   // Total consumption
   const consumption = completeDays.map((day) => day.consumption).reduce((p, v) => p + v, 0)
+  const potentialCost = consumption * props.weightedAverage
 
   return (
     <div className="info-box">

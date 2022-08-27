@@ -13,13 +13,14 @@ type Props = {
   days: dataprep.Day[]
   consumption: tibber.ConsumptionNode[]
   profile: svk.ProfileNode[]
+  weightedAverage: number
 }
 
 const Graphs = (props: Props) => {
   return (
     <div className="main">
       <Screen>
-        <DataBoxes days={props.days} />
+        <DataBoxes days={props.days} weightedAverage={props.weightedAverage} />
       </Screen>
       <Screen height="20vh">
         <h3>Timavläsning vs. dagsavläsning</h3>

@@ -114,10 +114,10 @@ export default function GraphLoader(props: Props) {
     )
   }
 
-  const days = dataprep.aggregateDays(
+  const { days, weightedAverage } = dataprep.aggregateDays(
     tibberState.consumption.nodes,
     tibberState.price.nodes,
-    svkState.nodes!
+    svkState.nodes
   )
 
   if (!firstLoad && days.length == 0) {
@@ -131,7 +131,12 @@ export default function GraphLoader(props: Props) {
           Spara snapshot
         </button>
       </div>
-      <Graphs days={days} consumption={tibberState.consumption.nodes} profile={svkState.nodes!} />
+      <Graphs
+        days={days}
+        consumption={tibberState.consumption.nodes}
+        profile={svkState.nodes}
+        weightedAverage={weightedAverage}
+      />
     </div>
   )
 }
