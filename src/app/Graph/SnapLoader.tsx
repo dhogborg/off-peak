@@ -1,8 +1,8 @@
-import React, { Component, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { match } from 'react-router'
 import moment from 'moment'
 
-import { useAppDispatch, useAppSelector } from '../../lib/hooks'
+import { useDispatch, useSelector } from '../../lib/hooks'
 
 import * as dataprep from '../../lib/dataprep'
 import * as snapshots from '../../lib/snapshots'
@@ -21,15 +21,12 @@ type Props = {
 }
 
 export default function SnapLoader(props: Props) {
-  const dispatch = useAppDispatch()
-  const snapshotState = useAppSelector(snapshots.selector)
+  const dispatch = useDispatch()
+  const snapshotState = useSelector(snapshots.selector)
 
-  useEffect(
-    () => {
-      dispatch(snapshots.getOne(props.match.params.id))
-    },
-    [dispatch]
-  )
+  useEffect(() => {
+    dispatch(snapshots.getOne(props.match.params.id))
+  }, [dispatch, props.match.params.id])
 
   const item = snapshotState.items[props.match.params.id]
 
@@ -52,7 +49,7 @@ export default function SnapLoader(props: Props) {
     profileNodes
   )
 
-  if (!days || days.length == 0) {
+  if (!days || days.length === 0) {
     return <Alert type="oh-no">Hämtningsfel</Alert>
   }
 

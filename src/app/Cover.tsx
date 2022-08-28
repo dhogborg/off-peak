@@ -1,15 +1,15 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector } from 'src/lib/hooks'
 import { Link } from 'react-router-dom'
 
 import Screen from '../app/components/Screen'
-import { useAppDispatch } from '../lib/hooks'
+import { useDispatch } from '../lib/hooks'
 import * as auth from '../lib/auth/reducer'
 
 import './Cover.css'
 
 const Cover = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const authState = useSelector(auth.selector)
 
   return (
@@ -22,13 +22,13 @@ const Cover = () => {
         {authState.isLoggedIn ? (
           <Link to={'/homes'}>Visa din data 👉🏻</Link>
         ) : (
-          <a
-            href="#"
+          <button
+            className="btn-link"
             onClick={() => {
               dispatch(auth.login())
             }}>
-            Logga in med Tibber ⚡️
-          </a>
+            <span>Logga in med Tibber ⚡️</span>
+          </button>
         )}
       </div>
       <div>

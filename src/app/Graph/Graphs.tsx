@@ -1,5 +1,3 @@
-import React from 'react'
-
 import * as tibber from '../../lib/tibber'
 import * as svk from '../../lib/svk'
 import * as dataprep from '../../lib/dataprep'

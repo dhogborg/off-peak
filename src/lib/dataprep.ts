@@ -48,7 +48,7 @@ export function aggregateDays(
 ): Aggregation {
   const dateIndex: { [key: string]: Hour } = {}
   // Sort the price, consumption and the profile into a date-indexed map
-  for (let p of price) {
+  for (const p of price) {
     const time = moment(p.startsAt)
     const key = time.format()
     if (!dateIndex[key]) {
@@ -56,7 +56,7 @@ export function aggregateDays(
     }
     dateIndex[key].price = p
   }
-  for (let p of consumption) {
+  for (const p of consumption) {
     const time = moment(p.from)
     const key = time.format()
     if (!dateIndex[key]) {
@@ -64,7 +64,7 @@ export function aggregateDays(
     }
     dateIndex[key].consumption = p
   }
-  for (let p of profile) {
+  for (const p of profile) {
     const time = moment(p.time)
     const key = time.format()
     if (!dateIndex[key]) {
@@ -81,7 +81,7 @@ export function aggregateDays(
 
   // Put them in 24-hour period bins
   const hourGroup: { [key: string]: Hour[] } = {}
-  for (let i in dateIndex) {
+  for (const i in dateIndex) {
     const hour = dateIndex[i]
     const key = hour.time.format('YYYY-MM-DD')
     if (!hourGroup[key]) {
@@ -92,9 +92,9 @@ export function aggregateDays(
 
   // Compile 24-hour bins to Day-objects, with data ready to consume in diagrams
   const days: Day[] = []
-  for (let h in hourGroup) {
-    let hours = hourGroup[h]
-    if (hours.length == 0) continue
+  for (const h in hourGroup) {
+    const hours = hourGroup[h]
+    if (hours.length === 0) continue
 
     const consumptions = hours.map((hour) => hour.consumption)
     const prices = hours.map((hour) => hour.price)
@@ -138,7 +138,7 @@ export function aggregateDays(
 
     let pricePeak = 0
     let priceTrough = 999
-    for (let p of price) {
+    for (const p of price) {
       if (p > pricePeak) pricePeak = p
       if (p < priceTrough) priceTrough = p
     }
@@ -158,8 +158,8 @@ export function aggregateDays(
   return {
     days,
     weightedAverage: weightedPeriodPrice(
-      cleanHours.map((hour) => hour.price!.total || 0),
-      cleanHours.map((hour) => hour.profile!.value || 0)
+      cleanHours.map((hour) => hour.price?.total || 0),
+      cleanHours.map((hour) => hour.profile?.value || 0)
     ),
     totalConsumption: Sum(days.map((d) => d.consumption)),
   }
@@ -185,7 +185,7 @@ export function totalProfiledCost(
   // Percentage of the total consumption consumed this particular hour
   const percent = profile.map((value) => value / totalProfile)
 
-  let paid: number = 0
+  let paid = 0
   for (let i = 0; i < prices.length; i++) {
     const hConsumed = totalConsumed * percent[i]
     const hPaid = hConsumed * prices[i]
@@ -214,7 +214,7 @@ export function weightedPeriodPrice(prices: number[], profile: number[]): number
 }
 
 function Sum(series: number[]): number {
-  return series.reduce((prev, curr) => prev + curr)
+  return series.reduce((prev, curr) => prev + curr, 0)
 }
 
 function Percent(series: number[], factor: number): number[] {

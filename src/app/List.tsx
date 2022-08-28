@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import moment from 'moment'
@@ -10,29 +10,22 @@ import Alert from '../app/components/Alert'
 
 import './List.css'
 
-import { useAppDispatch } from '../lib/hooks'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'src/lib/hooks'
 
 export default function List() {
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const tibberState = useSelector(tibber.selector)
   const snapState = useSelector(snapshots.selector)
 
-  useEffect(
-    () => {
-      if (tibberState.homes.items.length === 0) {
-        dispatch(tibber.getHomes())
-      }
-    },
-    [dispatch]
-  )
+  useEffect(() => {
+    if (tibberState.homes.items === undefined) {
+      dispatch(tibber.getHomes())
+    }
+  }, [dispatch, tibberState.homes.items])
 
-  useEffect(
-    () => {
-      tibberState.homes.items.forEach((home) => dispatch(snapshots.getAll({ homeId: home.id })))
-    },
-    [tibberState.homes.items]
-  )
+  useEffect(() => {
+    tibberState.homes.items?.forEach((home) => dispatch(snapshots.getAll({ homeId: home.id })))
+  }, [dispatch, tibberState.homes.items])
 
   const errs = [tibberState.homes.error, snapState.error].filter((err) => !!err)
   if (errs.length > 0) {
@@ -59,12 +52,12 @@ export default function List() {
       }
     })
     .sort((a, b) => {
-      if (a.snapshot.created_at == b.snapshot.created_at) return 0
+      if (a.snapshot.created_at === b.snapshot.created_at) return 0
       if (a.snapshot.created_at > b.snapshot.created_at) return -1
       return 1
     })
 
-  if (all.length == 0) {
+  if (all.length === 0) {
     return <Alert>Inga snapshots sparade</Alert>
   }
 
@@ -82,11 +75,14 @@ export default function List() {
         </thead>
         <tbody>
           {all.map((s) => {
+            if (!s.home) {
+              return <></>
+            }
             return (
               <tr key={s.snapshot.id}>
                 <td>{dateFormat(s.snapshot.created_at)}</td>
                 <td>
-                  {s.home?.address.address1}, {s.home.address.city}
+                  {s.home.address.address1}, {s.home.address?.city}
                 </td>
                 <td>
                   {s.home.meteringPointData.priceAreaCode}/{s.home.meteringPointData.gridAreaCode}

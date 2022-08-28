@@ -5,8 +5,7 @@ import * as dataprep from '../../lib/dataprep'
 import * as config from '../../lib/config'
 
 import './DataBoxes.css'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'src/lib/hooks'
 
 type Props = {
   days: dataprep.Day[]
@@ -17,7 +16,7 @@ const dayIsComplete = (day: dataprep.Day) => {
   return !!(day.potentialCost && day.totalCost && day.consumption)
 }
 
-const DataBoxes = function(props: Props) {
+const DataBoxes = function (props: Props) {
   // The cost when charged hourly rate
   const completeDays = props.days.filter(dayIsComplete)
 
@@ -61,7 +60,7 @@ const DataBoxes = function(props: Props) {
 
 export default DataBoxes
 
-const CostInfo = function(props: { totalCost: number; potentialCost: number }) {
+const CostInfo = function (props: { totalCost: number; potentialCost: number }) {
   const deltaCost = props.potentialCost - props.totalCost
   const deltaLabelCl = classnames('currency', {
     nice: deltaCost > 0,
@@ -99,13 +98,13 @@ const CostInfo = function(props: { totalCost: number; potentialCost: number }) {
   )
 }
 
-const Consumed = function(props: { consumption: number; totalCost: number; dayCount: number }) {
+const Consumed = function (props: { consumption: number; totalCost: number; dayCount: number }) {
   const dispatch = useDispatch()
   const configState = useSelector(config.selector)
 
   const link = (
-    <a
-      className="period-switch"
+    <button
+      className="btn-link period-switch"
       key={configState.periodType}
       onClick={() => {
         const p = configState.periodType === 'continuous' ? 'monthly' : 'continuous'
@@ -116,7 +115,7 @@ const Consumed = function(props: { consumption: number; totalCost: number; dayCo
       ) : (
         <span>sedan den 1e i månaden</span>
       )}
-    </a>
+    </button>
   )
 
   const avgPrice = props.totalCost / props.consumption

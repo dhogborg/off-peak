@@ -14,7 +14,7 @@ export default function ConsumptionChart(props: Props) {
   const options: chartjs.ChartOptions = {
     tooltips: {
       callbacks: {
-        label: function(tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
+        label: function (tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
           const n = Number(tooltipItem.yLabel).toFixed(2)
           if (data.datasets === undefined || tooltipItem.datasetIndex === undefined) {
             return n
@@ -75,18 +75,18 @@ export default function ConsumptionChart(props: Props) {
   }
 
   const chartData = (): chartjs.ChartData | undefined => {
-    let labels: string[] = props.days.map((day) => {
+    const labels: string[] = props.days.map((day) => {
       return day.startTime.format('DD/MM')
     })
 
-    let consumption = newDataset('Konsumtion', RGB(0, 0, 0), {
+    const consumption = newDataset('Konsumtion', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'kWh',
       data: props.days.map((day) => day.consumption),
       borderWidth: 0,
     })
 
-    let unitPrice = newDataset('Du betalade', RGB(47, 184, 202), {
+    const unitPrice = newDataset('Du betalade', RGB(47, 184, 202), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       backgroundColor: 'rgba(0,0,0,0)',
@@ -94,7 +94,7 @@ export default function ConsumptionChart(props: Props) {
       data: props.days.map((day) => day.actualKwhPrice),
     })
 
-    let profiled = newDataset('Viktat spotpris', RGB(34, 89, 220), {
+    const profiled = newDataset('Viktat spotpris', RGB(34, 89, 220), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       backgroundColor: 'rgba(0,0,0,0)',
@@ -102,14 +102,14 @@ export default function ConsumptionChart(props: Props) {
       data: props.days.map((day) => day.potentialCost / day.consumption),
     })
 
-    let peakPrice = newDataset('Högsta', RGB(129, 169, 253), {
+    const peakPrice = newDataset('Högsta', RGB(129, 169, 253), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       borderColor: 'rgba(0,0,0,0)',
       data: props.days.map((day) => day.pricePeak),
     })
 
-    let troughPrice = newDataset('Lägsta', RGB(106, 213, 104), {
+    const troughPrice = newDataset('Lägsta', RGB(106, 213, 104), {
       type: 'line',
       yAxisID: 'SEK/kWh',
       backgroundColor: 'rgba(255,255,255,1)',

@@ -9,3 +9,7 @@
     display: none;
   }
 }
+
+.App-header .btn-link {
+  color: white;
+}

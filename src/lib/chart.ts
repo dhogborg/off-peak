@@ -8,7 +8,7 @@ export const newDataset = (
   if (!color) {
     color = RGB(0, 0, 0)
   }
-  let dataset: chartjs.ChartDataSets = {
+  const dataset: chartjs.ChartDataSets = {
     type: 'bar',
     label: name,
     backgroundColor: color(0.2),
@@ -30,7 +30,7 @@ type ColorFn = (opacity: number) => string
 // Returns a function that returns the same (random) color each time
 // called, with specified opacity.
 export const RGB = (R: number, G: number, B: number): ColorFn => {
-  let rgb = `${R}, ${G}, ${B}`
+  const rgb = `${R}, ${G}, ${B}`
   return (opacity: number): string => {
     return `rgba(${rgb}, ${opacity})`
   }

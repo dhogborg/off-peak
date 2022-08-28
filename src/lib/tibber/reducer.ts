@@ -1,4 +1,4 @@
-import { createSlice, SerializedError } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 
 import * as Types from './types'
@@ -9,7 +9,7 @@ export interface State {
   homes: {
     status: 'idle' | 'loading' | 'failed'
     error?: string
-    items: Types.Home[]
+    items?: Types.Home[]
     map: { [key: string]: Types.Home }
   }
   consumption: {
@@ -27,7 +27,7 @@ export interface State {
 const initialState: State = {
   homes: {
     status: 'idle',
-    items: [],
+    items: undefined,
     map: {},
   },
   consumption: {

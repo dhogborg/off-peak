@@ -9,7 +9,7 @@
   margin: 0px auto 25px auto;
 }
 .info-box dt {
-  line-height: 3rem;
+  margin: 16px 0px 4px 6px;
 }
 .period-switch {
   text-decoration: underline;
