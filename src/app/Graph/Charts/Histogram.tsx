@@ -1,5 +1,3 @@
-import React, { Component } from 'react'
-
 import moment from 'moment'
 import { Bar } from 'react-chartjs-2'
 import * as chartjs from 'chart.js'
@@ -17,7 +15,7 @@ export default function HistogramChart(props: Props) {
   const options: chartjs.ChartOptions = {
     tooltips: {
       callbacks: {
-        label: function(tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
+        label: function (tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
           return Number(tooltipItem.yLabel).toFixed(2) + '%'
         },
       },
@@ -49,22 +47,22 @@ export default function HistogramChart(props: Props) {
   }
 
   const consumptionHistogram = (consumption: tibber.ConsumptionNode[]): chartjs.ChartDataSets => {
-    let absolutes: number[] = []
+    const absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
       absolutes[i] = 0
     }
 
     let total = 0
-    for (let c of consumption) {
-      let timeOfDay = moment(c.from).hour()
-      let consumed = c.consumption != null ? c.consumption : 0
+    for (const c of consumption) {
+      const timeOfDay = moment(c.from).hour()
+      const consumed = c.consumption != null ? c.consumption : 0
 
       if (!absolutes[timeOfDay]) absolutes[timeOfDay] = 0
       absolutes[timeOfDay] += consumed
       total += consumed
     }
 
-    let percentages = absolutes.map((v) => (v / total) * 100)
+    const percentages = absolutes.map((v) => (v / total) * 100)
     return newDataset('Konsumtionsmöster [%]', RGB(0, 0, 0), {
       type: 'bar',
       yAxisID: 'Percentage',
@@ -73,14 +71,14 @@ export default function HistogramChart(props: Props) {
   }
 
   const profileLine = (profile: svk.ProfileNode[]): number[] => {
-    let absolutes: number[] = []
+    const absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
       absolutes[i] = 0
     }
 
     let total = 0
-    for (let c of profile) {
-      let timeOfDay = moment(c.time).hour()
+    for (const c of profile) {
+      const timeOfDay = moment(c.time).hour()
 
       if (!absolutes[timeOfDay]) absolutes[timeOfDay] = 0
       absolutes[timeOfDay] += c.value
@@ -91,20 +89,20 @@ export default function HistogramChart(props: Props) {
   }
 
   const chartData = (): chartjs.ChartData | undefined => {
-    let labels: string[] = []
-    let absolutes: number[] = []
+    const labels: string[] = []
+    const absolutes: number[] = []
     for (let i = 0; i < 24; i++) {
       labels.push(i + ':00')
       absolutes[i] = 0
     }
 
-    let datasets: chartjs.ChartDataSets[] = []
+    const datasets: chartjs.ChartDataSets[] = []
     if (props.consumption.length > 0) {
       datasets.push(consumptionHistogram(props.consumption))
     }
     if (props.profile.length > 0) {
       const days: { [key: string]: svk.ProfileNode[] } = {}
-      for (let p of props.profile) {
+      for (const p of props.profile) {
         const d = moment(p.time).format('E')
         if (!days[d]) days[d] = []
         days[d].push(p)

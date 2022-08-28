@@ -11,7 +11,7 @@ import Graphs from './Graphs'
 import * as snapshotStore from '../../lib/snapshots'
 
 import './GraphLoader.css'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'src/lib/hooks'
 import { push } from 'connected-react-router'
 
 type Params = {
@@ -43,22 +43,17 @@ export default function GraphLoader(props: Props) {
 
   useEffect(() => {
     dispatch(snapshotStore.reset())
-  }, [])
+  }, [dispatch])
 
-  useEffect(
-    () => {
-      console.log({ period })
+  useEffect(() => {
+    dispatch(tibber.getConsumption({ homeId, interval: tibber.Interval.Hourly, last: period }))
+    // price is sometimes ahead by 24 hours, so we always add another period on it
+    dispatch(tibber.getPrice({ homeId, interval: tibber.Interval.Hourly, last: period + 24 }))
 
-      dispatch(tibber.getConsumption({ homeId, interval: tibber.Interval.Hourly, last: period }))
-      // price is sometimes ahead by 24 hours, so we always add another period on it
-      dispatch(tibber.getPrice({ homeId, interval: tibber.Interval.Hourly, last: period + 24 }))
+    dispatch(svk.getProfile({ area: gridAreaCode, last: period }))
 
-      dispatch(svk.getProfile({ area: gridAreaCode, last: period }))
-
-      setFirstLoad(false)
-    },
-    [homeId, period, gridAreaCode]
-  )
+    setFirstLoad(false)
+  }, [dispatch, homeId, period, gridAreaCode])
 
   const store = async () => {
     dispatch(
@@ -70,25 +65,23 @@ export default function GraphLoader(props: Props) {
         },
         consumptionNodes: tibberState.consumption.nodes,
         priceNodes: tibberState.price.nodes,
-        profileNodes: svkState.nodes!,
+        profileNodes: svkState.nodes,
       })
     )
   }
 
-  useEffect(
-    () => {
-      if (snapshotState.addId) {
-        dispatch(push(`/snaps/${snapshotState.addId}/graphs`))
-        dispatch(snapshotStore.reset())
-      }
-    },
-    [snapshotState.addId]
-  )
+  useEffect(() => {
+    if (snapshotState.addId) {
+      dispatch(push(`/snaps/${snapshotState.addId}/graphs`))
+      dispatch(snapshotStore.reset())
+    }
+  }, [dispatch, snapshotState.addId])
 
   if (
     firstLoad ||
     tibberState.homes.status === 'loading' ||
     tibberState.consumption.status === 'loading' ||
+    tibberState.price.status === 'loading' ||
     svkState.status === 'loading'
   ) {
     return <Alert>Laddar...</Alert>
@@ -120,7 +113,7 @@ export default function GraphLoader(props: Props) {
     svkState.nodes
   )
 
-  if (!firstLoad && days.length == 0) {
+  if (!firstLoad && days.length === 0) {
     return <Alert type="oh-no">Hämtningsfel, data saknas</Alert>
   }
 

@@ -17,7 +17,7 @@ module.exports = {
           {
             name: 'react-redux',
             importNames: ['useDispatch', 'useSelector'],
-            message: 'Use app specific hooks form src/store/hooks',
+            message: 'Use app specific hooks form src/lib/hooks',
           },
         ],
       },

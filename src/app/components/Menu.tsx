@@ -1,13 +1,12 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'src/lib/hooks'
 import { Link } from 'react-router-dom'
-import { useAppDispatch } from '../../lib/hooks'
+
 import * as auth from '../../lib/auth/reducer'
 
 import './Menu.css'
 
 const Menu = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const authState = useSelector(auth.selector)
 
   return (
@@ -16,7 +15,7 @@ const Menu = () => {
         <ul>
           <li>
             <Link to="/">
-              <img className="icon" src="/favicon.ico" />
+              <img className="icon" alt="start" src="/favicon.ico" />
             </Link>
           </li>
           <li>
@@ -40,23 +39,23 @@ const Menu = () => {
           ) : null}
           {authState.isLoggedIn ? (
             <li className="logout">
-              <a
-                href="#"
+              <button
+                className="btn-link"
                 onClick={() => {
                   dispatch(auth.logout())
                 }}>
                 <span className="title">Logga ut</span> 👋🏻
-              </a>
+              </button>
             </li>
           ) : (
             <li className="login">
-              <a
-                href="#"
+              <button
+                className="btn-link"
                 onClick={() => {
                   dispatch(auth.login())
                 }}>
                 <span className="title">Logga in</span> ⚡️
-              </a>
+              </button>
             </li>
           )}
         </ul>

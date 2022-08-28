@@ -54,15 +54,10 @@ export const getConsumption = createAsyncThunk<
     last?: number
   }
 >('tibber/getConsumption', async (args) => {
-  args = {
-    last: 100,
-    ...args,
-  }
-
   const result = await doRequest<ConsumptionResult>(`{
       viewer {
         home(id: "${args.homeId}") {
-          consumption(resolution: ${args.interval}, last: ${args.last}) {
+          consumption(resolution: ${args.interval}, last: ${args.last || 100}) {
             nodes {
               from
               to
@@ -102,17 +97,12 @@ export const getPrice = createAsyncThunk<
     last?: number
   }
 >('tibber/getPrice', async (args) => {
-  args = {
-    last: 100,
-    ...args,
-  }
-
   const result = await doRequest<PriceResult>(`{
     viewer {
       home(id: "${args.homeId}") {
         currentSubscription{
           priceInfo{
-            range(resolution: ${args.interval}, last: ${args.last}){
+            range(resolution: ${args.interval}, last: ${args.last || 100}){
               nodes{
                 startsAt,
                 total,
@@ -141,8 +131,8 @@ async function doRequest<T>(query: string) {
     }),
   }
   try {
-    let response = await handledFetch('https://api.tibber.com/v1-beta/gql', init)
-    let result: GQLResponse<T> = await response.json()
+    const response = await handledFetch('https://api.tibber.com/v1-beta/gql', init)
+    const result: GQLResponse<T> = await response.json()
     return result.data
   } catch (err) {
     console.log(err)
@@ -150,6 +140,7 @@ async function doRequest<T>(query: string) {
   }
 }
 
+// eslint-disable-next-line
 interface GQLResponse<T = any> {
   data: T
 }

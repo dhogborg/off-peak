@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 
-import * as Types from './types'
 import * as thunks from './thunks'
 import { parseCSV, ProfileNode } from '.'
 

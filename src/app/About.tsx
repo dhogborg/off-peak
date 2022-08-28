@@ -1,16 +1,16 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector } from 'src/lib/hooks'
 import { Link } from 'react-router-dom'
 
 import Screen from '../app/components/Screen'
 
-import { useAppDispatch } from '../lib/hooks'
+import { useDispatch } from '../lib/hooks'
 import * as auth from '../lib/auth/reducer'
 
 import './About.css'
 
 const About = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const authState = useSelector(auth.selector)
 
   return (
@@ -29,7 +29,7 @@ const About = () => {
         </p>
         <p>
           Appen är möjlig tack vare det trevliga APIet (och människorna) på{' '}
-          <a href="https://sverige.tibber.com" target="_blank">
+          <a href="https://sverige.tibber.com" target="_blank" rel="noreferrer">
             Tibber.
           </a>
           <br />
@@ -39,18 +39,18 @@ const About = () => {
           {authState.isLoggedIn ? (
             <Link to={'/homes'}>Visa din data 👉🏻</Link>
           ) : (
-            <a
-              href="#"
+            <button
+              className="btn-link"
               onClick={() => {
                 dispatch(auth.login())
               }}>
               Logga in med Tibber ⚡️
-            </a>
+            </button>
           )}
         </p>
         <p>
           Appen är open source och tillgänglig på{' '}
-          <a href="https://github.com/dhogborg/off-peak" target="_blank">
+          <a href="https://github.com/dhogborg/off-peak" target="_blank" rel="noreferrer">
             github.com
           </a>
           . <br />

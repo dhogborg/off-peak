@@ -29,7 +29,8 @@
   margin-top: 20px;
 }
 
-.cover a {
+.cover a,
+.cover button span {
   text-decoration: none;
   margin: 4px;
   display: inline-block;
@@ -37,12 +38,17 @@
   color: #ddd;
   padding: 4px;
   border-radius: 2px;
-  min-width: 200px;
+  min-width: 210px;
   text-align: center;
   box-shadow: 4px 4px 0px #ccc;
+  font-size: 18px;
 }
 
-.cover a:hover {
+/* .cover button {
+} */
+
+.cover a:hover,
+.cover button span:hover {
   color: #fff;
   box-shadow: 5px 5px 0px #ccc;
 }

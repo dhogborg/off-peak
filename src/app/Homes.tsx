@@ -6,22 +6,19 @@ import Alert from '../app/components/Alert'
 
 import './Homes.css'
 
-import { useAppDispatch } from '../lib/hooks'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'src/lib/hooks'
+
 import { push } from 'connected-react-router'
 
 export default function Homes() {
-  const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
   const tibberState = useSelector(tibber.selector)
 
-  useEffect(
-    () => {
-      if (tibberState.homes.items.length === 0) {
-        dispatch(tibber.getHomes())
-      }
-    },
-    [dispatch]
-  )
+  useEffect(() => {
+    if (tibberState.homes.items === undefined) {
+      dispatch(tibber.getHomes())
+    }
+  }, [dispatch, tibberState.homes.items])
 
   const clickedHome = (home: tibber.Home) => {
     const { priceAreaCode, gridAreaCode } = home.meteringPointData
@@ -32,18 +29,19 @@ export default function Homes() {
     return <Alert type="oh-no">{tibberState.homes.error}</Alert>
   }
 
-  if (tibberState.homes.status === 'loading') {
+  if (tibberState.homes.status === 'loading' || tibberState.homes.items === undefined) {
     return <Alert>Laddar...</Alert>
   }
 
-  switch (tibberState.homes.items.length) {
+  switch (tibberState.homes.items?.length) {
     case 0:
       return <Alert>Det finns inga hem kopplade till ditt konto</Alert>
 
-    case 1:
+    case 1: {
       const home = tibberState.homes.items[0]
       const { priceAreaCode, gridAreaCode } = home.meteringPointData
       return <Redirect to={`/homes/${priceAreaCode}/${gridAreaCode}/${home.id}/graphs`} />
+    }
 
     default:
       return (

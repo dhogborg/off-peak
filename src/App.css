@@ -29,3 +29,12 @@ header.App-header li.login,
 header.App-header li.logout {
   float: right;
 }
+
+.btn-link {
+  background: transparent;
+  border: none;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}

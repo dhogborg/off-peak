@@ -14,7 +14,7 @@ export const client = new ClientOAuth2({
 })
 
 export function login() {
-  let uri = client.code.getUri()
+  const uri = client.code.getUri()
   window.location.href = uri
 }
 
@@ -34,9 +34,9 @@ export async function setToken(uri: string) {
   }
 
   try {
-    let response = await handledFetch('/api/v1/authorize?code=' + code[1])
+    const response = await handledFetch('/api/v1/authorize?code=' + code[1])
 
-    let result: TokenExchange = await response.json()
+    const result: TokenExchange = await response.json()
     localStorage.setItem(TOKEN_KEY, result.token)
     localStorage.setItem(TOKEN_EXPIRY_KEY, result.expires)
   } catch (err) {
