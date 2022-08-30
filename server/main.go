@@ -228,7 +228,7 @@ func getSnapshots(c *gin.Context) (int, interface{}, error) {
 		return http.StatusInternalServerError, nil, errors.New("db request error")
 	}
 
-	var snaps []*Snapshot
+	snaps := []*Snapshot{}
 	for _, d := range docs {
 		var snap *Snapshot
 		err = d.DataTo(&snap)
@@ -240,7 +240,7 @@ func getSnapshots(c *gin.Context) (int, interface{}, error) {
 		snaps = append(snaps, snap)
 	}
 
-	return 0, &SnapshotPage{
+	return http.StatusOK, &SnapshotPage{
 		Snapshots: snaps,
 		Count:     len(docs),
 	}, nil
