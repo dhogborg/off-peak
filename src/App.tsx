@@ -10,8 +10,15 @@ import GraphLoader from './app/Graph/GraphLoader'
 import SnapLoader from './app/Graph/SnapLoader'
 
 import './App.css'
+import { useDispatch } from 'src/lib/hooks'
+import { setBetaMode } from './lib/config'
 
 export default function App() {
+  const dispatch = useDispatch()
+  if (window.location.hash === '#beta') {
+    dispatch(setBetaMode(true))
+  }
+
   return (
     <Switch>
       <>

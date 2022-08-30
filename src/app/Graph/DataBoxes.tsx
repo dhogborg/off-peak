@@ -1,4 +1,3 @@
-import React from 'react'
 import classnames from 'classnames'
 
 import * as dataprep from '../../lib/dataprep'
@@ -13,19 +12,29 @@ type Props = {
 }
 
 const dayIsComplete = (day: dataprep.Day) => {
-  return !!(day.potentialCost && day.totalCost && day.consumption)
+  return (
+    day.potentialCost !== undefined && day.totalCost !== undefined && day.consumption !== undefined
+  )
 }
 
 const DataBoxes = function (props: Props) {
-  // The cost when charged hourly rate
+  const useBeta = useSelector(config.selector).beta
+
+  // clear out the incomplete days
   const completeDays = props.days.filter(dayIsComplete)
 
+  // The cost when charged hourly rate
   const totalCost = completeDays.map((day) => day.totalCost).reduce((p, v) => p + v, 0)
-  // The cost as it would have been if charged by daily average
-  // const potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
   // Total consumption
   const consumption = completeDays.map((day) => day.consumption).reduce((p, v) => p + v, 0)
-  const potentialCost = consumption * props.weightedAverage
+
+  // The alternative cost, or savings from using off-peak electricity
+  let potentialCost: number
+  if (useBeta) {
+    potentialCost = consumption * props.weightedAverage
+  } else {
+    potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
+  }
 
   return (
     <div className="info-box">
