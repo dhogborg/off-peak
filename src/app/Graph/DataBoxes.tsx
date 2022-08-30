@@ -51,9 +51,9 @@ const DataBoxes = function (props: Props) {
           ) : (
             <span>
               Du betalade mer de senaste {props.days.length} dagarna jämfört med vad du hade gjort
-              med ett kontrakt med dagavläst räkning. Detta kan bero på att du använt prylar som
-              drar mycket el under dyra timmar, eller att du inte använt mycket el under dygnets
-              billiga timmar. Se histogrammet längre ner.
+              med ett avtal med timavläst räkning. Detta kan bero på att du använt prylar som drar
+              mycket el under dyra timmar, eller att du inte använt mycket el under dygnets billiga
+              timmar. Se histogrammet längre ner.
             </span>
           )}
         </div>
@@ -70,13 +70,22 @@ const DataBoxes = function (props: Props) {
 export default DataBoxes
 
 const CostInfo = function (props: { totalCost: number; potentialCost: number }) {
+  const currency = 'SEK'
+
   const deltaCost = props.potentialCost - props.totalCost
   const deltaLabelCl = classnames('currency', {
     nice: deltaCost > 0,
     ouch: deltaCost < 0,
   })
 
-  const currency = 'SEK'
+  let savedCost = '...'
+  let savedPercentage = '...'
+  let potentialCost = 'Väntar på data'
+  if (!isNaN(deltaCost) && !isNaN(props.potentialCost)) {
+    savedCost = deltaCost.toFixed(0) + ' ' + currency
+    potentialCost = props.potentialCost.toFixed(0) + ' ' + currency
+    savedPercentage = (-100 * (props.totalCost / props.potentialCost - 1)).toFixed(0) + '%'
+  }
 
   return (
     <div className="cost-box">
@@ -84,22 +93,18 @@ const CostInfo = function (props: { totalCost: number; potentialCost: number }) 
         <dt>Kostnad med timavräkning</dt>
         <dd>
           <label className="currency hour-cost">
-            {props.totalCost.toFixed(1)} {currency}
+            {props.totalCost.toFixed(0)} {currency}
           </label>
         </dd>
         <dt>Kostnad med viktat spotpris*</dt>
 
         <dd>
-          <label className="currency spot-cost">
-            {!isNaN(props.potentialCost)
-              ? props.potentialCost.toFixed(1) + ' ' + currency
-              : 'Väntar på data'}
-          </label>
+          <label className="currency spot-cost">{potentialCost}</label>
         </dd>
         <dt>Sparat</dt>
         <dd>
           <label className={deltaLabelCl}>
-            {!isNaN(deltaCost) ? deltaCost.toFixed(1) + ' ' + currency : '...'}
+            {savedCost} / {savedPercentage}
           </label>
         </dd>
       </dl>
@@ -133,7 +138,7 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
       <dl>
         <dt>Konsumtion {link}</dt>
         <dd>
-          <label className="consumption">{props.consumption.toFixed(1)} kWh</label>
+          <label className="consumption">{props.consumption.toFixed(0)} kWh</label>
         </dd>
         <dt>Snittpris per kWh</dt>
         <dd>
