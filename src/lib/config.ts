@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store'
 
-export type PeriodTypes = 'monthly' | 'continuous'
+export type PeriodTypes = 'last-month' | 'this-month' | 'rolling'
 export interface State {
   periodType: PeriodTypes
   beta: boolean
 }
 
 const initialState: State = {
-  periodType: 'continuous',
+  periodType: 'this-month',
   beta: false,
 }
 

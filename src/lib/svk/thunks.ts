@@ -1,21 +1,50 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import moment from 'moment'
+import { PeriodTypes } from '../config'
 import { handledFetch } from '../http'
 import * as Types from './types'
 
 /**
  * @param last the number of hours to retrive
  */
-export const getProfile = createAsyncThunk<string, { area: Types.Area; last?: number }>(
+export const getProfile = createAsyncThunk<string, { area: Types.Area; period: PeriodTypes }>(
   'svk/getProfile',
   async (args) => {
-    args = {
-      last: 100,
-      ...args,
-    }
+    const { from, to } = ((): { from: string; to: string } => {
+      const YYMMDD = 'YYYY-MM-DD'
+      switch (args.period) {
+        case 'last-month': {
+          const startLastMonth = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
+          const endLastMonth = moment(startLastMonth)
+            .add(1, 'month')
+            .subtract(1, 'day')
+            .hour(0)
+            .minute(0)
+            .second(0)
+          return {
+            from: startLastMonth.format(YYMMDD),
+            to: endLastMonth.format(YYMMDD),
+          }
+        }
+        case 'this-month':
+          return {
+            from: moment().date(1).format(YYMMDD),
+            to: moment().format(YYMMDD),
+          }
+        case 'rolling':
+          return {
+            from: moment()
+              .subtract(33 * 24, 'hours')
+              .format(YYMMDD),
+            to: moment().format(YYMMDD),
+          }
+      }
+    })()
 
-    const from = moment().subtract(args.last, 'hours').format('YYYY-MM-DD')
-    const to = moment().format('YYYY-MM-DD')
+    console.log({ from, to })
+    if (from === '1970-01-01') {
+      throw new Error('invalid start date')
+    }
 
     const params = [`periodFrom=${from}`, `periodTo=${to}`, `networkAreaIdString=${args.area}`]
     const url = `/api/v1/svkprofile?` + params.join('&')

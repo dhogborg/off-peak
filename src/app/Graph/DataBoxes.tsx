@@ -6,9 +6,13 @@ import * as config from '../../lib/config'
 import './DataBoxes.css'
 import { useDispatch, useSelector } from 'src/lib/hooks'
 
+import { DataSourceContext } from './Graphs'
+import { useContext } from 'react'
+
 type Props = {
   days: dataprep.Day[]
   weightedAverage: number
+  snapshot?: boolean
 }
 
 const dayIsComplete = (day: dataprep.Day) => {
@@ -115,20 +119,39 @@ const CostInfo = function (props: { totalCost: number; potentialCost: number }) 
 const Consumed = function (props: { consumption: number; totalCost: number; dayCount: number }) {
   const dispatch = useDispatch()
   const configState = useSelector(config.selector)
+  const dataSource = useContext(DataSourceContext)
+
+  const renderPeriod = (p: config.PeriodTypes) => {
+    switch (p) {
+      case 'last-month':
+        return <span>förra månaden</span>
+      case 'this-month':
+        return <span>sedan den 1e i månaden</span>
+      case 'rolling':
+        return <span>senaste {props.dayCount} dagarna</span>
+    }
+  }
 
   const link = (
     <button
       className="btn-link period-switch"
       key={configState.periodType}
       onClick={() => {
-        const p = configState.periodType === 'continuous' ? 'monthly' : 'continuous'
+        let p: config.PeriodTypes
+        switch (configState.periodType) {
+          case 'last-month':
+            p = 'this-month'
+            break
+          case 'this-month':
+            p = 'rolling'
+            break
+          case 'rolling':
+            p = 'last-month'
+            break
+        }
         dispatch(config.setPeriod(p))
       }}>
-      {configState.periodType === 'continuous' ? (
-        <span>senaste {props.dayCount} dagarna</span>
-      ) : (
-        <span>sedan den 1e i månaden</span>
-      )}
+      {dataSource === 'api' ? renderPeriod(configState.periodType) : null}
     </button>
   )
 

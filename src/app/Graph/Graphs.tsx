@@ -1,3 +1,4 @@
+import React from 'react'
 import * as tibber from '../../lib/tibber'
 import * as svk from '../../lib/svk'
 import * as dataprep from '../../lib/dataprep'
@@ -6,6 +7,8 @@ import Screen from '../components/Screen'
 import DataBoxes from './DataBoxes'
 import ConsumptionChart from './Charts/Consumption'
 import HistogramChart from './Charts/Histogram'
+
+export const DataSourceContext = React.createContext<'snapshot' | 'api'>('api')
 
 type Props = {
   days: dataprep.Day[]
