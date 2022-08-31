@@ -35,6 +35,8 @@ var staticFlag = flag.String("static", "", "Location of static files to serve")
 
 var firebaseApp *firebase.App
 
+var svkCache = NewCacheRepo()
+
 func main() {
 	logrus.Info("--- Starting server ---")
 	if os.Getenv(envOAuthClientID) == "" ||
@@ -152,6 +154,11 @@ func svkProfile(c *gin.Context) (int, interface{}, error) {
 		`&periodTo=` + c.Query("periodTo") +
 		`&networkAreaIdString=` + c.Query("networkAreaIdString")
 
+	if cache, ok := svkCache.Get(url); ok {
+		c.String(200, cache)
+		return http.StatusOK, nil, nil
+	}
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return http.StatusInternalServerError, nil, errors.New("response error: " + err.Error())
@@ -161,7 +168,10 @@ func svkProfile(c *gin.Context) (int, interface{}, error) {
 		return http.StatusInternalServerError, nil, errors.New("body error: " + err.Error())
 	}
 
-	c.String(200, string(bytes))
+	body := string(bytes)
+	svkCache.Set(url, body)
+
+	c.String(200, body)
 	return 0, nil, nil
 }
 
