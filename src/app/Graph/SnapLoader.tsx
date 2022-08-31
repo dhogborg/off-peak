@@ -11,6 +11,7 @@ import Alert from '../components/Alert'
 import Graphs from './Graphs'
 
 import './SnapLoader.css'
+import { DataSourceContext } from './Graphs'
 
 type Params = {
   id: string
@@ -62,12 +63,14 @@ export default function SnapLoader(props: Props) {
         Detta är ett snapshot av ett hem i {homeArea(item.snapshot.home.priceAreaCode)} från{' '}
         {dateFmt(fromDate)} till {dateFmt(toDate)}
       </div>
-      <Graphs
-        days={days}
-        consumption={consumptionNodes}
-        profile={profileNodes}
-        weightedAverage={weightedAverage}
-      />
+      <DataSourceContext.Provider value={'snapshot'}>
+        <Graphs
+          days={days}
+          consumption={consumptionNodes}
+          profile={profileNodes}
+          weightedAverage={weightedAverage}
+        />
+      </DataSourceContext.Provider>
     </div>
   )
 }

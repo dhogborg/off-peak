@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { match } from 'react-router'
 
+import moment from 'moment'
 import * as tibber from '../../lib/tibber'
 import * as svk from '../../lib/svk/'
 import * as dataprep from '../../lib/dataprep'
@@ -13,6 +14,8 @@ import * as snapshotStore from '../../lib/snapshots'
 import './GraphLoader.css'
 import { useDispatch, useSelector } from 'src/lib/hooks'
 import { push } from 'connected-react-router'
+
+import { DataSourceContext } from './Graphs'
 
 type Params = {
   id: string
@@ -36,9 +39,21 @@ export default function GraphLoader(props: Props) {
   const { gridAreaCode, priceAreaCode } = props.match.params
   const homeId = props.match.params.id
 
-  let period = 32 * 24
-  if (configState.periodType === 'monthly') {
-    period = new Date().getDate() * 24
+  let period: number
+  switch (configState.periodType) {
+    case 'last-month': {
+      const now = moment()
+      const start = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
+      const diff = moment.duration(now.diff(start))
+      period = Math.ceil(diff.as('hours'))
+      break
+    }
+    case 'this-month':
+      period = period = 32 * 24
+      break
+    case 'rolling':
+      period = new Date().getDate() * 24
+      break
   }
 
   useEffect(() => {
@@ -50,10 +65,10 @@ export default function GraphLoader(props: Props) {
     // price is sometimes ahead by 24 hours, so we always add another period on it
     dispatch(tibber.getPrice({ homeId, interval: tibber.Interval.Hourly, last: period + 24 }))
 
-    dispatch(svk.getProfile({ area: gridAreaCode, last: period }))
+    dispatch(svk.getProfile({ area: gridAreaCode, period: configState.periodType }))
 
     setFirstLoad(false)
-  }, [dispatch, homeId, period, gridAreaCode])
+  }, [dispatch, homeId, period, configState.periodType, gridAreaCode])
 
   const store = async () => {
     dispatch(
@@ -124,12 +139,14 @@ export default function GraphLoader(props: Props) {
           Spara snapshot
         </button>
       </div>
-      <Graphs
-        days={days}
-        consumption={tibberState.consumption.nodes}
-        profile={svkState.nodes}
-        weightedAverage={weightedAverage}
-      />
+      <DataSourceContext.Provider value={'api'}>
+        <Graphs
+          days={days}
+          consumption={tibberState.consumption.nodes}
+          profile={svkState.nodes}
+          weightedAverage={weightedAverage}
+        />
+      </DataSourceContext.Provider>
     </div>
   )
 }
