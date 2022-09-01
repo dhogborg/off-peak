@@ -12,7 +12,6 @@ import { useContext } from 'react'
 type Props = {
   days: dataprep.Day[]
   weightedAverage: number
-  snapshot?: boolean
 }
 
 const dayIsComplete = (day: dataprep.Day) => {
@@ -22,8 +21,6 @@ const dayIsComplete = (day: dataprep.Day) => {
 }
 
 const DataBoxes = function (props: Props) {
-  const useBeta = useSelector(config.selector).beta
-
   // clear out the incomplete days
   const completeDays = props.days.filter(dayIsComplete)
 
@@ -31,14 +28,15 @@ const DataBoxes = function (props: Props) {
   const totalCost = completeDays.map((day) => day.totalCost).reduce((p, v) => p + v, 0)
   // Total consumption
   const consumption = completeDays.map((day) => day.consumption).reduce((p, v) => p + v, 0)
-
   // The alternative cost, or savings from using off-peak electricity
-  let potentialCost: number
-  if (useBeta) {
-    potentialCost = consumption * props.weightedAverage
-  } else {
-    potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
-  }
+  const potentialCost = consumption * props.weightedAverage
+
+  // let potentialCost: number
+  // if (useBeta) {
+  //   potentialCost = consumption * props.weightedAverage
+  // } else {
+  //   potentialCost = completeDays.map((day) => day.potentialCost).reduce((p, v) => p + v, 0)
+  // }
 
   return (
     <div className="info-box">
@@ -54,10 +52,9 @@ const DataBoxes = function (props: Props) {
             <span>Du sparar pengar genom att använda off-peak el, nice.</span>
           ) : (
             <span>
-              Du betalade mer de senaste {props.days.length} dagarna jämfört med vad du hade gjort
-              med ett avtal med timavläst räkning. Detta kan bero på att du använt prylar som drar
-              mycket el under dyra timmar, eller att du inte använt mycket el under dygnets billiga
-              timmar. Se histogrammet längre ner.
+              Du betalade mer under denna period jämfört med ett rörligt avtal med viktat spotpris.
+              Detta kan bero på att du använt prylar som drar mycket el under dyra timmar, eller att
+              du inte använt mycket el under dygnets billiga timmar. Se histogrammet längre ner.
             </span>
           )}
         </div>
@@ -140,7 +137,11 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
         let p: config.PeriodTypes
         switch (configState.periodType) {
           case 'last-month':
-            p = 'this-month'
+            if (new Date().getDate() === 1) {
+              p = 'rolling'
+            } else {
+              p = 'this-month'
+            }
             break
           case 'this-month':
             p = 'rolling'

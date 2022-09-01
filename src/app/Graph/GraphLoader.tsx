@@ -49,10 +49,10 @@ export default function GraphLoader(props: Props) {
       break
     }
     case 'this-month':
-      period = period = 32 * 24
+      period = new Date().getDate() * 24
       break
     case 'rolling':
-      period = new Date().getDate() * 24
+      period = period = 32 * 24
       break
   }
 
