@@ -30,7 +30,7 @@ const Graphs = (props: Props) => {
           användning den timmen. Spotpris 💵 ️✖️ Användning ⚡️ = Att betala 💸.
         </p>
         <p>
-          Om din användning mäts per dag så betalar du fortfarande spotpris per timme, men din
+          Om din användning mäts per månad så betalar du fortfarande spotpris per timme, men din
           konsumption en viss timme räknas ut genom att lägga ihop alla hushåll i ditt område och
           betala din andel av den totala konsumptionen. (Spotpris 💵 ️✖️ Allas användning ⚡️) ✖️
           Din <b>%</b> andel ⚡️ = Att betala 💸.
@@ -69,9 +69,9 @@ const Graphs = (props: Props) => {
       <Screen height="20vh">
         <h3>Hur man läser det diagrammet</h3>
         <p>
-          Staplar visar ditt genomsnittliga konsumptionsmöster över ett dygn. Den blå linjen är ett
-          snitthushålls konsumptionsmönster, och det är generellt sett högre under dagen, höst runt
-          kvällen. När dina staplar är under den blå linjen konsumerar du mindre i snitt, och
+          Staplarna visar ditt genomsnittliga konsumptionsmöster över ett dygn. Den blå linjen är
+          ett snitthushålls konsumptionsmönster, och det är generellt sett högre under dagen, höst
+          runt kvällen. När dina staplar är under den blå linjen konsumerar du mindre i snitt, och
           omvänt. Om du konsumerar mindre än snittet under dagtid, och mer under natten, då har du
           ett konsumptionsmöster som kommer vara väl anpassat för att spara pengar på timavräkning.
         </p>

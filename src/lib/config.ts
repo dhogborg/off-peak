@@ -8,7 +8,7 @@ export interface State {
 }
 
 const initialState: State = {
-  periodType: 'this-month',
+  periodType: 'rolling',
   beta: false,
 }
 
