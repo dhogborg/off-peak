@@ -101,7 +101,15 @@ export default function HistogramChart(props: Props) {
       datasets.push(consumptionHistogram(props.consumption))
     }
     if (props.profile.length > 0) {
-      const days: { [key: string]: svk.ProfileNode[] } = {}
+      const days: { [key: string]: svk.ProfileNode[] } = {
+        '1': [],
+        '2': [],
+        '3': [],
+        '4': [],
+        '5': [],
+        '6': [],
+        '7': [],
+      }
       for (const p of props.profile) {
         const d = moment(p.time).format('E')
         if (!days[d]) days[d] = []
