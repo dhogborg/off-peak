@@ -12,7 +12,7 @@ let periodType = 'rolling' as PeriodTypes;
 
 try {
   const savedPeriod = localStorage.getItem('period');
-  
+
   if(savedPeriod === 'last-month' || savedPeriod === 'this-month' || savedPeriod === 'rolling') {
     periodType = savedPeriod;
   } else {
@@ -32,10 +32,6 @@ export const slice = createSlice({
   initialState,
 
   reducers: {
-    hydrate: (state, action) => {
-      // state.periodType = 'rolling'
-      return action.payload
-    },
     setPeriod: (state, action: PayloadAction<PeriodTypes>) => {
       state.periodType = action.payload;
 
