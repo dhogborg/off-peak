@@ -10,7 +10,8 @@ See `src/oauth2.example.ts`, fill in the application credentials from Tibber.
 
 ### Setup
 
-Run `yarn install` in project root
+* Run `nvm use` to set the Node.js version
+* Run `yarn install` in project root
 
 ### Running
 Run `make run` in the `server/` folder, this starts a CORS proxy.
