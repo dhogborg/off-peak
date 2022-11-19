@@ -120,8 +120,8 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
 
   const renderPeriod = (p: config.PeriodTypes) => {
     switch (p) {
-      case 'last-month':
-        return <span>förra månaden</span>
+      // case 'last-month':
+      //   return <span>förra månaden</span>
       case 'this-month':
         return <span>sedan den 1e i månaden</span>
       case 'rolling':
@@ -137,17 +137,18 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
         let p: config.PeriodTypes
         switch (configState.periodType) {
           case 'last-month':
-            if (new Date().getDate() === 1) {
-              p = 'rolling'
-            } else {
-              p = 'this-month'
-            }
+            p = 'rolling'
+            //   if (new Date().getDate() === 1) {
+            //     p = 'rolling'
+            //   } else {
+            //     p = 'this-month'
+            //   }
             break
           case 'this-month':
             p = 'rolling'
             break
           case 'rolling':
-            p = 'last-month'
+            p = 'this-month'
             break
         }
         dispatch(config.setPeriod(p))
