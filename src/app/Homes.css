@@ -4,15 +4,15 @@
 }
 
 .homes .home {
-  display: inline-block;
-  width: 180px;
-  height: 180px;
+  display: block;
+  max-width: 380px;
   background-color: #444;
   color: white;
   box-shadow: 5px 6px #d2d2d2;
   line-height: 25px;
   cursor: pointer;
-  margin: 5px;
+  margin: 10px auto;
+  padding: 1px;
 }
 
 .home .address {

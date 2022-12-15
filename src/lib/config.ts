@@ -8,7 +8,7 @@ export interface State {
 }
 
 const getInitialState = (): State => {
-  let periodType = 'rolling' as PeriodTypes
+  let periodType: PeriodTypes = 'rolling'
 
   try {
     const savedPeriod = localStorage.getItem('period')
@@ -25,6 +25,11 @@ const getInitialState = (): State => {
     }
   } catch (err) {
     console.error('Unable to get period in localStorage', err)
+  }
+
+  // The first of month this-month is nonsensical since we don't have any data yet
+  if (new Date().getDate() === 1) {
+    periodType = 'rolling'
   }
 
   return {

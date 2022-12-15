@@ -70,8 +70,9 @@ const Home = (props: HomeProps) => {
       }}>
       <div className="address">
         <div className="address1">{props.home.address.address1}</div>
-        <div className="zip">{props.home.address.postalCode}</div>
-        <div className="city">{props.home.address.city}</div>
+        <div className="address2">
+          {props.home.address.postalCode} {props.home.address.city}
+        </div>
       </div>
       {props.children}
     </div>
