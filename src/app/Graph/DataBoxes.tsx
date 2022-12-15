@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'src/lib/hooks'
 
 import { DataSourceContext } from './Graphs'
 import { useContext } from 'react'
+import moment from 'moment'
 
 type Props = {
   days: dataprep.Day[]
@@ -19,6 +20,13 @@ const dayIsComplete = (day: dataprep.Day) => {
     day.potentialCost !== undefined && day.totalCost !== undefined && day.consumption !== undefined
   )
 }
+
+moment.updateLocale('en', {
+  months : [
+      "Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli",
+      "Augusti", "September", "Oktober", "November", "December"
+  ]
+});
 
 const DataBoxes = function (props: Props) {
   // clear out the incomplete days
@@ -112,7 +120,13 @@ const CostInfo = function (props: { totalCost: number; potentialCost: number }) 
     </div>
   )
 }
-
+const getYear = function () {
+  const end = moment().subtract(1 ,'month').endOf('month').format('MMMM') //
+  return `Januari - ${end}`
+}
+const getLastMonth = function () {
+  return moment().subtract(1, 'month').format('MMMM')
+}
 const Consumed = function (props: { consumption: number; totalCost: number; dayCount: number }) {
   const dispatch = useDispatch()
   const configState = useSelector(config.selector)
@@ -120,8 +134,12 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
 
   const renderPeriod = (p: config.PeriodTypes) => {
     switch (p) {
-      // case 'last-month':
-      //   return <span>förra månaden</span>
+      case 'last-year':
+        return 'Förra året'
+      case 'this-year':
+        return getYear()
+      case 'last-month':
+        return getLastMonth()
       case 'this-month':
         return <span>sedan den 1e i månaden</span>
       case 'rolling':
@@ -136,16 +154,17 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
       onClick={() => {
         let p: config.PeriodTypes
         switch (configState.periodType) {
-          case 'last-month':
+          case 'last-year':
             p = 'rolling'
-            //   if (new Date().getDate() === 1) {
-            //     p = 'rolling'
-            //   } else {
-            //     p = 'this-month'
-            //   }
+            break
+          case 'this-year':
+            p = 'last-year'
+            break
+          case 'last-month':
+            p = 'this-year'
             break
           case 'this-month':
-            p = 'rolling'
+            p = 'last-month'
             break
           case 'rolling':
             p = 'this-month'

@@ -41,6 +41,20 @@ export default function GraphLoader(props: Props) {
 
   let period: number
   switch (configState.periodType) {
+    case 'last-year': {
+      const now = moment().subtract(1, 'year');
+      const start = moment(now.format('YYYY')).date(1).hour(0).minute(0).second(0)
+      const diff = moment.duration(now.diff(start))
+      period = Math.ceil(diff.as('hours'))
+      break
+    }
+    case 'this-year': {
+      const now = moment()
+      const start = moment(now.format('YYYY')).date(1).hour(0).minute(0).second(0)
+      const diff = moment.duration(now.diff(start))
+      period = Math.ceil(diff.as('hours'))
+      break
+    }
     case 'last-month': {
       const now = moment()
       const start = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
