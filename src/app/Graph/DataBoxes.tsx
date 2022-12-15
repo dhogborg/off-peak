@@ -125,7 +125,12 @@ const getYear = function () {
   return `Januari - ${end}`
 }
 const getLastMonth = function () {
-  return moment().subtract(1, 'month').format('MMMM')
+  const month = moment().subtract(1, 'month').format('MMMM')
+  return `i ${month}`
+}
+const getMonth = function () {
+  const month = moment().format('MMMM')
+  return `i ${month}`
 }
 const Consumed = function (props: { consumption: number; totalCost: number; dayCount: number }) {
   const dispatch = useDispatch()
@@ -141,7 +146,7 @@ const Consumed = function (props: { consumption: number; totalCost: number; dayC
       case 'last-month':
         return getLastMonth()
       case 'this-month':
-        return <span>sedan den 1e i månaden</span>
+        return getMonth()
       case 'rolling':
         return <span>senaste {props.dayCount} dagarna</span>
     }
