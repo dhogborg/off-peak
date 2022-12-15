@@ -38,29 +38,29 @@ var firebaseApp *firebase.App
 var svkCache = NewCacheRepo()
 
 func main() {
-	logrus.Info("--- Starting server ---")
+
 	if os.Getenv(envOAuthClientID) == "" ||
 		os.Getenv(envOAuthClientSecret) == "" ||
 		os.Getenv(envOAuthCallback) == "" {
-		logrus.Error("missing OAuth credentials")
-		os.Exit(0)
+		logrus.Warn("missing OAuth credentials, login will be disabled")
 	}
 
 	// Create a Firebase app configuration for stored snapshots
 	var err error
 
-	// Use the application default credentials
-	conf := &firebase.Config{ProjectID: os.Getenv(envFirebaseProject)}
-	sa := option.WithCredentialsFile(os.Getenv(envFirebaseKey))
-	firebaseApp, err = firebase.NewApp(context.Background(), conf, sa)
-	if err != nil {
-		logrus.WithError(err).Error("error initializing firebase")
-		os.Exit(0)
+	if firebaseDb := os.Getenv(envFirebaseProject); firebaseDb != "" {
+		conf := &firebase.Config{ProjectID: os.Getenv(envFirebaseProject)}
+		sa := option.WithCredentialsFile(os.Getenv(envFirebaseKey))
+		firebaseApp, err = firebase.NewApp(context.Background(), conf, sa)
+		if err != nil {
+			logrus.WithError(err).Error("error initializing firebase")
+			os.Exit(0)
+		}
+	} else {
+		logrus.Warn("no firebase db name: skipping firebase configuration")
 	}
 
-	if os.Getenv(envFirebaseDB) == "" {
-		logrus.Error("missing firebase DB name")
-	}
+	logrus.Info("--- Starting server ---")
 
 	router := gin.Default()
 	if os.Getenv(envGinMode) == "release" {
