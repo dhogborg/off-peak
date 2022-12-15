@@ -143,7 +143,11 @@ export default function GraphLoader(props: Props) {
   )
 
   if (!firstLoad && days.length === 0) {
-    return <Alert type="oh-no">Hämtningsfel, data saknas</Alert>
+    localStorage.removeItem('period');
+    setTimeout(() =>  
+      dispatch(config.setPeriod('rolling'))
+    , 2500);
+    return <Alert type="oh-no">Data saknas för vald period, laddar tidigare data.</Alert> 
   }
 
   return (
