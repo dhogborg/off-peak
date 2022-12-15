@@ -1,6 +1,10 @@
 VERSION=g$(shell git describe --always)
 PROJECT?=off-peak-224318
 
+.PHONY: setup
+setup:
+	yarn install
+
 .PHONY: run
 run: 
 	yarn start

@@ -24,7 +24,8 @@ yarn-error.log*
 
 .vscode
 server/bin
-client.env
+server/client.env
+docker.env
 app.yaml
 secrets
 
