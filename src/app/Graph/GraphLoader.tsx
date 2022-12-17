@@ -41,6 +41,20 @@ export default function GraphLoader(props: Props) {
 
   let period: number
   switch (configState.periodType) {
+    case 'last-year': {
+      const now = moment().subtract(1, 'year');
+      const start = moment(now.format('YYYY')).date(1).hour(0).minute(0).second(0)
+      const diff = moment.duration(now.diff(start))
+      period = Math.ceil(diff.as('hours'))
+      break
+    }
+    case 'this-year': {
+      const now = moment()
+      const start = moment(now.format('YYYY')).date(1).hour(0).minute(0).second(0)
+      const diff = moment.duration(now.diff(start))
+      period = Math.ceil(diff.as('hours'))
+      break
+    }
     case 'last-month': {
       const now = moment()
       const start = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
@@ -129,7 +143,11 @@ export default function GraphLoader(props: Props) {
   )
 
   if (!firstLoad && days.length === 0) {
-    return <Alert type="oh-no">Hämtningsfel, data saknas</Alert>
+    localStorage.removeItem('period');
+    setTimeout(() =>  
+      dispatch(config.setPeriod('rolling'))
+    , 2500);
+    return <Alert type="oh-no">Data saknas för vald period, laddar tidigare data.</Alert> 
   }
 
   return (
