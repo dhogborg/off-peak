@@ -100,7 +100,7 @@ export function aggregateDays(
     const prices = hours.map((hour) => hour.price)
     const profiles = hours.map((hour) => hour.profile)
 
-    // Skip days where we are missing data. Most likley close to our boundaries.
+    // Skip days where we are missing data. Most likely close to our boundaries.
     let valid = true
     for (let i = 0; i < consumptions.length; i++) {
       if (!consumptions[i] || !prices[i] || !profiles[i]) {

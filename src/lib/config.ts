@@ -15,8 +15,6 @@ const getInitialState = (): State => {
 
     switch (savedPeriod) {
       case 'last-month':
-        periodType = 'rolling'
-        break
       case 'this-month':
       case 'rolling':
         periodType = savedPeriod

@@ -36,6 +36,10 @@ export const getHomes = createAsyncThunk<Home[], void>('tibber/getHomes', async 
   return result.viewer.homes
 })
 
+interface ConsumptionArgs extends RangeOptions {
+  homeId: string
+}
+
 interface ConsumptionResult {
   viewer: {
     home: {
@@ -46,18 +50,13 @@ interface ConsumptionResult {
   }
 }
 
-export const getConsumption = createAsyncThunk<
-  ConsumptionNode[],
-  {
-    homeId: string
-    interval: Interval
-    last?: number
-  }
->('tibber/getConsumption', async (args) => {
-  const result = await doRequest<ConsumptionResult>(`{
+export const getConsumption = createAsyncThunk<ConsumptionNode[], ConsumptionArgs>(
+  'tibber/getConsumption',
+  async (args) => {
+    const result = await doRequest<ConsumptionResult>(`{
       viewer {
         home(id: "${args.homeId}") {
-          consumption(resolution: ${args.interval}, last: ${args.last || 100}) {
+          consumption(${rangeParameters(args)}) {
             nodes {
               from
               to
@@ -69,11 +68,16 @@ export const getConsumption = createAsyncThunk<
       }
     }`)
 
-  if (!result.viewer.home.consumption) {
-    throw new Error('missing consumption data')
+    if (!result.viewer.home.consumption) {
+      throw new Error('missing consumption data')
+    }
+    return result.viewer.home.consumption.nodes
   }
-  return result.viewer.home.consumption.nodes
-})
+)
+
+interface PriceArgs extends RangeOptions {
+  homeId: string
+}
 
 interface PriceResult {
   viewer: {
@@ -89,20 +93,15 @@ interface PriceResult {
   }
 }
 
-export const getPrice = createAsyncThunk<
-  PriceNode[],
-  {
-    homeId: string
-    interval: Interval
-    last?: number
-  }
->('tibber/getPrice', async (args) => {
-  const result = await doRequest<PriceResult>(`{
+export const getPrice = createAsyncThunk<PriceNode[], PriceArgs>(
+  'tibber/getPrice',
+  async (args) => {
+    const result = await doRequest<PriceResult>(`{
     viewer {
       home(id: "${args.homeId}") {
         currentSubscription{
           priceInfo{
-            range(resolution: ${args.interval}, last: ${args.last || 100}){
+            range(${rangeParameters(args)}){
               nodes{
                 startsAt,
                 total,
@@ -113,11 +112,12 @@ export const getPrice = createAsyncThunk<
       }
     }
   }`)
-  if (!result.viewer.home.currentSubscription.priceInfo.range) {
-    throw new Error('no price data found in range')
+    if (!result.viewer.home.currentSubscription.priceInfo.range) {
+      throw new Error('no price data found in range')
+    }
+    return result.viewer.home.currentSubscription.priceInfo.range.nodes
   }
-  return result.viewer.home.currentSubscription.priceInfo.range.nodes
-})
+)
 
 async function doRequest<T>(query: string) {
   const init: RequestInit = {
@@ -143,4 +143,51 @@ async function doRequest<T>(query: string) {
 // eslint-disable-next-line
 interface GQLResponse<T = any> {
   data: T
+}
+
+interface RangeOptions {
+  resolution: Interval
+
+  after?: Date
+  before?: Date
+  first?: number
+  last?: number
+}
+
+function rangeParameters(args: RangeOptions): string {
+  if (args.after && args.before) throw new Error('invalid combination: before && after')
+  if (args.first && args.last) throw new Error('invalid combination: last && first')
+
+  return Object.entries(args)
+    .filter(([name, value]) => {
+      if (value === undefined) return false
+      // Allowlist with the args we are using as options
+      return ['resolution', 'after', 'before', 'first', 'last'].indexOf(name) !== -1
+    })
+    .map<[string, string]>(([name, value]) => {
+      if (value instanceof Date) {
+        // Before / after on a hourly resolution is > and <, not >= and <=.
+        // Decrease the timestamp by a millisecond to include the first or last hour we are looking for.
+        switch (name) {
+          case 'after':
+            value = new Date(value.getTime() - 1)
+            break
+          case 'before':
+            value = new Date(value.getTime() + 1)
+            break
+        }
+
+        return [name, `"${btoa(value.toISOString())}"`]
+      } else if (typeof value === 'number') {
+        return [name, value.toFixed(0)]
+      } else {
+        value = '' + value
+      }
+
+      return [name, value]
+    })
+    .map(([name, value]) => {
+      return `${name}: ${value}`
+    })
+    .join(', ')
 }

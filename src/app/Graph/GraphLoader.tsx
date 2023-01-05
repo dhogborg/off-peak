@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { match } from 'react-router'
 
-import moment from 'moment'
 import * as tibber from '../../lib/tibber'
 import * as svk from '../../lib/svk/'
 import * as dataprep from '../../lib/dataprep'
@@ -16,6 +15,7 @@ import { useDispatch, useSelector } from 'src/lib/hooks'
 import { push } from 'connected-react-router'
 
 import { DataSourceContext } from './Graphs'
+import { getMonthIntervalFor } from './GraphLoader.lib'
 
 type Params = {
   id: string
@@ -39,36 +39,49 @@ export default function GraphLoader(props: Props) {
   const { gridAreaCode, priceAreaCode } = props.match.params
   const homeId = props.match.params.id
 
-  let period: number
-  switch (configState.periodType) {
-    case 'last-month': {
-      const now = moment()
-      const start = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
-      const diff = moment.duration(now.diff(start))
-      period = Math.ceil(diff.as('hours'))
-      break
-    }
-    case 'this-month':
-      period = new Date().getDate() * 24
-      break
-    case 'rolling':
-      period = period = 32 * 24
-      break
-  }
-
   useEffect(() => {
     dispatch(snapshotStore.reset())
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(tibber.getConsumption({ homeId, interval: tibber.Interval.Hourly, last: period }))
+    let first: number | undefined = undefined
+    let last: number | undefined = undefined
+    let after: Date | undefined = undefined
+    const now = new Date()
+    switch (configState.periodType) {
+      case 'last-month': {
+        let prevMonth = now.getMonth() - 1
+        if (prevMonth < 0) prevMonth = 11
+
+        const period = getMonthIntervalFor(prevMonth)
+        after = period.from
+        first = period.hours
+        break
+      }
+      case 'this-month': {
+        const period = getMonthIntervalFor(now.getMonth())
+        after = period.from
+        first = period.hours
+        break
+      }
+      case 'rolling':
+        last = last = 32 * 24
+        break
+    }
+
+    console.log({ after, last, first })
+
+    dispatch(
+      tibber.getConsumption({ homeId, resolution: tibber.Interval.Hourly, after, first, last })
+    )
+
     // price is sometimes ahead by 24 hours, so we always add another period on it
-    dispatch(tibber.getPrice({ homeId, interval: tibber.Interval.Hourly, last: period + 24 }))
+    dispatch(tibber.getPrice({ homeId, resolution: tibber.Interval.Hourly, after, first, last }))
 
     dispatch(svk.getProfile({ area: gridAreaCode, period: configState.periodType }))
 
     setFirstLoad(false)
-  }, [dispatch, homeId, period, configState.periodType, gridAreaCode])
+  }, [dispatch, homeId, configState.periodType, gridAreaCode])
 
   const store = async () => {
     dispatch(
