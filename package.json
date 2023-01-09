@@ -14,6 +14,7 @@
     "@types/react-dom": "^16.0.9",
     "@types/react-router": "^4.4.1",
     "@types/react-router-dom": "^4.3.1",
+    "@vitejs/plugin-react": "^3.0.1",
     "chart.js": "^2.7.3",
     "classnames": "^2.2.6",
     "client-oauth2": "^4.2.1",
@@ -23,6 +24,7 @@
     "eslint-prettier": "^0.0.0-empty",
     "momentjs": "^2.0.0",
     "prettier": "^2.7.1",
+    "querystring": "^0.2.1",
     "react": "^17.0.2",
     "react-chartjs-2": "^2.7.4",
     "react-copy-to-clipboard": "^5.0.1",
@@ -30,14 +32,13 @@
     "react-redux": "^7.2.6",
     "react-router": "^5",
     "react-router-dom": "^5",
-    "react-scripts": "4",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "vite": "^4.0.4",
+    "vite-tsconfig-paths": "^4.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "tsc && vite build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -50,6 +51,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "proxy": "http://localhost:8080/"
+  ]
 }

@@ -2,9 +2,13 @@ version: '3'
 
 services:
   offpeak:
-    image: dhogborg/off-peak
+    build:
+      context: ./
+      dockerfile: Dockerfile
     restart: always
+    volumes:
+      - ./secrets:/secrets
     ports:
-      - 8080:8080
+      - 3000:8080
     env_file:
-      - ./client.env
+      - ./docker.env
