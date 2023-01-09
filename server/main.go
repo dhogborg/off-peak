@@ -102,6 +102,7 @@ func env(c *gin.Context) {
 		pairs = append(pairs, k+":"+`"`+v+`"`)
 	}
 	js := strings.Join(pairs, ", ")
+	c.Header("Content-type", "application/javascript")
 	c.String(200, "window.env = {%s}", js)
 }
 

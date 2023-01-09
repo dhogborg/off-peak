@@ -1,17 +1,19 @@
 VERSION=g$(shell git describe --always)
 PROJECT?=off-peak-224318
 
+default: build
+
 .PHONY: setup
 setup:
 	yarn install
 
 .PHONY: run
 run: 
-	yarn start
+	yarn run start
 
 .PHONY: build
 build: clean
-	yarn build
+	yarn run build
 	make -C server release
 	docker build --platform linux/amd64 -t eu.gcr.io/$(PROJECT)/off-peak:latest .
 
