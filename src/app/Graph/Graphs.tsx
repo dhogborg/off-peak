@@ -13,6 +13,7 @@ export const DataSourceContext = React.createContext<'snapshot' | 'api'>('api')
 type Props = {
   days: dataprep.Day[]
   consumption: tibber.ConsumptionNode[]
+  price: tibber.PriceNode[]
   profile: svk.ProfileNode[]
   weightedAverage: number
 }
@@ -32,8 +33,8 @@ const Graphs = (props: Props) => {
         <p>
           Om din användning mäts per månad så betalar du fortfarande spotpris per timme, men din
           konsumtion en viss timme räknas ut genom att lägga ihop alla hushåll i ditt område och
-          betala din andel av den totala konsumtionen. (Spotpris 💵 ️✖️ Allas användning ⚡️) ✖️
-          Din <b>%</b> andel ⚡️ = Att betala 💸.
+          betala din andel av den totala konsumtionen. (Spotpris 💵 ️✖️ Allas användning ⚡️) ✖️ Din{' '}
+          <b>%</b> andel ⚡️ = Att betala 💸.
         </p>
         <p>
           Det betyder att ditt elpris beror på hur mycket el du använder, samt när ett snitthushåll
@@ -60,18 +61,23 @@ const Graphs = (props: Props) => {
         <p>
           Diagrammet visar <b>när</b> du konsumerar el under ett dygn, i snitt.
           <br />
-          De blå linjerna visar ett snitthushåll.
+          De blå linjerna visar ett snitthushåll. Den turkosa linjen visar medelpriset för den
+          aktuella timmen under den valda perioden.
         </p>
       </Screen>
       <Screen>
-        <HistogramChart consumption={props.consumption} profile={props.profile} />
+        <HistogramChart
+          consumption={props.consumption}
+          price={props.price}
+          profile={props.profile}
+        />
       </Screen>
       <Screen height="20vh">
         <h3>Hur man läser det diagrammet</h3>
         <p>
-          Staplarna visar ditt genomsnittliga konsumtionsmöster över ett dygn. Den blå linjen är
-          ett snitthushålls konsumtionsmönster, och det är generellt sett högre under dagen, högst
-          runt kvällen. När dina staplar är under den blå linjen konsumerar du mindre i snitt, och
+          Staplarna visar ditt genomsnittliga konsumtionsmöster över ett dygn. Den blå linjen är ett
+          snitthushålls konsumtionsmönster, och det är generellt sett högre under dagen, högst runt
+          kvällen. När dina staplar är under den blå linjen konsumerar du mindre i snitt, och
           omvänt. Om du konsumerar mindre än snittet under dagtid, och mer under natten, då har du
           ett konsumtionsmöster som kommer vara väl anpassat för att spara pengar på timavräkning.
         </p>

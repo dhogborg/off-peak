@@ -158,6 +158,7 @@ export default function GraphLoader(props: Props) {
           consumption={tibberState.consumption.nodes}
           profile={svkState.nodes}
           weightedAverage={weightedAverage}
+          price={tibberState.price.nodes}
         />
       </DataSourceContext.Provider>
     </div>

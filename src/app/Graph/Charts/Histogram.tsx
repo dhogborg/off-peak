@@ -6,8 +6,11 @@ import { newDataset, RGB } from '../../../lib/chart'
 import * as svk from '../../../lib/svk'
 import * as tibber from '../../../lib/tibber'
 
+import { consumptionHistogram, meanPrice, profileLine } from './Histogram.lib'
+
 type Props = {
   consumption: tibber.ConsumptionNode[]
+  price: tibber.PriceNode[]
   profile: svk.ProfileNode[]
 }
 
@@ -16,7 +19,14 @@ export default function HistogramChart(props: Props) {
     tooltips: {
       callbacks: {
         label: function (tooltipItem: chartjs.ChartTooltipItem, data: chartjs.ChartData) {
-          return Number(tooltipItem.yLabel).toFixed(2) + '%'
+          switch (tooltipItem.datasetIndex) {
+            case 0:
+            case 1:
+            case 2:
+              return Number(tooltipItem.yLabel).toFixed(2) + '%'
+            case 3:
+              return Number(tooltipItem.yLabel).toFixed(2) + ' SEK/kWh'
+          }
         },
       },
     },
@@ -42,50 +52,19 @@ export default function HistogramChart(props: Props) {
             display: false,
           },
         },
+        {
+          id: 'SEK/kWh',
+          type: 'linear',
+          position: 'right',
+          ticks: {
+            min: 0,
+          },
+          gridLines: {
+            display: false,
+          },
+        },
       ],
     },
-  }
-
-  const consumptionHistogram = (consumption: tibber.ConsumptionNode[]): chartjs.ChartDataSets => {
-    const absolutes: number[] = []
-    for (let i = 0; i < 24; i++) {
-      absolutes[i] = 0
-    }
-
-    let total = 0
-    for (const c of consumption) {
-      const timeOfDay = moment(c.from).hour()
-      const consumed = c.consumption != null ? c.consumption : 0
-
-      if (!absolutes[timeOfDay]) absolutes[timeOfDay] = 0
-      absolutes[timeOfDay] += consumed
-      total += consumed
-    }
-
-    const percentages = absolutes.map((v) => (v / total) * 100)
-    return newDataset('Konsumtionsmöster [%]', RGB(0, 0, 0), {
-      type: 'bar',
-      yAxisID: 'Percentage',
-      data: percentages,
-    })
-  }
-
-  const profileLine = (profile: svk.ProfileNode[]): number[] => {
-    const absolutes: number[] = []
-    for (let i = 0; i < 24; i++) {
-      absolutes[i] = 0
-    }
-
-    let total = 0
-    for (const c of profile) {
-      const timeOfDay = moment(c.time).hour()
-
-      if (!absolutes[timeOfDay]) absolutes[timeOfDay] = 0
-      absolutes[timeOfDay] += c.value
-      total += c.value
-    }
-
-    return absolutes.map((v) => (v / total) * 100)
   }
 
   const chartData = (): chartjs.ChartData | undefined => {
@@ -134,6 +113,16 @@ export default function HistogramChart(props: Props) {
           backgroundColor: 'rgba(0,0,0,0)',
           borderWidth: 2,
           data: profileLine(workdays),
+        })
+      )
+
+      datasets.push(
+        newDataset('Snittpris', RGB(47, 184, 202), {
+          type: 'line',
+          yAxisID: 'SEK/kWh',
+          backgroundColor: 'rgba(0,0,0,0)',
+          borderWidth: 2,
+          data: meanPrice(props.price),
         })
       )
     }

@@ -69,6 +69,7 @@ export default function SnapLoader(props: Props) {
           consumption={consumptionNodes}
           profile={profileNodes}
           weightedAverage={weightedAverage}
+          price={priceNodes}
         />
       </DataSourceContext.Provider>
     </div>
