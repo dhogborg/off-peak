@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import * as Sentry from '@sentry/react'
 
 import * as auth from '../auth/auth'
 import { errorString } from '../helpers'
@@ -33,6 +34,10 @@ export const getHomes = createAsyncThunk<Home[], void>('tibber/getHomes', async 
       }
     }
   }`)
+  if (!result?.viewer?.homes) {
+    console.error('GQL result:', JSON.stringify(result))
+    throw new Error('no homes found')
+  }
   return result.viewer.homes
 })
 
@@ -68,7 +73,8 @@ export const getConsumption = createAsyncThunk<ConsumptionNode[], ConsumptionArg
       }
     }`)
 
-    if (!result.viewer.home.consumption) {
+    if (!result?.viewer?.home?.consumption) {
+      console.error('GQL result:', JSON.stringify(result))
       throw new Error('missing consumption data')
     }
     return result.viewer.home.consumption.nodes
@@ -112,7 +118,8 @@ export const getPrice = createAsyncThunk<PriceNode[], PriceArgs>(
       }
     }
   }`)
-    if (!result.viewer.home.currentSubscription.priceInfo.range) {
+    if (!result?.viewer?.home?.currentSubscription?.priceInfo?.range?.nodes) {
+      console.error('GQL result:', JSON.stringify(result))
       throw new Error('no price data found in range')
     }
     return result.viewer.home.currentSubscription.priceInfo.range.nodes
@@ -133,9 +140,19 @@ async function doRequest<T>(query: string) {
   try {
     const response = await handledFetch('https://api.tibber.com/v1-beta/gql', init)
     const result: GQLResponse<T> = await response.json()
+
+    if (result.errors && result.errors.length > 0) {
+      result.errors.forEach((err, i) => {
+        console.error(`GQL error ${i}: ${err.extensions.code}: ${err.message}`)
+        Sentry.captureMessage(`GQL error: ${err.extensions.code}`, 'error')
+      })
+      throw new Error(result.errors[0].message)
+    }
+
     return result.data
   } catch (err) {
     console.log(err)
+
     throw new Error('Query error: ' + errorString(err))
   }
 }
@@ -143,6 +160,11 @@ async function doRequest<T>(query: string) {
 // eslint-disable-next-line
 interface GQLResponse<T = any> {
   data: T
+  errors?: {
+    message: string
+    path: string[]
+    extensions: { code: string }
+  }[]
 }
 
 interface RangeOptions {
@@ -191,3 +213,5 @@ function rangeParameters(args: RangeOptions): string {
     })
     .join(', ')
 }
+
+function checkErr(result: any) {}

@@ -31,3 +31,4 @@ secrets
 
 #IntelliJ internal files
 .idea
+sentry.env

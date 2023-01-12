@@ -119,17 +119,23 @@ export default function GraphLoader(props: Props) {
     return <Alert>Sparar snapshot...</Alert>
   }
 
-  const errs = [
-    snapshotState.addError,
-    tibberState.consumption.error,
-    tibberState.price.error,
-    svkState.error,
-  ].filter((err) => !!err)
+  const errs = Object.entries({
+    snapshot: snapshotState.addError,
+    consumption: tibberState.consumption.error,
+    price: tibberState.price.error,
+    profile: svkState.error,
+  }).filter(([, err]) => !!err)
+
   if (errs.length > 0) {
     return (
       <>
-        {errs.map((err) => {
-          return <Alert type="oh-no">{err}</Alert>
+        {errs.map(([id, err], i) => {
+          return (
+            <Alert key={i} type="oh-no">
+              <h2>{id} error</h2>
+              {err}
+            </Alert>
+          )
         })}
       </>
     )

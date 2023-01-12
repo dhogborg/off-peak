@@ -4,11 +4,15 @@
   color: white;
   display: block;
   font-weight: 400;
-  margin: 75px auto;
-  width: 320px;
-  line-height: 20px;
-  padding: 40px 20px;
+  margin: 75px auto 20px auto;
+  max-width: 700px;
+  padding: 20px 10px;
   text-align: center;
+}
+
+.alert h2 {
+  margin: 0 0 20px 0;
+  text-transform: capitalize;
 }
 
 .alert.oh-no {

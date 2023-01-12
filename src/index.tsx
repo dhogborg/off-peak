@@ -15,7 +15,9 @@ Sentry.init({
   dsn: 'https://200ae0bf60bb4072839f935c5afc1920@o198594.ingest.sentry.io/4504493028605952',
   integrations: [new BrowserTracing()],
   // 0 to 1, higher sampling is more resource intensive
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 0.5,
+  environment: import.meta.env.MODE,
+  release: import.meta.env.VITE_APP_RELEASE,
 })
 
 ReactDOM.render(
