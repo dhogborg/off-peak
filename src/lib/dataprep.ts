@@ -32,6 +32,8 @@ interface Hour {
   consumption?: tibber.ConsumptionNode
   price?: tibber.PriceNode
   profile?: svk.ProfileNode
+
+  completeDsoData?: boolean
 }
 
 /**
@@ -76,7 +78,17 @@ export function aggregateDays(
   const cleanHours = Object.keys(dateIndex)
     .map((key) => dateIndex[key])
     .filter((hour) => {
-      return hour.price !== undefined && hour.profile !== undefined
+      return (
+        hour.price !== undefined && hour.profile !== undefined && hour.consumption !== undefined
+      )
+    })
+    .map((hour) => {
+      // some DSOs don't report data in a timely manner, this flag ensures we can work
+      // on hours with proper data for the weighted period price.
+      return {
+        ...hour,
+        completeDsoData: hour.profile.value > 0,
+      }
     })
 
   // Put them in 24-hour period bins
@@ -158,8 +170,8 @@ export function aggregateDays(
   return {
     days,
     weightedAverage: weightedPeriodPrice(
-      cleanHours.map((hour) => hour.price?.total || 0),
-      cleanHours.map((hour) => hour.profile?.value || 0)
+      cleanHours.filter((h) => h.completeDsoData).map((hour) => hour.price.total),
+      cleanHours.filter((h) => h.completeDsoData).map((hour) => hour.profile.value)
     ),
     totalConsumption: Sum(days.map((d) => d.consumption)),
   }
