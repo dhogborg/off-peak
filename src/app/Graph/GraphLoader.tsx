@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'src/lib/hooks'
 import { push } from 'connected-react-router'
 
 import { DataSourceContext } from './Graphs'
-import { getMonthIntervalFor } from './GraphLoader.lib'
+import { getYearIntervalFor, getMonthIntervalFor } from './GraphLoader.lib'
 
 type Params = {
   id: string
@@ -49,6 +49,24 @@ export default function GraphLoader(props: Props) {
     let after: Date | undefined = undefined
     const now = new Date()
     switch (configState.periodType) {
+      case 'last-year': {
+        let prevYear = now.getFullYear() - 1
+        const period = getYearIntervalFor(prevYear)
+        after = period.from
+        first = period.hours
+        break
+      }
+      case 'this-year': {
+        let year = now.getFullYear()
+        const period = getYearIntervalFor(year)
+        after = period.from
+        first = period.hours
+        break
+      }
+      case 'running-year': {
+        last = last = 365 * 24
+        break
+      }
       case 'last-month': {
         let prevMonth = now.getMonth() - 1
         if (prevMonth < 0) prevMonth = 11

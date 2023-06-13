@@ -13,6 +13,31 @@ export const getProfile = createAsyncThunk<string, { area: Types.Area; period: P
     const { from, to } = ((): { from: string; to: string } => {
       const YYMMDD = 'YYYY-MM-DD'
       switch (args.period) {
+        case 'last-year': {
+          const startLastYear = moment().startOf('year').subtract(1, 'year').date(1).hour(0).minute(0).second(0)
+          const endLastYear = moment(startLastYear)
+            .add(1, 'year')
+            .subtract(1, 'day')
+            .hour(0)
+            .minute(0)
+            .second(0)
+          return {
+            from: startLastYear.format(YYMMDD),
+            to: endLastYear.format(YYMMDD),
+          }
+        }
+        case 'this-year':
+          return {
+            from: moment().startOf('year').format(YYMMDD),
+            to: moment().format(YYMMDD),
+          }
+        case 'running-year':
+          return {
+            from: moment()
+              .subtract(365 * 24, 'hours')
+              .format(YYMMDD),
+            to: moment().format(YYMMDD),
+          }
         case 'last-month': {
           const startLastMonth = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
           const endLastMonth = moment(startLastMonth)

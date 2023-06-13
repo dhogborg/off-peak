@@ -1,7 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from './store'
 
-export type PeriodTypes = 'last-month' | 'this-month' | 'rolling'
+export type PeriodTypes = 'last-year' | 'this-year' | 'running-year' | 'last-month' | 'this-month' | 'rolling'
 export interface State {
   periodType: PeriodTypes
   beta: boolean
@@ -14,6 +14,9 @@ const getInitialState = (): State => {
     const savedPeriod = localStorage.getItem('period')
 
     switch (savedPeriod) {
+      case 'last-year':
+      case 'this-year':
+      case 'running-year':
       case 'last-month':
       case 'this-month':
       case 'rolling':
