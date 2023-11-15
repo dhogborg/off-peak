@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'src/lib/hooks'
 import { push } from 'connected-react-router'
 
 import { DataSourceContext } from './Graphs'
-import { getMonthIntervalFor } from './GraphLoader.lib'
+import { Period, getMonthIntervalFor, getRollingInterval } from './GraphLoader.lib'
 
 type Params = {
   id: string
@@ -44,44 +44,57 @@ export default function GraphLoader(props: Props) {
   }, [dispatch])
 
   useEffect(() => {
-    let first: number | undefined = undefined
-    let last: number | undefined = undefined
-    let after: Date | undefined = undefined
+    let period: Period
+
     const now = new Date()
     switch (configState.periodType) {
       case 'last-month': {
         let prevMonth = now.getMonth() - 1
         if (prevMonth < 0) prevMonth = 11
-
-        const period = getMonthIntervalFor(prevMonth)
-        after = period.from
-        first = period.hours
+        period = getMonthIntervalFor(prevMonth)
         break
       }
       case 'this-month': {
-        const period = getMonthIntervalFor(now.getMonth())
-        after = period.from
-        first = period.hours
+        period = getMonthIntervalFor(now.getMonth())
         break
       }
       case 'rolling':
-        last = last = 32 * 24
+        period = getRollingInterval(32)
         break
+      default:
+        throw new Error('invalid period type')
     }
 
-    console.log({ after, last, first })
-
     dispatch(
-      tibber.getConsumption({ homeId, resolution: tibber.Interval.Hourly, after, first, last })
+      tibber.getConsumption({
+        homeId,
+        resolution: tibber.Interval.Hourly,
+        after: period.from,
+        first: period.hours,
+      })
     )
 
     // price is sometimes ahead by 24 hours, so we always add another period on it
-    dispatch(tibber.getPrice({ homeId, resolution: tibber.Interval.Hourly, after, first, last }))
+    dispatch(
+      tibber.getPrice({
+        homeId,
+        resolution: tibber.Interval.Hourly,
+        after: period.from,
+        first: period.hours,
+      })
+    )
 
-    dispatch(svk.getProfile({ area: gridAreaCode, period: configState.periodType }))
+    dispatch(
+      svk.getProfile({
+        priceArea: priceAreaCode,
+        mga: gridAreaCode,
+        from: period.from,
+        to: period.to,
+      })
+    )
 
     setFirstLoad(false)
-  }, [dispatch, homeId, configState.periodType, gridAreaCode])
+  }, [dispatch, homeId, configState.periodType, priceAreaCode])
 
   const store = async () => {
     dispatch(

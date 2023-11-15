@@ -40,6 +40,8 @@ func HandledHTTPResponse(h HTTPHandler) func(*gin.Context) {
 			c.JSON(code, errResponse{err.Error()})
 			return
 		}
-		c.JSON(code, data)
+		if data != nil {
+			c.JSON(code, data)
+		}
 	}
 }

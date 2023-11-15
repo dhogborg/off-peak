@@ -1,10 +1,10 @@
-import React from 'react'
+import moment from 'moment'
 
 import { Bar } from 'react-chartjs-2'
 import * as chartjs from 'chart.js'
 
-import { newDataset, RGB } from '../../../lib/chart'
-import * as dataprep from '../../../lib/dataprep'
+import { newDataset, RGB } from 'src/lib/chart'
+import * as dataprep from 'src/lib/dataprep'
 
 type Props = {
   days: dataprep.Day[]
@@ -76,7 +76,7 @@ export default function ConsumptionChart(props: Props) {
 
   const chartData = (): chartjs.ChartData | undefined => {
     const labels: string[] = props.days.map((day) => {
-      return day.startTime.format('DD/MM')
+      return moment(day.startTime).format('DD/MM')
     })
 
     const consumption = newDataset('Konsumtion', RGB(0, 0, 0), {

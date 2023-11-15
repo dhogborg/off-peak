@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -70,6 +72,7 @@ func main() {
 	router.GET("/env", env)
 	router.GET("/api/v1/authorize", HandledHTTPResponse(authorize))
 	router.GET("/api/v1/svkprofile", HandledHTTPResponse(svkProfile))
+	router.GET("/api/v1/esettProfile", HandledHTTPResponse(esettProfile))
 	router.GET("/api/v1/snapshots/", HandledHTTPResponse(getSnapshots))
 	router.GET("/api/v1/snapshots/:id", HandledHTTPResponse(getSnapshot))
 	router.POST("/api/v1/snapshots/", HandledHTTPResponse(postSnapshot))
@@ -173,6 +176,48 @@ func svkProfile(c *gin.Context) (int, interface{}, error) {
 	svkCache.Set(url, body)
 
 	c.String(200, body)
+	return 0, nil, nil
+}
+
+func esettProfile(c *gin.Context) (int, interface{}, error) {
+	if c.Query("start") == "" ||
+		c.Query("end") == "" ||
+		c.Query("mba") == "" ||
+		c.Query("mga") == "" {
+		return http.StatusBadRequest, nil, errors.New("query error")
+	}
+
+	u, err := url.Parse(`https://api.opendata.esett.com/EXP18/LoadProfile`)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	params := url.Values{}
+	params.Add("start", c.Query("start"))
+	params.Add("end", c.Query("end"))
+	params.Add("mba", c.Query("mba"))
+	params.Add("mga", c.Query("mga"))
+
+	u.RawQuery = params.Encode()
+
+	if cache, ok := svkCache.Get(u.String()); ok {
+		c.String(200, cache)
+		return http.StatusOK, nil, nil
+	}
+
+	resp, err := http.Get(u.String())
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("response error: " + err.Error())
+	}
+	bytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("body error: " + err.Error())
+	}
+
+	body := string(bytes)
+	svkCache.Set(u.String(), body)
+
+	c.String(http.StatusOK, body)
 	return 0, nil, nil
 }
 

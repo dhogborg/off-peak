@@ -11,8 +11,8 @@ export interface Aggregation {
 
 export interface Day {
   // The time from for this day object
-  startTime: moment.Moment
-  endTime: moment.Moment
+  startTime: Date
+  endTime: Date
   // Total consumption in kWh
   consumption: number
   // SEK / kWH paid
@@ -28,7 +28,8 @@ export interface Day {
 }
 
 interface Hour {
-  time: moment.Moment
+  time: Date
+
   consumption?: tibber.ConsumptionNode
   price?: tibber.PriceNode
   profile?: svk.ProfileNode
@@ -51,24 +52,26 @@ export function aggregateDays(
   const dateIndex: { [key: string]: Hour } = {}
   // Sort the price, consumption and the profile into a date-indexed map
   for (const p of price) {
-    const time = moment(p.startsAt)
-    const key = time.format()
+    const time = new Date(p.startsAt)
+    const key = time.toISOString()
     if (!dateIndex[key]) {
       dateIndex[key] = { time }
     }
     dateIndex[key].price = p
   }
   for (const p of consumption) {
-    const time = moment(p.from)
-    const key = time.format()
+    const time = new Date(p.from)
+    const key = time.toISOString()
     if (!dateIndex[key]) {
       dateIndex[key] = { time }
     }
     dateIndex[key].consumption = p
   }
   for (const p of profile) {
-    const time = moment(p.time)
-    const key = time.format()
+    const time = new Date(p.time)
+    if (time.getMinutes() !== 0) continue
+
+    const key = time.toISOString()
     if (!dateIndex[key]) {
       dateIndex[key] = { time }
     }
@@ -95,7 +98,7 @@ export function aggregateDays(
   const hourGroup: { [key: string]: Hour[] } = {}
   for (const i in dateIndex) {
     const hour = dateIndex[i]
-    const key = hour.time.format('YYYY-MM-DD')
+    const key = moment(hour.time).format('YYYY-MM-DD')
     if (!hourGroup[key]) {
       hourGroup[key] = []
     }
