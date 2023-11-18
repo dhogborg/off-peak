@@ -166,10 +166,17 @@ export default function GraphLoader(props: Props) {
 
   return (
     <div className="graph-view">
-      <div className="header-info">
-        <button id="BtnSaveSnapshot" onClick={store}>
-          Spara snapshot
-        </button>
+      <div className="col">
+        <div className="header-warn">
+          Från och med den 1 november 2023 hämtas data från eSett. Detta gör att data före 1 novmber
+          2023 inte längre är tillgänglig. <br />
+          Dina sparade snapshots från tiden före 1 nov finns kvar.
+        </div>
+        <div className="header-info">
+          <button id="BtnSaveSnapshot" onClick={store}>
+            Spara snapshot
+          </button>
+        </div>
       </div>
       <DataSourceContext.Provider value={'api'}>
         <Graphs

@@ -2,6 +2,15 @@
   padding-top: 40px;
 }
 
+.graph-view .header-warn {
+  background-color: #e07313;
+  color: white;
+  font-size: 14px;
+  padding: 5px;
+  text-align: center;
+  width: 100%;
+}
+
 .graph-view .header-info {
   top: 40px;
   right: 0px;
@@ -10,8 +19,10 @@
   font-size: 14px;
   text-align: center;
   padding: 3px 0px;
-  position: fixed;
+
   width: 125px;
+  float: right;
+
   border-radius: 0px 0px 0px 4px;
 }
 
