@@ -1,76 +1,42 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import moment from 'moment'
-import { PeriodTypes } from '../config'
 import { handledFetch } from '../http'
 import * as Types from './types'
 
-/**
- * @param last the number of hours to retrive
- */
-export const getProfile = createAsyncThunk<string, { area: Types.Area; period: PeriodTypes }>(
-  'svk/getProfile',
-  async (args) => {
-    const { from, to } = ((): { from: string; to: string } => {
-      const YYMMDD = 'YYYY-MM-DD'
-      switch (args.period) {
-        case 'last-month': {
-          const startLastMonth = moment().subtract(1, 'month').date(1).hour(0).minute(0).second(0)
-          const endLastMonth = moment(startLastMonth)
-            .add(1, 'month')
-            .subtract(1, 'day')
-            .hour(0)
-            .minute(0)
-            .second(0)
-          return {
-            from: startLastMonth.format(YYMMDD),
-            to: endLastMonth.format(YYMMDD),
-          }
-        }
-        case 'this-month':
-          return {
-            from: moment().date(1).format(YYMMDD),
-            to: moment().format(YYMMDD),
-          }
-        case 'rolling':
-          return {
-            from: moment()
-              .subtract(33 * 24, 'hours')
-              .format(YYMMDD),
-            to: moment().format(YYMMDD),
-          }
-      }
-    })()
-
-    console.log({ from, to })
-    if (from === '1970-01-01') {
-      throw new Error('invalid start date')
-    }
-
-    const params = [`periodFrom=${from}`, `periodTo=${to}`, `networkAreaIdString=${args.area}`]
-    const url = `/api/v1/svkprofile?` + params.join('&')
-
-    const response = await handledFetch(url, {
-      method: 'GET',
-    })
-
-    return await response.text()
+export const getProfile = createAsyncThunk<
+  Types.ProfileNode[],
+  { priceArea: Types.Area; mga: string; from: Date; to: Date }
+>('svk/getProfile', async (args) => {
+  let mba = ''
+  switch (args.priceArea) {
+    case 'SE1':
+      mba = '10Y1001A1001A44P'
+      break
+    case 'SE2':
+      mba = '10Y1001A1001A45N'
+      break
+    case 'SE3':
+      mba = '10Y1001A1001A46L'
+      break
+    case 'SE4':
+      mba = '10Y1001A1001A47J'
+      break
   }
-)
 
-export function parseCSV(csv: string) {
-  let rows = csv.split('\n').slice(1)
-  rows = rows.slice(0, rows.length - 2)
+  const params = new URLSearchParams()
+  params.append('start', args.from.toJSON())
+  params.append('end', args.to.toJSON())
+  params.append('mba', mba)
+  params.append('mga', args.mga)
 
-  const nodes: Types.ProfileNode[] = []
-  for (const row of rows) {
-    const cols = row.split(';')
-    const node = {
-      time: cols[0],
-      // Data is reported in negative values since they are
-      // consumption numbers. Flip it for convenience.
-      value: parseFloat(cols[1]) * -1,
+  const url = `/api/v1/esettProfile?` + params.toString()
+
+  const response = await handledFetch(url)
+  const nodes = await response.json()
+
+  return nodes.map((node) => {
+    return {
+      time: node.timestamp,
+      value: Math.abs(node.quantity),
     }
-    nodes.push(node)
-  }
-  return nodes
-}
+  })
+})

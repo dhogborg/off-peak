@@ -1,9 +1,8 @@
-FROM alpine
+FROM ubuntu:jammy
 
 LABEL author d@hogborg.se
 
-RUN apk update && apk add --update ca-certificates
-RUN apk add --update tzdata
+RUN apt-get update && apt-get install -y ca-certificates
 
 ADD server/bin/offpeak /usr/bin
 ADD build/ /var/www

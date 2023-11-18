@@ -79,8 +79,8 @@ func (t *TibberHome) IsValid() bool {
 
 type SVKProfile struct {
 	// SVK stores time as 2018-11-14 00:00 which won't parse directly
-	Time  string `json:"time"  firestore:"time"`
-	Value int    `json:"value" firestore:"value"`
+	Time  string  `json:"time"  firestore:"time"`
+	Value float64 `json:"value" firestore:"value"`
 }
 
 // IsValid returns false if the data in the structure is invalid

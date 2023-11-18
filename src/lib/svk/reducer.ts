@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 
 import * as thunks from './thunks'
-import { parseCSV, ProfileNode } from '.'
+import { ProfileNode } from '.'
 
 export interface State {
   status: 'idle' | 'loading' | 'failed'
@@ -30,7 +30,7 @@ export const slice = createSlice({
       })
       .addCase(thunks.getProfile.fulfilled, (state, action) => {
         state.status = 'idle'
-        state.nodes = parseCSV(action.payload)
+        state.nodes = action.payload
       })
       .addCase(thunks.getProfile.rejected, (state, action) => {
         state.status = 'failed'
